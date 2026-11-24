@@ -1,0 +1,532 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+</head>
+<body>
+<title>ResQBot Mini</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: field-equipment spec sheet. Left-aligned text, a dark "instrument screen" for the thermal sweep, orange used only for action and alarms. */
+:root {
+  --bg: #f2f4f6; --surface: #ffffff; --ink: #14202b; --muted: #566472; --line: #d7dee5;
+  --accent: #d9480f; --accent-ink: #ffffff; --accent-soft: #fff0e6;
+  --hot: #d6336c; --ok: #2b8a3e; --cool: #1c7ed6;
+  --screen: #0d141a; --screen-ink: #dce6ee; --screen-muted: #7f92a2; --screen-line: #22303b;
+  --display: "Big Shoulders Display", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", Consolas, ui-monospace, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f161c; --surface: #17212a; --ink: #e6edf2; --muted: #98a8b6; --line: #27343f;
+    --accent: #ff7b33; --accent-ink: #1a0a00; --accent-soft: #2b1a10;
+    --hot: #ff6b9a; --ok: #69db7c; --cool: #4dabf7; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f161c; --surface: #17212a; --ink: #e6edf2; --muted: #98a8b6; --line: #27343f;
+  --accent: #ff7b33; --accent-ink: #1a0a00; --accent-soft: #2b1a10;
+  --hot: #ff6b9a; --ok: #69db7c; --cool: #4dabf7; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font: 16px/1.6 var(--body); margin: 0; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-inline: 20px; }
+a { color: var(--accent); }
+a:focus-visible, button:focus-visible, input:focus-visible { outline: 3px solid var(--cool); outline-offset: 2px; }
+h1, h2, h3 { font-family: var(--display); line-height: 1.02; text-wrap: balance; margin: 0; letter-spacing: .3px; }
+h2 { font-size: clamp(34px, 5vw, 52px); font-weight: 800; text-transform: uppercase; }
+h3 { font-size: 24px; font-weight: 800; text-transform: uppercase; }
+p { margin: 0; max-width: 65ch; }
+.label { font: 500 12px/1 var(--mono); letter-spacing: 1.6px; text-transform: uppercase; color: var(--muted); }
+.num { font-variant-numeric: tabular-nums; }
+
+/* nav */
+nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+nav .wrap { display: flex; align-items: center; gap: 22px; padding-block: 12px; flex-wrap: wrap; }
+.brand { font: 900 24px/1 var(--display); text-transform: uppercase; color: var(--ink); text-decoration: none; display: flex; align-items: center; gap: 10px; }
+.brand i { width: 26px; height: 26px; border-radius: 6px; background: var(--accent); display: grid; place-items: center; color: var(--accent-ink); font: 800 18px/1 var(--display); font-style: normal; }
+nav .links { display: flex; gap: 18px; margin-left: auto; flex-wrap: wrap; }
+nav .links a { color: var(--muted); text-decoration: none; font-size: 14px; font-weight: 500; }
+nav .links a:hover { color: var(--ink); }
+
+/* hero */
+.hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 44px; align-items: center; padding-block: 56px 40px; }
+.hero h1 { font-size: clamp(52px, 8vw, 96px); font-weight: 900; text-transform: uppercase; }
+.hero h1 span { color: var(--accent); }
+.hero .lead { font-size: 19px; color: var(--muted); margin-top: 18px; }
+.ctas { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 26px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 13px 20px; border-radius: 8px; font-weight: 600; text-decoration: none; border: 2px solid var(--accent); }
+.btn.primary { background: var(--accent); color: var(--accent-ink); }
+.btn.ghost { color: var(--ink); border-color: var(--line); }
+.specs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; margin-top: 34px; border-top: 2px solid var(--ink); }
+.specs div { padding: 12px 12px 0 0; }
+.specs b { display: block; font: 800 30px/1 var(--display); }
+.specs span { font-size: 12.5px; color: var(--muted); }
+
+/* instrument screen */
+.screen { background: var(--screen); color: var(--screen-ink); border-radius: 18px; padding: 18px; box-shadow: 0 24px 60px -30px rgba(0,0,0,.6); min-width: 0; }
+.screen .bar { display: flex; justify-content: space-between; gap: 10px; font: 500 12px/1 var(--mono); color: var(--screen-muted); letter-spacing: 1px; text-transform: uppercase; }
+.screen .bar .rec { color: #ff6b6b; }
+#sweep { width: 100%; height: auto; display: block; margin: 10px 0 6px; aspect-ratio: 16 / 10; max-width: 100%; }
+.readout { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: var(--screen-line); border-radius: 10px; overflow: hidden; }
+.readout div { background: #121c24; padding: 10px; }
+.readout span { display: block; font: 500 10.5px/1 var(--mono); color: var(--screen-muted); letter-spacing: 1px; text-transform: uppercase; }
+.readout b { font: 500 18px/1.5 var(--mono); }
+.verdict { margin-top: 10px; padding: 10px 12px; border-radius: 10px; font: 500 13px/1.4 var(--mono); background: #121c24; color: var(--screen-muted); }
+.verdict.alert { background: #3b0d16; color: #ffc9d3; box-shadow: inset 0 0 0 2px #ff3b4e; }
+
+section { padding-block: 64px; border-top: 1px solid var(--line); }
+.sec-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 40px; align-items: end; margin-bottom: 34px; }
+.sec-head p { color: var(--muted); font-size: 17px; }
+
+/* problem */
+.facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.fact { border-left: 3px solid var(--ink); padding: 4px 0 4px 16px; }
+.fact b { font: 900 54px/1 var(--display); display: block; }
+.fact p { color: var(--muted); font-size: 15px; margin-top: 6px; }
+
+/* steps */
+.steps { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; counter-reset: s; }
+.step { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px; min-width: 0; }
+.step::before { counter-increment: s; content: "0" counter(s); font: 500 13px/1 var(--mono); color: var(--accent); display: block; margin-bottom: 14px; }
+.step h3 { font-size: 22px; margin-bottom: 8px; }
+.step p { font-size: 14.5px; color: var(--muted); }
+
+/* calculator */
+.calc { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 28px; }
+.ctl { display: grid; gap: 6px; margin-bottom: 20px; }
+.ctl label { display: flex; justify-content: space-between; font-weight: 600; font-size: 15px; }
+.ctl label output { font: 500 15px var(--mono); color: var(--accent); }
+.ctl small { color: var(--muted); font-size: 13px; }
+input[type=range] { width: 100%; accent-color: var(--accent); }
+.toggle { display: flex; gap: 12px; align-items: flex-start; padding: 12px 14px; border: 1px solid var(--line); border-radius: 10px; margin-bottom: 10px; cursor: pointer; }
+.toggle input { width: 20px; height: 20px; accent-color: var(--accent); margin-top: 2px; flex: none; }
+.toggle b { display: block; font-size: 15px; }
+.toggle span { font-size: 13px; color: var(--muted); }
+.score { display: flex; flex-direction: column; gap: 16px; }
+.score .big { font: 900 120px/.85 var(--display); }
+.score .big small { font-size: 32px; color: var(--muted); }
+.stack { display: flex; height: 22px; border-radius: 6px; overflow: hidden; background: var(--bg); border: 1px solid var(--line); }
+.stack i { display: block; height: 100%; transition: width .35s ease; }
+.legend { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 16px; font-size: 13.5px; color: var(--muted); }
+.legend span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; background: var(--c); vertical-align: -1px; }
+.chip { align-self: flex-start; font: 600 14px/1 var(--body); padding: 9px 14px; border-radius: 999px; text-transform: uppercase; letter-spacing: .8px; }
+.chip.none { background: var(--bg); color: var(--muted); border: 1px solid var(--line); }
+.chip.possible { background: #fff3bf; color: #7a5b00; }
+.chip.likely { background: var(--hot); color: #fff; }
+
+/* robot */
+.robot { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 32px; align-items: start; }
+.figure { background: #ffffff; border-radius: 16px; padding: 10px; border: 1px solid var(--line); }
+.figure img { display: block; width: 100%; border-radius: 10px; }
+.parts { display: grid; gap: 0; }
+.parts div { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 14.5px; }
+.parts dt { font: 500 12px/1.5 var(--mono); text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
+.parts dd { margin: 0; }
+
+/* dashboard */
+.shots { display: grid; grid-template-columns: minmax(0, 2.2fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+.shots img { width: 100%; border-radius: 14px; border: 1px solid var(--line); display: block; }
+.feat { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin-top: 26px; }
+.feat div { font-size: 14.5px; color: var(--muted); }
+.feat b { display: block; color: var(--ink); font-size: 16px; margin-bottom: 4px; }
+
+/* cost */
+.cost { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 32px; align-items: start; }
+.tbl { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+table { width: 100%; border-collapse: collapse; font-size: 14.5px; min-width: 460px; }
+th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); }
+th { font: 500 11.5px/1 var(--mono); letter-spacing: 1.2px; text-transform: uppercase; color: var(--muted); }
+td.r, th.r { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+tr.tot td { font-weight: 700; border-bottom: 0; background: var(--accent-soft); }
+.totals { display: grid; gap: 14px; }
+.total { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px; }
+.total b { font: 900 46px/1 var(--display); display: block; }
+.total span { color: var(--muted); font-size: 14px; }
+
+/* safety + downloads */
+.safety { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.safety div { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 20px; }
+.safety h3 { font-size: 22px; margin-bottom: 8px; }
+.safety p { font-size: 14.5px; color: var(--muted); }
+.note { margin-top: 18px; padding: 14px 18px; border-radius: 10px; background: var(--accent-soft); font-size: 14.5px; }
+.dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.dl a { display: block; text-decoration: none; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px; }
+.dl a:hover { border-color: var(--accent); }
+.dl b { display: block; font: 800 22px/1.1 var(--display); text-transform: uppercase; margin-bottom: 6px; }
+.dl span { font-size: 14px; color: var(--muted); }
+footer { padding-block: 34px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
+footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+
+@media (max-width: 900px) {
+  .hero, .sec-head, .calc, .robot, .shots, .cost { grid-template-columns: minmax(0, 1fr); }
+  .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .facts, .safety, .dl, .feat { grid-template-columns: minmax(0, 1fr); }
+  .hero { padding-block: 32px; gap: 28px; }
+}
+@media (max-width: 520px) {
+  .steps { grid-template-columns: minmax(0, 1fr); }
+  .specs, .readout { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  nav .links { display: none; }
+  .score .big { font-size: 96px; }
+}
+@media (prefers-reduced-motion: reduce) { .stack i { transition: none; } }
+</style>
+
+<nav>
+  <div class="wrap">
+    <a class="brand" href="#top"><i>+</i>ResQBot Mini</a>
+    <div class="links">
+      <a href="#how">How it works</a>
+      <a href="#score">Confidence</a>
+      <a href="#robot">The robot</a>
+      <a href="#dashboard">Dashboard</a>
+      <a href="#cost">Cost</a>
+      <a href="#files">Files</a>
+    </div>
+  </div>
+</nav>
+
+<main id="top">
+  <div class="wrap hero">
+    <div>
+      <div class="label">Thermal search-and-rescue rover · open design</div>
+      <h1 style="margin-top:14px">Finds the <span>warmth</span> under the rubble</h1>
+      <p class="lead">A palm-sized robot built from common hobby parts. It sweeps a ₹759 infrared thermometer across the scene, finds body heat, drives up to the person, and calls the rescue team's phone, with no internet needed.</p>
+      <div class="ctas">
+        <a class="btn primary" href="demo.html#showcase">Open the live dashboard demo</a>
+        <a class="btn ghost" href="#how">See how it works</a>
+      </div>
+      <div class="specs">
+        <div><b class="num">2×15</b><span>thermal sweep, 140° wide</span></div>
+        <div><b class="num">0–100</b><span>survivor confidence</span></div>
+        <div><b class="num">~1.5 m</b><span>detection range (model)</span></div>
+        <div><b>Offline</b><span>its own Wi-Fi hotspot</span></div>
+      </div>
+    </div>
+
+    <figure class="screen" aria-label="Animated thermal sweep">
+      <div class="bar"><span>MLX90614 · sweep 20°–160°</span><span class="rec" id="stateTxt">● scanning</span></div>
+      <canvas id="sweep" width="800" height="500"></canvas>
+      <div class="readout">
+        <div><span>Background</span><b class="num" id="rBg">26.2°C</b></div>
+        <div><span>Peak</span><b class="num" id="rPeak">31.2°C</b></div>
+        <div><span>Bearing</span><b class="num" id="rBear">20° R</b></div>
+        <div><span>Confidence</span><b class="num" id="rConf">75</b></div>
+      </div>
+      <div class="verdict alert" id="verdict">SURVIVOR LIKELY · not moving (may be unconscious) · 33.6 °C at 34 cm</div>
+    </figure>
+  </div>
+
+  <section id="problem">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>Every hour under rubble counts</h2>
+        <p>Rescuers search dark, smoky and unstable spaces by hand, risking their own lives. The tools that see body heat cost tens of thousands of rupees or more, so the local teams who arrive first rarely have them.</p>
+      </div>
+      <div class="facts">
+        <div class="fact"><b class="num">72 h</b><p>The "golden" window: a trapped person's chances fall with every hour.</p></div>
+        <div class="fact"><b class="num">~20,000</b><p>lives lost in the 2001 Gujarat (Bhuj) earthquake, many under collapsed buildings.</p></div>
+        <div class="fact"><b class="num">50,000+</b><p>deaths in the 2023 Türkiye–Syria earthquakes, where searches went on for weeks.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="how">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>One search, five steps</h2>
+        <p>In Auto search mode the robot repeats this loop on its own. A rescuer can take over at any moment from the phone, and E-STOP always works.</p>
+      </div>
+      <div class="steps">
+        <div class="step"><h3>Sweep</h3><p>Two servos swing the IR sensor across 140° at floor and eye level: 30 readings in about 5 seconds.</p></div>
+        <div class="step"><h3>Detect</h3><p>A warm patch at least +1.5 °C over the scene, no hotter than 42 °C, covering 2+ cells.</p></div>
+        <div class="step"><h3>Approach</h3><p>It turns to the patch's bearing and creeps forward until it is 35 cm away.</p></div>
+        <div class="step"><h3>Confirm</h3><p>Did the reading get warmer up close? Is anything moving? It scores the clues 0–100.</p></div>
+        <div class="step"><h3>Alert</h3><p>At 60+ it parks beside the person with a flashing beacon and buzzer, and alerts the phone.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="score">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>Try the confidence score</h2>
+        <p>The same formula the robot runs. Movement is a bonus, not a requirement, so an unconscious person still triggers an alert while heaters, reflections and hot cups don't.</p>
+      </div>
+      <div class="calc">
+        <div>
+          <div class="ctl">
+            <label for="cDelta">Heat contrast <output id="oDelta" class="num">+4.0 °C</output></label>
+            <input type="range" id="cDelta" min="0" max="6" step="0.1" value="4">
+            <small>How much warmer the patch is than the scene's median. Below +1.5 °C it is ignored.</small>
+          </div>
+          <div class="ctl">
+            <label for="cCells">Warm cells <output id="oCells" class="num">3</output></label>
+            <input type="range" id="cCells" min="0" max="8" step="1" value="3">
+            <small>A person covers several neighbouring cells; a single hot cell is treated as noise.</small>
+          </div>
+          <label class="toggle" for="cRise"><input type="checkbox" id="cRise" checked><div><b>Warmer when closer (+25)</b><span>A real heat source fills more of the view as the robot approaches.</span></div></label>
+          <label class="toggle" for="cMove"><input type="checkbox" id="cMove"><div><b>Movement seen by the PIR (+25)</b><span>Read only while the robot stands still.</span></div></label>
+          <label class="toggle" for="cHot"><input type="checkbox" id="cHot"><div><b>Patch is hotter than 42 °C</b><span>Heaters, engines, lamps, fire: not a person.</span></div></label>
+        </div>
+        <div class="score">
+          <div class="label">Survivor confidence</div>
+          <div class="big num"><span id="sNum">0</span><small>/100</small></div>
+          <div class="stack" aria-hidden="true">
+            <i id="bHeat" style="background:#e8590c"></i><i id="bSize" style="background:#f59f00"></i><i id="bRise" style="background:#1c7ed6"></i><i id="bMove" style="background:#2b8a3e"></i>
+          </div>
+          <div class="legend">
+            <span style="--c:#e8590c">Heat contrast <b class="num" id="lHeat">0</b></span>
+            <span style="--c:#f59f00">Size <b class="num" id="lSize">0</b></span>
+            <span style="--c:#1c7ed6">Warmer up close <b class="num" id="lRise">0</b></span>
+            <span style="--c:#2b8a3e">Movement <b class="num" id="lMove">0</b></span>
+          </div>
+          <div class="chip none" id="sChip">No body-like heat</div>
+          <p style="color:var(--muted);font-size:14px" id="sNote"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="robot">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>Built from parts any lab can buy</h2>
+        <p>An Arduino Uno reads every sensor and runs the search logic. An ESP32-CAM adds live video, makes the robot's Wi-Fi and serves the phone dashboard. Each part is a standard module, so the robot can be repaired with parts from any electronics market.</p>
+      </div>
+      <div class="robot">
+        <div class="figure"><img src="images/robot.png" alt="Side view of ResQBot Mini with labelled parts: thermal sensor on pan-tilt, ESP32-CAM, ultrasonic sensor, beacon, gas sensor, PIR, ESP32, battery and 4WD chassis"></div>
+        <dl class="parts">
+          <div><dt>Thermal</dt><dd>MLX90614 IR thermometer in a 25° tube on two SG90 servos</dd></div>
+          <div><dt>Brain</dt><dd>Arduino Uno: reads all sensors, runs the search, drives motors</dd></div>
+          <div><dt>Camera</dt><dd>ESP32-CAM: live video, Wi-Fi hotspot, dashboard, flash light</dd></div>
+          <div><dt>Clues</dt><dd>DHT11 air temperature and humidity, PIR for movement, HC-SR04 for distance</dd></div>
+          <div><dt>Hazards</dt><dd>MQ-2 smoke and gas alarm, &gt; 55 °C hot-spot warning</dd></div>
+          <div><dt>Drive</dt><dd>4WD BO-motor chassis, L298N driver, 2S Li-ion pack</dd></div>
+          <div><dt>Marker</dt><dd>Bright LED beacon and buzzer that stay with the survivor</dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section id="dashboard">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>Any phone is the control room</h2>
+        <p>Join the robot's Wi-Fi and open 192.168.4.1. No app, no internet, no cloud: the dashboard lives inside the robot's firmware, so it works where mobile networks are down.</p>
+      </div>
+      <div class="shots">
+        <img src="images/dashboard_desktop.png" alt="ResQBot dashboard during a survivor alert: thermal radar, live camera panel, sensor tiles, confidence ring and event log">
+        <img src="images/dashboard_phone.png" alt="The same dashboard on a phone">
+      </div>
+      <div class="feat">
+        <div><b>Thermal radar</b>The 2×15 sweep drawn live, floor ring inside and level ring outside, with the target bearing.</div>
+        <div><b>Hold-to-drive</b>The robot stops by itself if the phone goes quiet for 0.6 s. E-STOP is always one tap away.</div>
+        <div><b>Incident log</b>Every detection and hazard with time and confidence, downloadable as CSV.</div>
+      </div>
+      <div class="ctas"><a class="btn primary" href="demo.html#showcase">Open the dashboard demo</a></div>
+    </div>
+  </section>
+
+  <section id="cost">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>What it costs</h2>
+        <p>Online prices checked on 9 October 2026 (incl. GST, shipping extra). The full shopping list with a buy link for every part is in the components PDF.</p>
+      </div>
+      <div class="cost">
+        <div class="tbl">
+          <table>
+            <thead><tr><th>Group</th><th>Main parts</th><th class="r">₹</th></tr></thead>
+            <tbody>
+              <tr><td>Brain + camera</td><td>Arduino Uno, ESP32-CAM, programmer</td><td class="r">1,214</td></tr>
+              <tr><td>Sensors</td><td>MLX90614, DHT11, HC-SR04, PIR, MQ-2</td><td class="r">1,095</td></tr>
+              <tr><td>Drive + head</td><td>4WD chassis, L298N, 2 servos, bracket</td><td class="r">1,005</td></tr>
+              <tr><td>Power</td><td>2S Li-ion pack, DC jack, LM2596, switch</td><td class="r">736</td></tr>
+              <tr><td>Small parts</td><td>Buzzer, LED, 2 transistors, resistors, capacitors, diode, fuse</td><td class="r">103</td></tr>
+              <tr><td>Wiring</td><td>Jumpers, zero PCB, headers, bolts, heat-shrink</td><td class="r">531</td></tr>
+              <tr class="tot"><td>Total</td><td>27 parts, all new</td><td class="r">4,684</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="totals">
+          <div class="total"><b class="num">₹3,589</b><span>if you already own an Arduino Uno (₹249) and an ESP32-CAM (₹846), as many student labs do.</span></div>
+          <div class="total"><b class="num">₹549</b><span>one-time 2S battery charger, not counted above. Small parts are cheaper at a local electronics shop.</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="safety">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>Safe for everyone on site</h2>
+        <p>The robot is a scout and decision aid. It goes in first so people go in where it matters.</p>
+      </div>
+      <div class="safety">
+        <div><h3>Survivors</h3><p>Crawls slowly near people and stops 35 cm away. Forward driving is blocked below 12 cm even in manual mode. Light and sound tell the person help is near.</p></div>
+        <div><h3>Rescuers</h3><p>Smoke, gas and fire hot-spot warnings before anyone enters. Live video and the heat map cut blind entries. The beacon marks where to dig.</p></div>
+        <div><h3>The robot</h3><p>E-STOP from the phone, a dead-man stop when commands stop, and a low-battery stop at 6.8 V that protects the Li-ion cells.</p></div>
+      </div>
+      <p class="note">A "no survivor" result never clears a space on its own. The robot is not intrinsically safe and must not enter explosive atmospheres.</p>
+    </div>
+  </section>
+
+  <section id="files">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>Documents</h2>
+        <p>Proposal, build guide, wiring, test plan and the full parts list. The firmware, dashboard and test code are in the project package.</p>
+      </div>
+      <div class="dl">
+        <a href="files/ResQBot_Proposal.pdf"><b>Proposal &amp; guide</b><span>20 pages · problem, design, wiring, algorithm, build steps, test plan</span></a>
+        <a href="files/ResQBot_Components.pdf"><b>Components list</b><span>27 parts with rate, buy link and stock</span></a>
+        <a href="files/ResQBot_Schematics.pdf"><b>Schematics</b><span>7 sheets · power, controller, sensors, drive, alerts, netlist</span></a>
+        <a href="demo.html#showcase"><b>Dashboard demo</b><span>The real robot dashboard running on demo data</span></a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>ResQBot Mini · a low-cost thermal search-and-rescue rover</span>
+    <span>October 2026</span>
+  </div>
+</footer>
+
+<script>
+(() => {
+  // ---------- hero: animated thermal sweep (same layout as the robot's dashboard radar) ----------
+  const cv = document.getElementById('sweep'), g = cv.getContext('2d');
+  const W = cv.width, H = cv.height, cx = W / 2, cy = H - 40;
+  const COLS = 15, PMIN = 20, STEP = 10, RINGS = [[95, 225], [233, 360]];
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const $ = id => document.getElementById(id);
+  const stops = [[27,42,107],[47,111,214],[46,196,166],[255,210,63],[255,107,26],[255,46,77]];
+  const heat = (t, lo, hi) => {
+    const x = Math.max(0, Math.min(1, (t - lo) / (hi - lo))) * (stops.length - 1);
+    const i = Math.min(stops.length - 2, Math.floor(x)), f = x - i, a = stops[i], b = stops[i + 1];
+    return `rgb(${a.map((v, k) => Math.round(v + (b[k] - v) * f))})`;
+  };
+  let scene, shown = 0, phase = 'scan', t0 = 0;
+
+  function makeScene(col) {
+    const bg = 25.8 + Math.random() * 0.8;
+    const grid = [0, 1].map(r => Array.from({ length: COLS }, (_, x) => {
+      let v = bg + (Math.random() - .5) * .5;
+      const d = Math.abs(x - col);
+      if (d <= 1) v += (r === 0 ? 4.6 : 2.3) * (d ? .62 : 1) + Math.random() * .3;
+      return v;
+    }));
+    const peak = Math.max(...grid[0]);
+    const deltas = [col - 1, col, col + 1].map(c => grid[0][c] - bg);
+    const ang = deltas.reduce((s, d, i) => s + d * (PMIN + (col - 1 + i) * STEP), 0) / deltas.reduce((a, b) => a + b, 0);
+    const delta = peak - bg, moving = Math.random() < .4;
+    const conf = Math.min(100, Math.round(20 + Math.min(20, (delta - 1.5) * 8) + 10 + 25 + (moving ? 25 : 0)));
+    return { bg, grid, peak, bearing: Math.round(ang - 90), conf, moving };
+  }
+
+  function draw(cellsShown, panDeg, done) {
+    g.clearRect(0, 0, W, H);
+    const lo = scene.bg - 1, hi = scene.bg + 6;
+    for (let r = 0; r < 2; r++) for (let x = 0; x < COLS; x++) {
+      const idx = r === 0 ? x : COLS + (COLS - 1 - x);           // serpentine order, like the robot
+      const a0 = (PMIN + x * STEP - STEP / 2) * Math.PI / 180, a1 = (PMIN + x * STEP + STEP / 2) * Math.PI / 180;
+      g.beginPath();
+      g.arc(cx, cy, RINGS[r][1], -a0, -a1, true);
+      g.arc(cx, cy, RINGS[r][0], -a1, -a0, false);
+      g.closePath();
+      g.fillStyle = idx < cellsShown ? heat(scene.grid[r][x], lo, hi) : '#18242e';
+      g.fill(); g.lineWidth = 3; g.strokeStyle = '#0d141a'; g.stroke();
+    }
+    g.fillStyle = '#7f92a2'; g.font = '500 17px "IBM Plex Mono", monospace'; g.textAlign = 'center';
+    g.fillText('LEFT', 40, cy - 6); g.fillText('RIGHT', W - 44, cy - 6);
+    g.fillStyle = '#ff7b33';
+    g.beginPath(); g.moveTo(cx, cy - 30); g.lineTo(cx - 18, cy + 10); g.lineTo(cx + 18, cy + 10); g.fill();
+    if (!done) {
+      const a = panDeg * Math.PI / 180;
+      g.strokeStyle = 'rgba(220,230,238,.7)'; g.setLineDash([8, 8]); g.lineWidth = 2;
+      g.beginPath(); g.moveTo(cx, cy - 14); g.lineTo(cx + Math.cos(a) * 380, cy - Math.sin(a) * 380); g.stroke(); g.setLineDash([]);
+    } else {
+      const a = (90 + scene.bearing) * Math.PI / 180, R = 392;
+      g.strokeStyle = '#fff'; g.lineWidth = 3;
+      g.beginPath(); g.moveTo(cx, cy - 14); g.lineTo(cx + Math.cos(a) * 372, cy - Math.sin(a) * 372); g.stroke();
+      g.fillStyle = '#ff3b4e'; g.beginPath(); g.arc(cx + Math.cos(a) * R, cy - Math.sin(a) * R, 15, 0, 7); g.fill();
+      g.fillStyle = '#fff'; g.font = '800 18px "IBM Plex Sans", sans-serif'; g.fillText('!', cx + Math.cos(a) * R, cy - Math.sin(a) * R + 6);
+    }
+  }
+
+  function readouts(done) {
+    $('rBg').textContent = scene.bg.toFixed(1) + '°C';
+    $('rPeak').textContent = done ? scene.peak.toFixed(1) + '°C' : '–';
+    $('rBear').textContent = done ? Math.abs(scene.bearing) + '° ' + (scene.bearing >= 0 ? 'L' : 'R') : '–';
+    $('rConf').textContent = done ? scene.conf : '–';
+    $('stateTxt').textContent = done ? '● survivor alert' : '● scanning';
+    const v = $('verdict');
+    v.className = 'verdict' + (done ? ' alert' : '');
+    v.textContent = done
+      ? `SURVIVOR LIKELY · ${scene.moving ? 'moving' : 'not moving (may be unconscious)'} · ${(scene.peak + 2.4).toFixed(1)} °C at 34 cm`
+      : 'Sweeping… reading 30 cells, floor row then level row';
+  }
+
+  scene = makeScene(5);
+  draw(30, 90, true); readouts(true);                       // complete frame at rest
+  if (!reduce) {
+    let last = performance.now(), hold = 4500;
+    const tick = now => {
+      const el = now - last;
+      if (phase === 'hold' && el > hold) { scene = makeScene(2 + Math.floor(Math.random() * 11)); phase = 'scan'; last = now; readouts(false); }
+      if (phase === 'scan') {
+        const cells = Math.min(30, Math.floor(el / 140));
+        const i = Math.min(29, cells), r = i < 15 ? 0 : 1, x = r === 0 ? i : 29 - i;
+        draw(cells, PMIN + x * STEP, false);
+        if (cells >= 30) { phase = 'hold'; last = now; draw(30, 90, true); readouts(true); }
+      }
+      requestAnimationFrame(tick);
+    };
+    setTimeout(() => { phase = 'hold'; last = performance.now() - 4500; requestAnimationFrame(tick); }, 2500);
+  }
+
+  // ---------- confidence calculator: same formula as firmware detection.h ----------
+  const ids = ['cDelta', 'cCells', 'cRise', 'cMove', 'cHot'];
+  function score() {
+    const d = +$('cDelta').value, cells = +$('cCells').value;
+    const rise = $('cRise').checked, move = $('cMove').checked, hot = $('cHot').checked;
+    $('oDelta').textContent = '+' + d.toFixed(1) + ' °C';
+    $('oCells').textContent = cells;
+    let heatP = 0, size = 0, riseP = 0, moveP = 0, note = '';
+    const found = d >= 1.5 && cells >= 2 && !hot;
+    if (!found) note = hot ? 'Hotter than a human body: logged as a heat source or hot spot, never as a survivor.'
+      : d < 1.5 ? 'Not warm enough compared with the scene: could be sunlight, a wall or noise.'
+      : 'Only one warm cell: treated as sensor noise.';
+    else {
+      heatP = Math.round(20 + Math.min(20, (d - 1.5) * 8));
+      size = Math.min(10, (cells - 1) * 5);
+      riseP = rise ? 25 : 0; moveP = move ? 25 : 0;
+    }
+    const s = Math.min(100, heatP + size + riseP + moveP);
+    $('sNum').textContent = s;
+    [['bHeat', heatP], ['bSize', size], ['bRise', riseP], ['bMove', moveP]].forEach(([id, v]) => $(id).style.width = v + '%');
+    $('lHeat').textContent = heatP; $('lSize').textContent = size; $('lRise').textContent = riseP; $('lMove').textContent = moveP;
+    const chip = $('sChip');
+    if (!found) { chip.className = 'chip none'; chip.textContent = 'No body-like heat'; }
+    else if (s >= 60) { chip.className = 'chip likely'; chip.textContent = 'Survivor likely · alert'; note = move ? 'Robot parks beside the person: beacon, buzzer, phone alert. Person is moving.' : 'Alert without movement: the person may be unconscious.'; }
+    else if (s >= 35) { chip.className = 'chip possible'; chip.textContent = 'Possible survivor'; note = 'Logged for a manual check; the robot keeps searching.'; }
+    else { chip.className = 'chip none'; chip.textContent = 'Rejected'; note = 'Too weak a signal on its own.'; }
+    $('sNote').textContent = note;
+  }
+  ids.forEach(id => $(id).addEventListener('input', score));
+  score();
+})();
+</script>
+
+</body>
+</html>

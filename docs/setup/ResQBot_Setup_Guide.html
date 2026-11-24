@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ResQBot Mini — Setup Guide (Arduino Uno + ESP32-CAM)</title>
+<style>
+@page { size: A4; margin: 16mm 15mm 18mm 15mm;
+  @bottom-center { content: "ResQBot Mini · setup guide · page " counter(page); font: 9pt "Segoe UI", Arial, sans-serif; color: #8a94a6; } }
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body { font: 10.4pt/1.5 "Segoe UI", Arial, sans-serif; color: #1d2433; margin: 0; }
+h1 { font-size: 24pt; margin: 0 0 2mm; }
+h2 { font-size: 15pt; margin: 8mm 0 3mm; break-after: avoid; }
+h3 { font-size: 11.5pt; margin: 4mm 0 2mm; break-after: avoid; }
+p { margin: 0 0 2.4mm; }
+.sub { color: #5b6475; font-size: 11.5pt; margin-bottom: 5mm; }
+table { width: 100%; border-collapse: collapse; margin: 2mm 0 4mm; font-size: 9.4pt; }
+th { background: #1d2433; color: #fff; text-align: left; padding: 1.8mm 2.2mm; }
+td { padding: 1.5mm 2.2mm; border-bottom: 1px solid #dde3ec; vertical-align: top; }
+tr { break-inside: avoid; }
+.m { font-family: Consolas, monospace; font-size: 9pt; }
+.box { border-radius: 3mm; padding: 3mm 4mm; margin: 3mm 0 4mm; break-inside: avoid; }
+.warn { background: #fff7e6; border: 1px solid #f1c66a; }
+.info { background: #eef6ff; border: 1px solid #b8d4f5; }
+.ok { background: #ecfdf3; border: 1px solid #a6e3c0; }
+ol, ul { margin: 0 0 3mm; padding-left: 5.5mm; } li { margin-bottom: 1mm; }
+figure { margin: 3mm 0; break-inside: avoid; } figure img { width: 100%; border: 1px solid #dde3ec; border-radius: 2mm; }
+figcaption { font-size: 8.8pt; color: #5b6475; }
+.flow { display: flex; flex-wrap: wrap; gap: 2mm; align-items: center; font-size: 9.6pt; margin: 3mm 0 4mm; }
+.flow span { background: #f6f8fb; border: 1px solid #dde3ec; border-radius: 2mm; padding: 1.6mm 2.6mm; }
+.flow b { color: #d9480f; }
+.page { break-before: page; }
+pre { font-family: Consolas, monospace; font-size: 8.6pt; background: #f6f8fb; border: 1px solid #dde3ec; border-radius: 2mm; padding: 3mm; white-space: pre-wrap; break-inside: avoid; }
+</style>
+</head>
+<body>
+<h1>ResQBot Mini · Setup guide</h1>
+<div class="sub">Arduino Uno main board + ESP32-CAM camera and Wi-Fi board + DHT11. Wiring, uploading, first tests and troubleshooting.</div>
+
+<h2>1. How the two boards work together</h2>
+<div class="flow">
+  <span>Sensors: MLX90614, DHT11, HC-SR04, PIR, MQ-2, battery</span><b>→</b>
+  <span><b>Arduino Uno</b>: reads sensors, finds survivors, drives motors, servos, buzzer, beacon</span><b>⇄</b>
+  <span>serial 115200 baud (D0/D1 ⇄ IO14/IO13)</span><b>⇄</b>
+  <span><b>ESP32-CAM</b>: live video, Wi-Fi hotspot, dashboard website</span><b>⇄</b>
+  <span>Phone browser: http://192.168.4.1</span>
+</div>
+<ul>
+  <li>The <b>Uno</b> sends a full status line (all sensor values, thermal map, alerts) every 0.4 s, and an event line whenever something happens.</li>
+  <li>The <b>ESP32-CAM</b> keeps the latest status, serves the dashboard and the JSON API, and streams video on its own server task, so <b>live video and sensor data run at the same time</b>.</li>
+  <li>Your phone's commands (drive, Auto search, E-STOP, scan, acknowledge, beep) go to the ESP32-CAM, which forwards them to the Uno.</li>
+</ul>
+
+<h2>2. Before you start</h2>
+<ul>
+  <li>Parts: see <span class="m">ResQBot_Components.pdf</span> (you already have the Uno and the ESP32-CAM).</li>
+  <li>Full circuit: <span class="m">ResQBot_Schematics.pdf</span> (7 sheets). This guide follows it.</li>
+  <li>Tools: soldering iron, multimeter, small screwdriver, jumper wires, a zero PCB for the small parts.</li>
+  <li>Software: Arduino IDE 2.x. Boards Manager → <b>esp32 by Espressif</b> (3.x). Library Manager → <b>DHT sensor library</b> (Adafruit) and <b>Adafruit Unified Sensor</b>. <b>Servo</b> and <b>Wire</b> come with the IDE.</li>
+</ul>
+
+<h2>3. Wiring, in this order</h2>
+<figure><img src="../images/wiring.png" alt="Wiring diagram from Arduino Uno pins to every module"><figcaption>Colour wiring map. Detailed circuits: schematics sheets 2–6.</figcaption></figure>
+
+<h3>Step 1 · Power (do this first, with nothing else connected)</h3>
+<ol>
+  <li>Battery pack → DC jack → <b>3 A fuse</b> → rocker switch → <b>VBAT</b>.</li>
+  <li>VBAT → L298N <span class="m">+12V</span> and LM2596 <span class="m">IN+</span>. Battery − → L298N <span class="m">GND</span> and LM2596 <span class="m">IN−</span>.</li>
+  <li>Switch on and turn the LM2596 screw until <span class="m">OUT+</span> reads <b>5.0 V</b> on the multimeter. Switch off.</li>
+  <li>Solder C1 (470 µF, + to 5 V) and C2 (100 nF) across LM2596 OUT. This is the <b>+5V rail</b>.</li>
+</ol>
+
+<h3>Step 2 · Connection table</h3>
+<table>
+  <tr><th>Module</th><th>Module pin</th><th>Goes to</th><th>Notes</th></tr>
+  <tr><td>Arduino Uno</td><td class="m">5V · GND</td><td>+5V rail · GND</td><td>Use the 5V pin, not VIN or the barrel jack</td></tr>
+  <tr><td>ESP32-CAM</td><td class="m">5V · GND</td><td>+5V rail · GND</td><td>C6 220 µF across them, close to the board</td></tr>
+  <tr><td>ESP32-CAM</td><td class="m">IO13 (RX)</td><td>Uno <b>D1</b> through R1 1 kΩ; R2 2 kΩ from IO13 to GND</td><td>Divider: 5 V → 3.3 V. Never connect D1 straight to IO13</td></tr>
+  <tr><td>ESP32-CAM</td><td class="m">IO14 (TX)</td><td>Uno <b>D0</b></td><td>Direct. Leave the micro-SD slot empty</td></tr>
+  <tr><td>MLX90614 (GY-906)</td><td class="m">VIN · GND · SCL · SDA</td><td>+5V · GND · <b>A5</b> · <b>A4</b></td><td>Black tube 10 mm × 22 mm over the sensor; mount on the pan-tilt</td></tr>
+  <tr><td>DHT11 module</td><td class="m">VCC · DATA · GND</td><td>+5V · <b>D2</b> · GND</td><td>Bare 4-pin sensor: add R8 10 kΩ from DATA to +5V</td></tr>
+  <tr><td>HC-SR04</td><td class="m">VCC · TRIG · ECHO · GND</td><td>+5V · <b>A2</b> · <b>A3</b> · GND</td><td>Front bumper, facing forward</td></tr>
+  <tr><td>HC-SR501 PIR</td><td class="m">VCC · OUT · GND</td><td>+5V · <b>D4</b> · GND</td><td>Jumper on H, time knob minimum</td></tr>
+  <tr><td>MQ-2</td><td class="m">VCC · GND · DO · AO</td><td>+5V · GND · — · <b>A0</b></td><td>DO not used</td></tr>
+  <tr><td>Battery sense</td><td class="m">VBAT</td><td>R3 10 kΩ → <b>A1</b>; R4 10 kΩ A1 → GND; C3 100 nF A1 → GND</td><td>8.4 V → 4.2 V</td></tr>
+  <tr><td>L298N</td><td class="m">ENA · ENB</td><td><b>D5</b> · <b>D6</b></td><td>Remove the ENA/ENB jumpers; keep the 5V-EN jumper</td></tr>
+  <tr><td>L298N</td><td class="m">IN1 · IN2 · IN3 · IN4</td><td><b>D7</b> · <b>D8</b> · <b>D9</b> · <b>D10</b></td><td></td></tr>
+  <tr><td>L298N</td><td class="m">OUT1/OUT2 · OUT3/OUT4</td><td>Left motor pair · right motor pair</td><td>Motors of a pair in parallel; C4/C5 100 nF across each pair</td></tr>
+  <tr><td>Servo PAN (SV2)</td><td class="m">orange · red · brown</td><td><b>D11</b> · +5V · GND</td><td>Bottom servo of the pan-tilt</td></tr>
+  <tr><td>Servo TILT (SV1)</td><td class="m">orange · red · brown</td><td><b>D12</b> · +5V · GND</td><td>Top servo, holds the MLX90614</td></tr>
+  <tr><td>Buzzer driver</td><td class="m">Q1 BC547</td><td>Base ← R5 1 kΩ ← <b>D3</b>; emitter → GND; collector → buzzer −</td><td>Buzzer + → +5V; D1 1N4148 across the buzzer (band to +5V)</td></tr>
+  <tr><td>Beacon driver</td><td class="m">Q2 BC547</td><td>Base ← R6 1 kΩ ← <b>D13</b>; emitter → GND; collector → LED −</td><td>LED + ← R7 100 Ω ← +5V</td></tr>
+</table>
+<div class="box warn"><b>Grounds:</b> every GND (battery −, L298N, LM2596, Uno, ESP32-CAM, every sensor) must be joined. The serial link and every sensor stop working without a common ground.</div>
+
+<h2 class="page">4. Upload the code</h2>
+<h3>Arduino Uno: <span class="m">firmware/ResQBot_Uno/ResQBot_Uno.ino</span></h3>
+<ol>
+  <li><b>Unplug the wire on D0</b> (from the ESP32-CAM) and switch the robot off. D0 is shared with USB; uploads fail while the camera is connected.</li>
+  <li>Board: <b>Arduino Uno</b>. Select the COM port and click Upload. (Checked here: it compiles at 64 % flash, 51 % RAM.)</li>
+  <li>Open the Serial Monitor at <b>115200</b>. You should see a line starting <span class="m">S{"mode":"manual"…</span> every 0.4 s. This is exactly what the ESP32-CAM receives.</li>
+  <li>Close the Serial Monitor and plug the D0 wire back in.</li>
+</ol>
+<h3>ESP32-CAM: <span class="m">firmware/ResQCam_Gateway/ResQCam_Gateway.ino</span></h3>
+<ol>
+  <li>Take the ESP32-CAM off the robot and plug it onto the <b>ESP32-CAM-MB</b> USB board.</li>
+  <li>Board: <b>AI Thinker ESP32-CAM</b>. Upload. If it says "waiting for download", hold the MB board's IO0 button, tap RST, release IO0.</li>
+  <li>Press RST. The Serial Monitor (115200) shows <span class="m">Wi-Fi "ResQBot-01" -&gt; http://192.168.4.1 (video :81/stream)</span>.</li>
+  <li>Put the ESP32-CAM back on the robot (5V, GND, IO13, IO14 only).</li>
+</ol>
+<div class="box info">The dashboard is stored inside the ESP32-CAM firmware. If you edit <span class="m">dashboard/index.html</span>, run <span class="m">python tools/embed_dashboard.py</span> and upload the ESP32-CAM again.</div>
+
+<h2>5. First power-up test</h2>
+<ol>
+  <li>Switch on. The Uno gives <b>two short beeps</b>, and the servos centre.</li>
+  <li>On your phone: Wi-Fi → <b>ResQBot-01</b>, password <b>rescue123</b>. Android says "no internet": tap <b>Keep connected</b>.</li>
+  <li>Open <b>http://192.168.4.1</b>. The pill shows <b>LIVE</b>, and the camera panel shows video.</li>
+  <li>No red "Arduino not responding" banner means the serial link works.</li>
+  <li>Check each tile: <i>IR ahead</i> changes when you hold your hand in front of the sensor; <i>Air · DHT11</i> shows temperature and humidity after ~5 s; <i>Obstacle</i> changes with your hand at the front; <i>Motion</i> works after 30 s; <i>Smoke/gas</i> says clear.</li>
+  <li>Manual mode: hold ▲ briefly, then try ◀ ▶ ▼. Lift your finger: the robot must stop.</li>
+  <li>Tap <b>Thermal scan</b>: the head sweeps for ~5 s and the radar fills in. Stand in front of it: the warm cells should appear at your direction.</li>
+  <li>Tap <b>E-STOP</b>, then <b>Manual</b> to continue.</li>
+</ol>
+
+<h2>6. Calibration (config.h on the Uno)</h2>
+<table>
+  <tr><th>Setting</th><th>How to set it</th></tr>
+  <tr><td class="m">TURN_DEG_PER_SEC</td><td>Spin on the spot for 3 s and measure the angle; set it to angle ÷ 3.</td></tr>
+  <tr><td class="m">GAS_ALARM_RAW</td><td>After 3 min warm-up in clean air, note the gas value on the dashboard; set about 40 % higher.</td></tr>
+  <tr><td class="m">BATTERY_ADC_CAL</td><td>Compare the dashboard voltage with a multimeter; set to meter ÷ dashboard.</td></tr>
+  <tr><td class="m">DELTA_MIN_C</td><td>Run empty-room scans; if the background varies more than ±0.7 °C, raise it to 2.0.</td></tr>
+  <tr><td class="m">TILT_ANGLES</td><td>Adjust {70, 95} so row 0 looks at the floor 1 m ahead and row 1 looks level.</td></tr>
+</table>
+
+<h2>7. Troubleshooting</h2>
+<table>
+  <tr><th>What you see</th><th>Fix</th></tr>
+  <tr><td>"Arduino not responding" on the dashboard</td><td>Check Uno D1 → R1 → IO13 and IO14 → Uno D0 (TX goes to RX). Check the common GND. Unplug USB from the Uno (the USB chip also drives D0).</td></tr>
+  <tr><td>Uno upload fails: "not in sync"</td><td>Unplug the D0 wire and switch the robot off during upload.</td></tr>
+  <tr><td>Camera shows "offline", but the data works</td><td>Reseat the camera ribbon. The board needs a stable 5 V: check C6 and use short power wires.</td></tr>
+  <tr><td>ESP32-CAM restarts when the flash turns on</td><td>Add or enlarge C6 (220–470 µF) at its 5V/GND pins.</td></tr>
+  <tr><td>"DHT11 not responding"</td><td>DATA on D2; bare sensor needs R8 10 kΩ pull-up. Readings appear after ~5 s.</td></tr>
+  <tr><td>"Thermal sensor not responding"</td><td>SDA → A4, SCL → A5 (not swapped). Address must be 0x5A.</td></tr>
+  <tr><td>A command sometimes needs a second tap</td><td>The Uno pauses serial for a few ms while reading the DHT11. Mode changes are repeated automatically; drive commands repeat every 0.2 s.</td></tr>
+  <tr><td>Robot twitches or resets when motors start</td><td>Motors and logic share the battery: check the fuse, the star ground, C1 and C4/C5.</td></tr>
+  <tr><td>Wrong motor direction</td><td>Swap the two wires of that motor pair on the L298N.</td></tr>
+</table>
+
+<h2>8. Serial protocol (for reference)</h2>
+<pre>Uno → ESP32-CAM   S{"mode":"auto","state":"scanning","object":31.2,"airTemp":29.0,"humidity":64, … ,"grid":{…}}   every 0.4 s
+                  E,survivor,75,SURVIVOR LIKELY - NOT moving (may be unconscious), 33.6 C at 34 cm
+ESP32-CAM → Uno   D,180,180   (drive left,right −255…255)    M,auto | M,manual | M,estop
+                  C (thermal scan)   A (acknowledge alert)   B (beep)</pre>
+<p>Dashboard API on the ESP32-CAM: <span class="m">/api/status</span>, <span class="m">/api/drive?l=&amp;r=</span>, <span class="m">/api/mode?m=</span>,
+<span class="m">/api/scan</span>, <span class="m">/api/ack</span>, <span class="m">/api/beep</span>, <span class="m">/api/log.csv</span>, <span class="m">/capture</span>,
+<span class="m">/led?on=1</span>; video at <span class="m">:81/stream</span>.</p>
+</body>
+</html>

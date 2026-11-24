@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ResQBot Mini — Stage Script</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@400..700&family=Public+Sans:wght@400;600;700&display=swap">
+<style>
+@page{size:A4;margin:16mm 16mm 18mm}
+*{box-sizing:border-box}
+body{font-family:'Public Sans',Arial,sans-serif;color:#1D2433;font-size:11pt;line-height:1.48;margin:0}
+h1,h2,h3{font-family:'Oswald','Arial Narrow',sans-serif;font-weight:600;line-height:1.15;margin:0}
+.top{background:#0F1420;color:#F4F1EA;border-radius:4mm;padding:9mm 10mm;margin-bottom:6mm}
+.top .eye{color:#FF6B1A;font-weight:700;letter-spacing:2px;text-transform:uppercase;font-size:9.5pt;margin:0 0 2mm}
+.top h1{font-size:34pt;text-transform:uppercase}
+.top p{color:#C3CCDA;margin:2mm 0 0}
+table{width:100%;border-collapse:collapse;margin:4mm 0 2mm;font-size:10pt}
+th{background:#1D2433;color:#F4F1EA;text-align:left;padding:1.8mm 2.5mm}
+td{padding:1.6mm 2.5mm;border-bottom:1px solid #2A3342;color:#E8EDF4}
+.key{font-size:9.5pt;color:#4A5568;margin:0 0 6mm}
+.ph{background:#FFE9A8;border-radius:1mm;padding:0 1mm;font-weight:600}
+.act{color:#B2410C;font-style:italic}
+.part{break-before:page}
+.part:first-of-type{break-before:auto}
+.bar{display:flex;justify-content:space-between;align-items:baseline;border-bottom:3px solid var(--c);padding-bottom:2mm;margin-bottom:4mm}
+.bar h2{font-size:22pt;color:var(--c)}
+.bar span{font-family:'Oswald',sans-serif;font-size:13pt;color:#4A5568}
+.slide{margin-bottom:4mm}
+.slide h3{font-size:13.5pt;margin:0 0 1.5mm;break-after:avoid}
+.slide h3 small{font-family:'Public Sans',sans-serif;font-weight:600;font-size:9.5pt;color:#6B7280;margin-left:2mm}
+p{margin:0 0 2mm}
+.cue{background:#F3F1EA;border-radius:1.5mm;padding:1.5mm 3mm;font-size:10pt;color:#4A5568;font-style:italic}
+.plan{background:#FFF1E6;border-left:4px solid #FF6B1A;border-radius:1.5mm;padding:2mm 3mm;font-size:10pt;color:#5C2A0A;break-inside:avoid}
+.all{font-family:'Oswald',sans-serif;font-size:18pt;color:#C2255C;margin:2mm 0 3mm}
+.tips{border:1px solid #E1DCD0;border-radius:2mm;padding:3mm 4mm;margin-top:6mm;font-size:10pt;break-inside:avoid}
+</style>
+</head>
+<body>
+
+<div class="top">
+<p class="eye">Stage script · 15 minutes · 4 speakers</p>
+<h1>ResQBot Mini</h1>
+<p>A ₹3,589 thermal robot scout that finds trapped people, and goes in first.</p>
+<table>
+<tr><th style="width:30%">Speaker</th><th>Part</th><th>Time</th><th>Job during the live demo</th></tr>
+<tr><td><b>1</b> · <span class="ph">[Speaker 1]</span></td><td>The problem</td><td>0:00–3:30</td><td>The “survivor” behind the rubble</td></tr>
+<tr><td><b>2</b> · <span class="ph">[Speaker 2]</span></td><td>The robot and its cost</td><td>3:30–7:00</td><td>Switches the robot on, looks after it</td></tr>
+<tr><td><b>3</b> · <span class="ph">[Speaker 3]</span></td><td>How it finds people</td><td>7:00–10:30</td><td>Switches the projector to the dashboard</td></tr>
+<tr><td><b>4</b> · <span class="ph">[Speaker 4]</span></td><td>Demo, safety, impact, close</td><td>10:30–15:00</td><td>Runs the demo from a phone, hosts Q&amp;A</td></tr>
+</table>
+</div>
+<p class="key">Normal text is spoken. <span class="act">Orange italics</span> are actions. <span class="ph">Yellow</span> marks names to fill in. Grey boxes are stage directions.</p>
+
+<!-- ============================== SPEAKER 1 ============================== -->
+<section class="part" style="--c:#E8590C">
+<div class="bar"><h2>Speaker 1 · The problem</h2><span>0:00 – 3:30</span></div>
+
+<div class="slide">
+<h3>Slide 1 · Opening <small>0:00 – 0:40</small></h3>
+<p class="cue">Walk to centre stage. The robot is on the table, switched off. Wait for silence.</p>
+<p>“Good <span class="ph">[morning]</span>, everyone.</p>
+<p>Imagine a building has just collapsed. Somewhere under the concrete, a person is still alive. They’re in the dark, maybe injured, maybe unconscious. They can’t call for help. And the rescuers outside don’t know where to dig.</p>
+<p>We are <span class="ph">[Team name]</span> from <span class="ph">[College]</span>. I’m <span class="ph">[Speaker 1]</span>, with <span class="ph">[Speaker 2]</span>, <span class="ph">[Speaker 3]</span> and <span class="ph">[Speaker 4]</span>.</p>
+<p><span class="act">Point to the robot.</span> This is ResQBot Mini. It’s a small robot that feels the body heat of trapped people. It goes into places that are too dangerous for rescuers, and tells them exactly where to dig. And it costs less than a mid-range phone.</p>
+<p>In the next fifteen minutes we’ll show you the problem and how the robot works. Then, live on this stage, we’ll let it find a person.”</p>
+</div>
+
+<div class="slide">
+<h3>Slide 2 · 72 hours <small>0:40 – 1:30</small></h3>
+<p class="cue">Slow down. Let the number land.</p>
+<p>“Seventy-two hours. Rescue teams call this the golden window. After a building falls, a trapped person’s chance of survival drops with every hour they wait.</p>
+<p><span class="act">Pause.</span> This is not a faraway problem. In 2001, the Bhuj earthquake in Gujarat killed around twenty thousand people, many of them under collapsed buildings. In 2023, the earthquakes in Türkiye and Syria killed more than fifty thousand, and search teams were still digging weeks later.</p>
+<p>India faces earthquakes, floods, landslides, cyclones and building collapses almost every year. So the question is simple: how do we find people faster, without putting even more lives at risk?”</p>
+</div>
+
+<div class="slide">
+<h3>Slide 3 · Why searching is slow <small>1:30 – 2:40</small></h3>
+<p class="cue">Gesture to each card in turn.</p>
+<p>“Why is searching so slow? There are four reasons.</p>
+<p>One: rescuers risk their own lives. Every time they crawl into unstable rubble, a smoky room or a space full of gas, they could become the next victim.</p>
+<p>Two: survivors are hidden. They’re in dark spaces, covered in dust. Many are injured or unconscious, so they can’t shout back. Our eyes and normal cameras simply cannot see body heat.</p>
+<p>Three: the tools that <i>can</i> see heat cost tens of thousands to several lakh rupees. That means thermal cameras, thermal drones and professional rescue robots. The people who arrive first, the local fire station and village volunteers, rarely have them.</p>
+<p>Four: disasters knock out mobile networks and power. Anything that needs the internet stops working exactly when it’s needed.”</p>
+</div>
+
+<div class="slide">
+<h3>Slide 4 · The gap <small>2:40 – 3:30</small></h3>
+<p>“So what do teams use today?</p>
+<p>They search by hand and call out. That’s slow and dangerous, and it misses anyone who can’t answer. Search dogs are brilliant, but they take years to train, and there are very few teams. A handheld thermal camera costs twenty-five thousand rupees or more, and a rescuer still has to walk in with it. A thermal drone costs over a lakh and can’t fly into a collapsed room. And professional rescue robots cost lakhs, so only national teams have them.</p>
+<p><span class="act">Point to the last row.</span> There is nothing between ‘search with your bare hands’ and ‘buy lakhs of equipment’. That gap is where ResQBot Mini fits.</p>
+<p>To show you how it works, here’s <span class="ph">[Speaker 2]</span>.”</p>
+<p class="cue">Hand the clicker to Speaker 2. Step aside, then move quietly to the cardboard rubble.</p>
+</div>
+</section>
+
+<!-- ============================== SPEAKER 2 ============================== -->
+<section class="part" style="--c:#2F6FD6">
+<div class="bar"><h2>Speaker 2 · The robot</h2><span>3:30 – 7:00</span></div>
+
+<div class="slide">
+<h3>Slide 5 · Meet ResQBot Mini <small>3:30 – 4:20</small></h3>
+<p class="cue">Pick up the real robot and hold it next to the screen for a few seconds, then put it back.</p>
+<p>“Thank you, <span class="ph">[Speaker 1]</span>.</p>
+<p>This is ResQBot Mini. It’s about the size of a shoebox and weighs under a kilo, and it’s built only from parts you can buy in any electronics market.</p>
+<p><span class="act">Point along the picture, front to back.</span> At the front is its most important sense: an infrared thermometer on two small motors that turn it left, right, up and down. That’s how it sees body heat. Next to it is a camera that streams live video. An ultrasonic sensor keeps it from crashing. A motion sensor checks whether a person is moving. A gas sensor smells smoke and gas. On top are a red beacon and a buzzer to mark a survivor. And the brain is an Arduino Uno.</p>
+<p>The idea is simple: instead of a person walking into danger, the robot goes first.”</p>
+</div>
+
+<div class="slide">
+<h3>Slide 6 · One mission, six steps <small>4:20 – 5:20</small></h3>
+<p class="cue">Count the steps on your fingers.</p>
+<p>“Here’s a real mission in six steps.</p>
+<p><b>One, deploy.</b> A rescuer switches it on, connects any phone to the robot’s own Wi-Fi, and opens one web address. There’s no app and no internet needed.</p>
+<p><b>Two, search.</b> Every few seconds the robot stops and sweeps its heat sensor across a 140-degree arc. Then it drives forward, steering around obstacles.</p>
+<p><b>Three, detect.</b> It looks for a warm patch the size of a person, and no hotter than a human body: about forty-two degrees.</p>
+<p><b>Four, confirm.</b> It turns toward the heat, creeps up to thirty-five centimetres, and checks four clues before it believes it’s a person.</p>
+<p><b>Five, alert.</b> It parks beside the survivor, flashes its beacon and sounds its buzzer, which also tells the survivor that help is coming. The rescuer’s phone turns red with the temperature, direction, distance and live video.</p>
+<p><b>Six, report.</b> Everything is logged and can be downloaded for the incident record.”</p>
+</div>
+
+<div class="slide">
+<h3>Slide 7 · Two boards, one team <small>5:20 – 6:20</small></h3>
+<p>“Inside, two small computers work as a team.</p>
+<p>The Arduino Uno is the brain. On the left you see everything it senses: heat, air temperature and humidity, distance, motion, smoke and gas, and its own battery. On the right is everything it controls: four wheels, the two motors that aim the heat sensor, the buzzer and the beacon.</p>
+<p>The ESP32-CAM is the eyes and the voice. It streams live video, creates its own Wi-Fi hotspot, and serves the control page to the rescuer’s phone, all at the same time.</p>
+<p>The two boards talk over a single cable. Sensor data goes up to the camera board, and the rescuer’s commands come down to the Arduino. We even added a checksum to every command, so a garbled signal is ignored instead of making the robot do something wrong. That came from a real bug we found while testing.”</p>
+</div>
+
+<div class="slide">
+<h3>Slide 8 · What it costs <small>6:20 – 7:00</small></h3>
+<p>“And here’s the part we’re proudest of.</p>
+<p>The whole robot costs three thousand five hundred and eighty-nine rupees in new parts, if your lab already has an Arduino Uno and an ESP32-CAM, as most college labs do. Even if you buy every single part new, it’s four thousand six hundred and eighty-four.</p>
+<p><span class="act">Point to the bold line.</span> For the price of ONE basic thermal camera, you could build seven of these robots. That means every fire station, every NCC unit and every village volunteer team could own a few.</p>
+<p>But a cheap robot is useless if it can’t actually find people. So how does a three-thousand-rupee robot see body heat? <span class="ph">[Speaker 3]</span> will show you.”</p>
+<p class="cue">Hand the clicker to Speaker 3. Go to the demo table and switch the robot ON now, so its motion sensor is warmed up in time for the demo.</p>
+</div>
+</section>
+
+<!-- ============================== SPEAKER 3 ============================== -->
+<section class="part" style="--c:#12936A">
+<div class="bar"><h2>Speaker 3 · How it finds people</h2><span>7:00 – 10:30</span></div>
+
+<div class="slide">
+<h3>Slide 9 · A 30-pixel thermal camera <small>7:00 – 7:50</small></h3>
+<p>“Thank you, <span class="ph">[Speaker 2]</span>.</p>
+<p>A real thermal camera costs thousands of rupees. We used something much simpler: an infrared thermometer. It’s the same idea as the forehead thermometers you saw everywhere during COVID. It costs seven hundred and fifty-nine rupees, and it gives only ONE number: the temperature of whatever it’s pointing at.</p>
+<p>So we made it move. Two hobby servo motors swing it from left to right in fifteen steps, at two heights: once looking at the floor, once looking straight ahead. Every point is read twice and averaged. Fifteen times two makes a thirty-pixel heat picture of the room, every five seconds or so.</p>
+<p><span class="act">Point to the warm cells.</span> Blue is the room. Yellow and orange is something warmer. Here it’s a person lying slightly to the right. Thirty pixels doesn’t sound like much, but it answers the two questions that matter: is there a person, and which way do I turn?”</p>
+</div>
+
+<div class="slide">
+<h3>Slide 10 · The ₹5 tube <small>7:50 – 8:30</small></h3>
+<p class="cue">Hold up a spare black tube if you have one.</p>
+<p>“There was one problem. Out of the box, this sensor sees a very wide cone: ninety degrees. A person one metre away fills only a small part of that cone, so the temperature barely changes. The robot would only notice someone almost touching it.</p>
+<p>Our fix costs about five rupees. <span class="act">Hold up the tube.</span> It’s a short, matte black tube, ten millimetres wide and twenty-two long, slipped over the sensor. Now the sensor looks through a narrow twenty-five-degree window, like looking through a straw.</p>
+<p>Our model says this takes the detection range for a person lying on the floor from about forty centimetres to about one and a half metres. That’s an estimate, and it’s exactly what our range test measures. Sometimes the best engineering upgrade is a piece of black paper.”</p>
+</div>
+
+<div class="slide">
+<h3>Slide 11 · Four clues, one score <small>8:30 – 9:20</small></h3>
+<p>“Lots of things are warm: a laptop charger, a cup of tea, a sunny wall. If the robot raised an alarm for every warm thing, rescuers would stop trusting it. So it never relies on one reading. It collects four clues and adds them up into a score out of a hundred.</p>
+<p><b>Clue one, heat contrast:</b> how much warmer it is than the room. It can never be hotter than forty-two degrees, because no person’s body gets hotter than that.</p>
+<p><b>Clue two, size:</b> a person covers several pixels; a cup of tea covers one.</p>
+<p><b>Clue three, our favourite, warmer when closer:</b> as the robot creeps forward, a real person fills more and more of its view, so the reading goes up. A reflection or a distant warm wall doesn’t behave like that.</p>
+<p><b>Clue four, movement,</b> from the motion sensor.</p>
+<p>Sixty or more means a survivor alert. Thirty-five to fifty-nine is logged as ‘possible’, for a human to check. Below that, it’s rejected.”</p>
+</div>
+
+<div class="slide">
+<h3>Slide 12 · Finds the silent <small>9:20 – 10:00</small></h3>
+<p>“Two things come out of that score.</p>
+<p>First, and this matters most, it finds people who can’t move or shout. Heat, size and ‘warmer when closer’ together already add up to more than sixty, so an unconscious person still triggers the alert. The alert even says ‘not moving’, which tells rescuers who might need help first.</p>
+<p>Second, it ignores the fakes on purpose. A heater or a lamp is hotter than any body. A hot cup or a phone is too small. A sunlit wall doesn’t get warmer as you approach. And anything above fifty-five degrees isn’t treated as a person at all. It becomes a fire warning for the rescuers.</p>
+<p>We wrote the same logic in Python and tested it against twelve scenarios: an empty room, a person on the left or right, an unconscious person, a heater, a fire, a person next to a fire, a reflection, a hot day. It passes all twelve.”</p>
+</div>
+
+<div class="slide">
+<h3>Slide 13 · The rescuer’s view <small>10:00 – 10:30</small></h3>
+<p>“All of this ends up on the rescuer’s phone. There’s no app to install and no internet needed. The robot makes its own Wi-Fi, and the control page lives inside the robot itself. So it works in a basement, a tunnel, or a village where the mobile tower is down.</p>
+<p>On one screen you get the heat radar, where that red marker is the survivor, twenty degrees to the right. You also get live video and the alert, with the temperature, distance, and whether the person is moving. And there’s a big red emergency stop on every screen.</p>
+<p>That’s enough slides. Let’s see it for real. <span class="ph">[Speaker 4]</span>?”</p>
+<p class="cue">Hand the clicker to Speaker 4. Go to the laptop, ready to switch the projector to the live dashboard.</p>
+</div>
+</section>
+
+<!-- ============================== SPEAKER 4 ============================== -->
+<section class="part" style="--c:#C2255C">
+<div class="bar"><h2>Speaker 4 · Live demo, impact, close</h2><span>10:30 – 15:00</span></div>
+
+<div class="slide">
+<h3>Slide 14 · LIVE DEMO <small>10:30 – 13:00</small></h3>
+<p class="cue">Speaker 1 is crouched behind the rubble, with their face and arms visible through the gap.</p>
+<p>“Right now, behind those boxes, there’s a ‘survivor’: our teammate <span class="ph">[Speaker 1]</span>. The robot’s camera can’t see them. Let’s see if it can <i>feel</i> them. <span class="ph">[Speaker 3]</span>, switch to the robot, please.”</p>
+<p class="cue">The projector shows the live dashboard.</p>
+<p>“This is the live screen from the robot. Top right is the real video. On the left is the heat radar, empty for now. I’ll put it in Auto search.” <span class="act">Tap AUTO SEARCH on the phone.</span></p>
+<p><span class="act">While it sweeps:</span> “Hear the motors? It’s sweeping left to right, at the floor and straight ahead. Watch the radar fill in. Blue is this stage… There! Orange, slightly to the <span class="ph">[left/right]</span>. That’s body heat.”</p>
+<p><span class="act">While it turns and creeps:</span> “Now it turns toward the heat… and creeps forward slowly, because it never rushes at a person, until it’s thirty-five centimetres away. Now it waits five seconds and checks: is it getting warmer? Is there movement?”</p>
+<p class="cue">Red banner, beacon flashing, buzzer sounding.</p>
+<p>“Survivor detected! Confidence <span class="ph">[read the %]</span>. <span class="act">Read the line: temperature, distance, moving or not moving.</span> The beacon and the buzzer mark the spot, and they tell the person that help is near. <span class="ph">[Speaker 1]</span>, you can come out!” <span class="act">Lead the applause. Tap ACKNOWLEDGE.</span></p>
+<p>“And if anything goes wrong, it takes one tap.” <span class="act">Tap E-STOP.</span> “Everything you just saw ran on a three-thousand-rupee robot, with no internet at all.”</p>
+<p class="cue">Speaker 3 switches the projector back to the slides.</p>
+<div class="plan"><b>If the robot doesn’t find the person in 60 seconds:</b> “Let’s help it. That’s exactly why it has a manual mode.” Drive it toward the survivor with the arrows, then press Thermal scan and point out the orange on the radar.<br>
+<b>If the Wi-Fi fails:</b> “A thousand phones in one hall is harder for Wi-Fi than any collapsed building! Let me show you a recorded run.” Play the backup video.</div>
+</div>
+
+<div class="slide">
+<h3>Slide 15 · Safety by design <small>13:00 – 13:30</small></h3>
+<p>“A rescue robot must never become a new danger, so safety is built in at three levels.</p>
+<p>For survivors, it crawls slowly near people and stops thirty-five centimetres away. Even if someone drives it by hand, it refuses to drive into anything closer than ten centimetres.</p>
+<p>For rescuers, the robot goes in first, and it warns about smoke, gas and fire hot spots before anyone enters.</p>
+<p>For the robot itself, there’s the emergency stop you just saw, an automatic stop if the phone loses contact for even a second, and a low-battery stop.</p>
+<p>And to be honest: ResQBot is a scout that helps rescuers decide where to look. It never replaces trained rescuers, and ‘no survivor found’ never clears a building on its own.”</p>
+</div>
+
+<div class="slide">
+<h3>Slide 16 · Where it can help <small>13:30 – 14:00</small></h3>
+<p>“Where can this help? After earthquakes and building collapses, of course. In smoke-filled rooms, controlled from a safe distance. In landslide and flood debris, in basements and tunnels. In training drills for NDRF, SDRF, fire services, NCC and NSS. And in every college lab, as a real project anyone can copy.</p>
+<p>What changes? It’s <b>faster</b>: a space can be checked in minutes without anyone going in. It’s <b>safer</b>: there are fewer blind entries into danger. And it’s <b>affordable</b>: at this price, a fire station doesn’t buy one robot, it buys several.</p>
+<p>It supports three of the UN Sustainable Development Goals: good health, innovation, and safe cities.”</p>
+</div>
+
+<div class="slide">
+<h3>Slide 17 · What’s next <small>14:00 – 14:30</small></h3>
+<p>“We know what it can’t do yet, and we have a plan for each.</p>
+<p>Today it sees about one to one and a half metres with thirty heat pixels; next comes a real thermal array sensor. Today it’s on wheels; next, tracks for real rubble. Today it can’t hear; next, a microphone for tapping and a CO₂ sensor for breathing. Today it has no map; next, wheel sensors to draw where it searched. And instead of one robot, we’ll have a swarm sharing one dashboard.”</p>
+<p class="cue">Wave the team forward. Speakers 1, 2 and 3 stand in a line beside you.</p>
+</div>
+
+<div class="slide">
+<h3>Slide 18 · Close <small>14:30 – 15:00</small></h3>
+<p class="cue">All four stand in a line. Speak slowly.</p>
+<p><b>Speaker 4:</b> “After a disaster, every hour counts, and every rescuer’s life counts too. ResQBot Mini puts a heat-seeing scout in the hands of the people who arrive first, for less than the price of a phone.</p>
+<p>So next time there’s a dark, dangerous space and someone might be inside, don’t send a person in blind.”</p>
+<p><b>All four, together:</b></p>
+<p class="all">“SEND THE ROBOT FIRST.”</p>
+<p><b>Speaker 4:</b> “Thank you. We’re happy to take your questions.”</p>
+<p class="cue">Pause for applause and stay in line. Speaker 4 repeats each question into the mic and passes it on: the problem → Speaker 1, hardware and cost → Speaker 2, detection and software → Speaker 3, demo, safety and future → Speaker 4.</p>
+</div>
+
+<div class="tips"><b>Learning the script:</b> memorize the first and last sentence of every slide you present, plus the order of the ideas, and say the rest in your own words. That sounds more natural than reciting. Practise the three hand-off lines most of all.</div>
+</section>
+
+</body>
+</html>

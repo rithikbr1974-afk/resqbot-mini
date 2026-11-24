@@ -1,0 +1,138 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1340" viewBox="0 0 1600 1340" font-family="Segoe UI, Arial, sans-serif">
+<rect width="1600" height="1340" fill="#ffffff"/>
+<text x="40" y="54" font-size="28" font-weight="800" fill="#1d2433">ResQBot Mini — wiring (Arduino Uno main board + ESP32-CAM)</text>
+<text x="40" y="84" font-size="15" fill="#5b6475">Pins match firmware/ResQBot_Uno/config.h. All grounds are joined. Every sensor runs on 5 V; only Uno D1 → ESP32-CAM IO13 needs the 1k/2k divider.</text>
+<rect x="650" y="150" width="300" height="816" rx="18" fill="#1d2433"/>
+<rect x="745" y="162" width="110" height="34" rx="4" fill="#c9d1de"/>
+<text x="800" y="185" text-anchor="middle" font-size="12" fill="#1d2433" font-weight="700">ARDUINO UNO</text>
+<rect x="775" y="942" width="50" height="24" rx="3" fill="#8a94a6"/>
+<text x="800" y="982" text-anchor="middle" font-size="12" fill="#c9d1de">USB</text>
+<circle cx="650" cy="210" r="7" fill="#5b6475" stroke="#c9d1de" stroke-width="2"/>
+<text x="666" y="215" text-anchor="start" font-size="15" font-weight="700" fill="#6b7486">IOREF</text>
+<circle cx="650" cy="256" r="7" fill="#5b6475" stroke="#c9d1de" stroke-width="2"/>
+<text x="666" y="261" text-anchor="start" font-size="15" font-weight="700" fill="#6b7486">RESET</text>
+<circle cx="650" cy="302" r="7" fill="#5b6475" stroke="#c9d1de" stroke-width="2"/>
+<text x="666" y="307" text-anchor="start" font-size="15" font-weight="700" fill="#6b7486">3.3V</text>
+<circle cx="650" cy="348" r="7" fill="#ffffff" stroke="#c9d1de" stroke-width="2"/>
+<text x="666" y="353" text-anchor="start" font-size="15" font-weight="700" fill="#ffffff">5V</text>
+<line x1="650" y1="348" x2="470" y2="348" stroke="#d6336c" stroke-width="4" stroke-linecap="round"/>
+<text x="458" y="353" text-anchor="end" font-size="15" fill="#1d2433"><tspan font-weight="700">LM2596</tspan> <tspan fill="#5b6475">5 V out (+5V rail)</tspan></text>
+<circle cx="650" cy="394" r="7" fill="#ffffff" stroke="#c9d1de" stroke-width="2"/>
+<text x="666" y="399" text-anchor="start" font-size="15" font-weight="700" fill="#ffffff">GND</text>
+<line x1="650" y1="394" x2="470" y2="394" stroke="#1d2433" stroke-width="4" stroke-linecap="round"/>
+<text x="458" y="399" text-anchor="end" font-size="15" fill="#1d2433"><tspan font-weight="700">common</tspan> <tspan fill="#5b6475">GND</tspan></text>
+<circle cx="650" cy="440" r="7" fill="#5b6475" stroke="#c9d1de" stroke-width="2"/>
+<text x="666" y="445" text-anchor="start" font-size="15" font-weight="700" fill="#6b7486">GND </text>
+<circle cx="650" cy="486" r="7" fill="#5b6475" stroke="#c9d1de" stroke-width="2"/>
+<text x="666" y="491" text-anchor="start" font-size="15" font-weight="700" fill="#6b7486">VIN</text>
+<circle cx="650" cy="532" r="7" fill="#ffffff" stroke="#c9d1de" stroke-width="2"/>
+<text x="666" y="537" text-anchor="start" font-size="15" font-weight="700" fill="#ffffff">A0</text>
+<line x1="650" y1="532" x2="470" y2="532" stroke="#1baf7a" stroke-width="4" stroke-linecap="round"/>
+<text x="458" y="537" text-anchor="end" font-size="15" fill="#1d2433"><tspan font-weight="700">MQ-2</tspan> <tspan fill="#5b6475">AO (direct)</tspan></text>
+<circle cx="650" cy="578" r="7" fill="#ffffff" stroke="#c9d1de" stroke-width="2"/>
+<text x="666" y="583" text-anchor="start" font-size="15" font-weight="700" fill="#ffffff">A1</text>
+<line x1="650" y1="578" x2="470" y2="578" stroke="#1baf7a" stroke-width="4" stroke-linecap="round"/>
+<text x="458" y="583" text-anchor="end" font-size="15" fill="#1d2433"><tspan font-weight="700">Battery +</tspan> <tspan fill="#5b6475">via 10k/10k divider</tspan></text>
+<circle cx="650" cy="624" r="7" fill="#ffffff" stroke="#c9d1de" stroke-width="2"/>
+<text x="666" y="629" text-anchor="start" font-size="15" font-weight="700" fill="#ffffff">A2</text>
+<line x1="650" y1="624" x2="470" y2="624" stroke="#1baf7a" stroke-width="4" stroke-linecap="round"/>
+<text x="458" y="629" text-anchor="end" font-size="15" fill="#1d2433"><tspan font-weight="700">HC-SR04</tspan> <tspan fill="#5b6475">TRIG</tspan></text>
+<circle cx="650" cy="670" r="7" fill="#ffffff" stroke="#c9d1de" stroke-width="2"/>
+<text x="666" y="675" text-anchor="start" font-size="15" font-weight="700" fill="#ffffff">A3</text>
+<line x1="650" y1="670" x2="470" y2="670" stroke="#1baf7a" stroke-width="4" stroke-linecap="round"/>
+<text x="458" y="675" text-anchor="end" font-size="15" fill="#1d2433"><tspan font-weight="700">HC-SR04</tspan> <tspan fill="#5b6475">ECHO (direct)</tspan></text>
+<circle cx="650" cy="716" r="7" fill="#ffffff" stroke="#c9d1de" stroke-width="2"/>
+<text x="666" y="721" text-anchor="start" font-size="15" font-weight="700" fill="#ffffff">A4/SDA</text>
+<line x1="650" y1="716" x2="470" y2="716" stroke="#ff6b1a" stroke-width="4" stroke-linecap="round"/>
+<text x="458" y="721" text-anchor="end" font-size="15" fill="#1d2433"><tspan font-weight="700">MLX90614</tspan> <tspan fill="#5b6475">SDA</tspan></text>
+<circle cx="650" cy="762" r="7" fill="#ffffff" stroke="#c9d1de" stroke-width="2"/>
+<text x="666" y="767" text-anchor="start" font-size="15" font-weight="700" fill="#ffffff">A5/SCL</text>
+<line x1="650" y1="762" x2="470" y2="762" stroke="#ff6b1a" stroke-width="4" stroke-linecap="round"/>
+<text x="458" y="767" text-anchor="end" font-size="15" fill="#1d2433"><tspan font-weight="700">MLX90614</tspan> <tspan fill="#5b6475">SCL</tspan></text>
+<circle cx="950" cy="210" r="7" fill="#ffffff" stroke="#c9d1de" stroke-width="2"/>
+<text x="934" y="215" text-anchor="end" font-size="15" font-weight="700" fill="#ffffff">D0/RX</text>
+<line x1="950" y1="210" x2="1130" y2="210" stroke="#0b7285" stroke-width="4" stroke-linecap="round"/>
+<text x="1142" y="215" text-anchor="start" font-size="15" fill="#1d2433"><tspan font-weight="700">ESP32-CAM</tspan> <tspan fill="#5b6475">IO14 (TX)</tspan></text>
+<circle cx="950" cy="256" r="7" fill="#ffffff" stroke="#c9d1de" stroke-width="2"/>
+<text x="934" y="261" text-anchor="end" font-size="15" font-weight="700" fill="#ffffff">D1/TX</text>
+<line x1="950" y1="256" x2="1130" y2="256" stroke="#0b7285" stroke-width="4" stroke-linecap="round"/>
+<text x="1142" y="261" text-anchor="start" font-size="15" fill="#1d2433"><tspan font-weight="700">ESP32-CAM</tspan> <tspan fill="#5b6475">IO13 via 1k/2k</tspan></text>
+<circle cx="950" cy="302" r="7" fill="#ffffff" stroke="#c9d1de" stroke-width="2"/>
+<text x="934" y="307" text-anchor="end" font-size="15" font-weight="700" fill="#ffffff">D2</text>
+<line x1="950" y1="302" x2="1130" y2="302" stroke="#1baf7a" stroke-width="4" stroke-linecap="round"/>
+<text x="1142" y="307" text-anchor="start" font-size="15" fill="#1d2433"><tspan font-weight="700">DHT11</tspan> <tspan fill="#5b6475">DATA</tspan></text>
+<circle cx="950" cy="348" r="7" fill="#ffffff" stroke="#c9d1de" stroke-width="2"/>
+<text x="934" y="353" text-anchor="end" font-size="15" font-weight="700" fill="#ffffff">D3</text>
+<line x1="950" y1="348" x2="1130" y2="348" stroke="#e5383b" stroke-width="4" stroke-linecap="round"/>
+<text x="1142" y="353" text-anchor="start" font-size="15" fill="#1d2433"><tspan font-weight="700">Buzzer</tspan> <tspan fill="#5b6475">BC547 base via 1k</tspan></text>
+<circle cx="950" cy="394" r="7" fill="#ffffff" stroke="#c9d1de" stroke-width="2"/>
+<text x="934" y="399" text-anchor="end" font-size="15" font-weight="700" fill="#ffffff">D4</text>
+<line x1="950" y1="394" x2="1130" y2="394" stroke="#1baf7a" stroke-width="4" stroke-linecap="round"/>
+<text x="1142" y="399" text-anchor="start" font-size="15" fill="#1d2433"><tspan font-weight="700">PIR HC-SR501</tspan> <tspan fill="#5b6475">OUT</tspan></text>
+<circle cx="950" cy="440" r="7" fill="#ffffff" stroke="#c9d1de" stroke-width="2"/>
+<text x="934" y="445" text-anchor="end" font-size="15" font-weight="700" fill="#ffffff">D5</text>
+<line x1="950" y1="440" x2="1130" y2="440" stroke="#2a78d6" stroke-width="4" stroke-linecap="round"/>
+<text x="1142" y="445" text-anchor="start" font-size="15" fill="#1d2433"><tspan font-weight="700">L298N</tspan> <tspan fill="#5b6475">ENA (remove jumper)</tspan></text>
+<circle cx="950" cy="486" r="7" fill="#ffffff" stroke="#c9d1de" stroke-width="2"/>
+<text x="934" y="491" text-anchor="end" font-size="15" font-weight="700" fill="#ffffff">D6</text>
+<line x1="950" y1="486" x2="1130" y2="486" stroke="#2a78d6" stroke-width="4" stroke-linecap="round"/>
+<text x="1142" y="491" text-anchor="start" font-size="15" fill="#1d2433"><tspan font-weight="700">L298N</tspan> <tspan fill="#5b6475">ENB (remove jumper)</tspan></text>
+<circle cx="950" cy="532" r="7" fill="#ffffff" stroke="#c9d1de" stroke-width="2"/>
+<text x="934" y="537" text-anchor="end" font-size="15" font-weight="700" fill="#ffffff">D7</text>
+<line x1="950" y1="532" x2="1130" y2="532" stroke="#2a78d6" stroke-width="4" stroke-linecap="round"/>
+<text x="1142" y="537" text-anchor="start" font-size="15" fill="#1d2433"><tspan font-weight="700">L298N</tspan> <tspan fill="#5b6475">IN1</tspan></text>
+<circle cx="950" cy="578" r="7" fill="#ffffff" stroke="#c9d1de" stroke-width="2"/>
+<text x="934" y="583" text-anchor="end" font-size="15" font-weight="700" fill="#ffffff">D8</text>
+<line x1="950" y1="578" x2="1130" y2="578" stroke="#2a78d6" stroke-width="4" stroke-linecap="round"/>
+<text x="1142" y="583" text-anchor="start" font-size="15" fill="#1d2433"><tspan font-weight="700">L298N</tspan> <tspan fill="#5b6475">IN2</tspan></text>
+<circle cx="950" cy="624" r="7" fill="#ffffff" stroke="#c9d1de" stroke-width="2"/>
+<text x="934" y="629" text-anchor="end" font-size="15" font-weight="700" fill="#ffffff">D9</text>
+<line x1="950" y1="624" x2="1130" y2="624" stroke="#2a78d6" stroke-width="4" stroke-linecap="round"/>
+<text x="1142" y="629" text-anchor="start" font-size="15" fill="#1d2433"><tspan font-weight="700">L298N</tspan> <tspan fill="#5b6475">IN3</tspan></text>
+<circle cx="950" cy="670" r="7" fill="#ffffff" stroke="#c9d1de" stroke-width="2"/>
+<text x="934" y="675" text-anchor="end" font-size="15" font-weight="700" fill="#ffffff">D10</text>
+<line x1="950" y1="670" x2="1130" y2="670" stroke="#2a78d6" stroke-width="4" stroke-linecap="round"/>
+<text x="1142" y="675" text-anchor="start" font-size="15" fill="#1d2433"><tspan font-weight="700">L298N</tspan> <tspan fill="#5b6475">IN4</tspan></text>
+<circle cx="950" cy="716" r="7" fill="#ffffff" stroke="#c9d1de" stroke-width="2"/>
+<text x="934" y="721" text-anchor="end" font-size="15" font-weight="700" fill="#ffffff">D11</text>
+<line x1="950" y1="716" x2="1130" y2="716" stroke="#8b5cf6" stroke-width="4" stroke-linecap="round"/>
+<text x="1142" y="721" text-anchor="start" font-size="15" fill="#1d2433"><tspan font-weight="700">Servo PAN</tspan> <tspan fill="#5b6475">signal (orange)</tspan></text>
+<circle cx="950" cy="762" r="7" fill="#ffffff" stroke="#c9d1de" stroke-width="2"/>
+<text x="934" y="767" text-anchor="end" font-size="15" font-weight="700" fill="#ffffff">D12</text>
+<line x1="950" y1="762" x2="1130" y2="762" stroke="#8b5cf6" stroke-width="4" stroke-linecap="round"/>
+<text x="1142" y="767" text-anchor="start" font-size="15" fill="#1d2433"><tspan font-weight="700">Servo TILT</tspan> <tspan fill="#5b6475">signal (orange)</tspan></text>
+<circle cx="950" cy="808" r="7" fill="#ffffff" stroke="#c9d1de" stroke-width="2"/>
+<text x="934" y="813" text-anchor="end" font-size="15" font-weight="700" fill="#ffffff">D13</text>
+<line x1="950" y1="808" x2="1130" y2="808" stroke="#e5383b" stroke-width="4" stroke-linecap="round"/>
+<text x="1142" y="813" text-anchor="start" font-size="15" fill="#1d2433"><tspan font-weight="700">LED beacon</tspan> <tspan fill="#5b6475">BC547 base via 1k</tspan></text>
+<circle cx="950" cy="854" r="7" fill="#ffffff" stroke="#c9d1de" stroke-width="2"/>
+<text x="934" y="859" text-anchor="end" font-size="15" font-weight="700" fill="#ffffff">GND  </text>
+<line x1="950" y1="854" x2="1130" y2="854" stroke="#1d2433" stroke-width="4" stroke-linecap="round"/>
+<text x="1142" y="859" text-anchor="start" font-size="15" fill="#1d2433"><tspan font-weight="700">common</tspan> <tspan fill="#5b6475">GND</tspan></text>
+<circle cx="950" cy="900" r="7" fill="#5b6475" stroke="#c9d1de" stroke-width="2"/>
+<text x="934" y="905" text-anchor="end" font-size="15" font-weight="700" fill="#6b7486">AREF</text>
+<rect x="40" y="996" width="750" height="140" rx="12" fill="#f6f8fb" stroke="#e1e6ee"/>
+<circle cx="62" cy="1020" r="7" fill="#d6336c"/>
+<text x="78" y="1026" font-size="17" font-weight="800" fill="#1d2433">Power</text>
+<text x="60" y="1052" font-size="14.5" fill="#333b4a">2S pack (7.4 V) → fuse → switch → L298N +12V and LM2596 IN</text>
+<text x="60" y="1077" font-size="14.5" fill="#333b4a">LM2596 set to 5.0 V first → Uno 5V pin, ESP32-CAM 5V, all sensors,</text>
+<text x="60" y="1102" font-size="14.5" fill="#333b4a">servo red wires, buzzer +, LED (via 100 Ω). VIN not used.</text>
+<text x="60" y="1127" font-size="14.5" fill="#333b4a">All GNDs joined (battery −, L298N, LM2596, Uno, ESP32-CAM, sensors)</text>
+<rect x="810" y="996" width="750" height="115" rx="12" fill="#f6f8fb" stroke="#e1e6ee"/>
+<circle cx="832" cy="1020" r="7" fill="#2a78d6"/>
+<text x="848" y="1026" font-size="17" font-weight="800" fill="#1d2433">Motors</text>
+<text x="830" y="1052" font-size="14.5" fill="#333b4a">L298N OUT1/OUT2 → both LEFT motors in parallel</text>
+<text x="830" y="1077" font-size="14.5" fill="#333b4a">L298N OUT3/OUT4 → both RIGHT motors in parallel</text>
+<text x="830" y="1102" font-size="14.5" fill="#333b4a">If a side spins backwards, swap that side's two motor wires</text>
+<rect x="40" y="1146" width="750" height="115" rx="12" fill="#f6f8fb" stroke="#e1e6ee"/>
+<circle cx="62" cy="1170" r="7" fill="#0b7285"/>
+<text x="78" y="1176" font-size="17" font-weight="800" fill="#1d2433">ESP32-CAM link</text>
+<text x="60" y="1202" font-size="14.5" fill="#333b4a">Uno D1 —1k— CAM IO13 —2k— GND   (5 V → 3.3 V)</text>
+<text x="60" y="1227" font-size="14.5" fill="#333b4a">CAM IO14 → Uno D0 directly · leave the SD slot empty</text>
+<text x="60" y="1252" font-size="14.5" fill="#333b4a">Unplug the D0 wire while uploading code to the Uno</text>
+<rect x="810" y="1146" width="750" height="90" rx="12" fill="#f6f8fb" stroke="#e1e6ee"/>
+<circle cx="832" cy="1170" r="7" fill="#e5383b"/>
+<text x="848" y="1176" font-size="17" font-weight="800" fill="#1d2433">Outputs</text>
+<text x="830" y="1202" font-size="14.5" fill="#333b4a">Buzzer: D3 —1k— BC547 base; emitter GND; collector → buzzer −; buzzer + → 5 V</text>
+<text x="830" y="1227" font-size="14.5" fill="#333b4a">Beacon: D13 —1k— BC547 base; +5V —100 Ω— LED → collector; emitter GND</text>
+</svg>

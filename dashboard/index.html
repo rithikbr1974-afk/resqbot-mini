@@ -1,0 +1,769 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>ResQBot Control</title>
+<style>
+:root{
+  --bg:#0d1117;--panel:#161b24;--panel2:#1d2430;--line:#2a3342;--text:#e8edf4;--muted:#93a0b4;
+  --accent:#ff6b1a;--ok:#2ec4a6;--warn:#ffb020;--bad:#ff3b4e;--blue:#4da3ff;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--text);font:15px/1.4 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  padding:12px;max-width:1100px;margin:0 auto;user-select:none}
+header{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.logo{display:flex;align-items:center;gap:8px;font-weight:800;font-size:20px;letter-spacing:.3px}
+.logo i{width:30px;height:30px;border-radius:9px;background:var(--accent);display:grid;place-items:center;
+  font-style:normal;color:#fff;font-size:17px}
+.logo small{font-weight:500;color:var(--muted);font-size:12px;display:block;line-height:1}
+.pills{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
+.pill{padding:4px 10px;border-radius:99px;background:var(--panel2);border:1px solid var(--line);font-size:12px;
+  color:var(--muted);white-space:nowrap}
+.pill b{color:var(--text)}
+.pill.live{color:var(--ok);border-color:#1f5a50}.pill.demo{color:var(--warn);border-color:#6a5216}
+.pill.bad{color:#fff;background:var(--bad);border-color:var(--bad)}
+#toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#2a3342;color:var(--text);
+  padding:10px 16px;border-radius:12px;font-size:14px;box-shadow:0 6px 24px rgba(0,0,0,.5);display:none;z-index:9;
+  max-width:92vw;text-align:center}
+#toast.show{display:block}
+.banner{display:none;border-radius:14px;padding:12px 14px;margin-bottom:12px;align-items:center;gap:12px}
+.banner.show{display:flex}
+.banner.alert{background:#3a0d14;border:2px solid var(--bad);animation:pulse 1s infinite}
+.banner.hazard{background:#3a2a08;border:1px solid var(--warn)}
+.banner .big{font-weight:800;font-size:17px}
+.banner p{color:#f3c6cc;font-size:13px}
+.banner button{margin-left:auto}
+@keyframes pulse{50%{box-shadow:0 0 0 6px rgba(255,59,78,.25)}}
+.grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:12px}
+@media(max-width:820px){.grid{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px}
+.card h2{font-size:13px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:10px;
+  display:flex;align-items:center;gap:8px}
+.card h2 span{margin-left:auto;text-transform:none;letter-spacing:0;color:var(--text);font-weight:600}
+.modes{display:grid;grid-template-columns:1fr 1fr 1.1fr;gap:8px;margin-bottom:12px}
+button{font:inherit;color:var(--text);background:var(--panel2);border:1px solid var(--line);border-radius:12px;
+  padding:11px 12px;font-weight:650;cursor:pointer;touch-action:manipulation}
+button:active{transform:scale(.97)}
+button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+button.stop{background:var(--bad);border-color:var(--bad);color:#fff;font-weight:800;letter-spacing:.5px}
+button.ghost{background:transparent}
+button.ghost.on{background:var(--accent);color:#fff}
+#radar{width:100%;max-width:100%;height:auto;display:block}
+.legend{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin-top:6px}
+.legend .bar{flex:1;height:8px;border-radius:4px;
+  background:linear-gradient(90deg,#1b2a6b,#2f6fd6,#2ec4a6,#ffd23f,#ff6b1a,#ff2e4d)}
+.target{margin-top:10px;padding:10px 12px;border-radius:12px;background:var(--panel2);font-size:14px}
+.target b{color:var(--accent)}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tile{background:var(--panel2);border-radius:12px;padding:10px}
+.tile .k{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+.tile .v{font-size:22px;font-weight:750;margin-top:2px;white-space:nowrap}
+.tile .v small{font-size:12px;color:var(--muted);font-weight:500}
+.tile.warn .v{color:var(--warn)}.tile.bad .v{color:var(--bad)}.tile.good .v{color:var(--ok)}
+.conf{display:flex;align-items:center;gap:14px;margin-top:12px}
+.ring{--p:0;width:86px;height:86px;border-radius:50%;flex:none;display:grid;place-items:center;
+  background:conic-gradient(var(--c,var(--muted)) calc(var(--p)*1%),#273041 0)}
+.ring div{width:68px;height:68px;border-radius:50%;background:var(--panel);display:grid;place-items:center;
+  font-weight:800;font-size:20px}
+.conf p{font-size:13px;color:var(--muted)}
+.conf p b{display:block;color:var(--text);font-size:15px;margin-bottom:2px}
+.pad{display:grid;grid-template-columns:repeat(3,64px);grid-template-rows:repeat(3,64px);gap:8px;
+  justify-content:center;margin:6px 0 10px}
+.pad button{font-size:22px;padding:0;border-radius:16px;touch-action:none;-webkit-touch-callout:none;-webkit-user-select:none}
+.pad .c{grid-area:2/2}.pad .u{grid-area:1/2}.pad .d{grid-area:3/2}.pad .l{grid-area:2/1}.pad .r{grid-area:2/3}
+.pad button.held{background:var(--accent);border-color:var(--accent)}
+button.drill{width:100%;margin-top:10px;padding:14px;touch-action:none;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;
+  background:#2a1d10;border:1px solid #ff6b1a;color:#ffb27a}
+button.drill.held,button.drill.on{background:#ff6b1a;color:#fff}
+#wsPill{font-weight:600;opacity:.8}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.row label{font-size:13px;color:var(--muted)}
+input[type=range]{flex:1;accent-color:var(--accent)}
+.disabled{opacity:.35;pointer-events:none}
+#log{list-style:none;max-height:260px;overflow:auto;font-size:13px}
+#log li{display:flex;gap:8px;padding:7px 0;border-bottom:1px solid var(--line);align-items:baseline}
+#log time{color:var(--muted);font-variant-numeric:tabular-nums;min-width:48px}
+.tag{font-size:10px;font-weight:800;padding:2px 6px;border-radius:6px;text-transform:uppercase;flex:none}
+.tag.survivor{background:var(--bad);color:#fff}.tag.possible{background:var(--warn);color:#000}
+.tag.heat{background:var(--accent);color:#fff}.tag.hazard{background:#7a4b00;color:#ffd58a}
+.tag.info{background:#2a3342;color:var(--muted)}
+.state{font-size:13px;color:var(--muted);margin:-4px 0 10px}
+.state b{color:var(--text)}
+a{color:var(--blue)}
+.cam{aspect-ratio:4/3;background:#0a0d12;border-radius:12px;overflow:hidden;display:grid;place-items:center;
+  position:relative;border:1px solid var(--line)}
+.cam img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none}
+.cam.on img{display:block}.cam.on #camOff{display:none}
+#camOff{color:var(--muted);font-size:13px;text-align:center;padding:20px}
+#camOff b{display:block;color:var(--text);font-size:15px;margin-bottom:4px}
+.rec{position:absolute;top:10px;left:10px;font-size:11px;font-weight:800;color:#fff;background:rgba(255,59,78,.85);
+  padding:2px 7px;border-radius:6px;display:none}.cam.on .rec{display:block}
+footer{color:var(--muted);font-size:12px;text-align:center;margin:14px 0 4px}
+.cam canvas#tv{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.cam img.flip{transform:rotate(180deg)}
+.cam.demo #camOff{position:absolute;left:0;right:0;bottom:6px;padding:4px;font-size:11px}
+.cam.demo #camOff b{display:inline;font-size:11px;margin-right:4px}
+.tri{display:inline-block;font-size:12px;font-weight:800;padding:2px 8px;border-radius:6px;margin-left:8px;vertical-align:middle}
+.tri.red{background:#ff3b4e;color:#fff}.tri.yellow{background:#ffb020;color:#111}
+.ev{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);align-items:center;font-size:13px}
+.ev img{width:104px;height:78px;object-fit:cover;border-radius:8px;background:#0a0d12;flex:none}
+.ev b{display:block;font-size:14px}
+#evList:empty::after{content:"No survivors found yet. Each detection is saved here with a photo, the heat map and a triage tag.";color:var(--muted);font-size:13px}
+button.pill{cursor:pointer;font-weight:600}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo"><i>+</i><div>ResQBot Mini<small>thermal search &amp; rescue rover</small></div></div>
+  <div class="pills">
+    <span class="pill" id="conn">connecting…</span>
+    <span class="pill">Battery <b id="bat">–</b></span>
+    <span class="pill">Up <b id="up">–</b></span>
+    <button class="pill" id="voiceBtn" onclick="toggleVoice()">🔈 Voice alerts off</button>
+  </div>
+</header>
+
+<div class="banner alert" id="alert">
+  <div><div class="big">SURVIVOR DETECTED <span class="tri" id="triage"></span></div><p id="alertText">–</p></div>
+  <button class="stop" onclick="api('/api/ack')">Acknowledge</button>
+</div>
+<div class="banner hazard" id="hazard"><div><div class="big">⚠ Hazard</div><p id="hazardText" style="color:#ffe1a0">–</p></div></div>
+
+<div class="modes">
+  <button id="mManual" onclick="setMode('manual')">Manual</button>
+  <button id="mAuto" onclick="setMode('auto')">Auto search</button>
+  <button class="stop" onclick="setMode('estop')">E-STOP</button>
+</div>
+<div class="state">State: <b id="state">–</b></div>
+
+<div class="grid">
+  <section class="card">
+    <h2>Thermal sweep <span id="scanInfo">–</span></h2>
+    <canvas id="radar" width="640" height="360"></canvas>
+    <div class="legend"><span id="lo">–</span><div class="bar"></div><span id="hi">–</span></div>
+    <div class="target" id="target">No scan yet. Press <b>Scan</b> or start <b>Auto search</b>.</div>
+  </section>
+
+  <section class="card">
+    <h2>Live camera <span id="camState">ESP32-CAM</span></h2>
+    <div class="cam" id="camBox">
+      <img id="cam" alt="Live video from the robot">
+      <canvas id="tv" width="640" height="480"></canvas>
+      <span class="rec">● LIVE</span>
+      <div id="camOff"><b>Camera offline</b>Video appears here when the ESP32-CAM is powered and joined to the robot's Wi-Fi.</div>
+    </div>
+    <div class="row" style="margin-top:10px">
+      <button onclick="photo()" style="flex:1">Take photo</button>
+      <button onclick="light()" id="lightBtn" class="ghost" style="flex:1">Camera flash</button>
+      <button onclick="carLight()" id="carBtn" class="ghost" style="flex:1">Car lights</button>
+    </div>
+    <div class="row" style="margin-top:10px">
+      <label for="flashLvl">Flash brightness</label>
+      <input type="range" id="flashLvl" min="5" max="100" step="5" value="30">
+      <span id="flashPct" style="min-width:42px;text-align:right;font-size:13px;color:var(--muted)">30%</span>
+    </div>
+    <div class="row" style="margin-top:10px">
+      <button onclick="toggleTV()" id="tvBtn" class="ghost on" style="flex:1">Thermal vision</button>
+      <button onclick="toggleFlip()" id="flipBtn" class="ghost" style="flex:1">Flip video</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Sensors</h2>
+    <div class="tiles">
+      <div class="tile" id="tObj"><div class="k">IR ahead</div><div class="v" id="obj">–</div></div>
+      <div class="tile"><div class="k">Air · DHT11</div><div class="v" id="amb">–</div></div>
+      <div class="tile" id="tDist"><div class="k">Obstacle</div><div class="v" id="dist">–</div></div>
+      <div class="tile" id="tGas"><div class="k">Smoke/gas</div><div class="v" id="gas">–</div></div>
+      <div class="tile" id="tPir"><div class="k">Motion</div><div class="v" id="pir">–</div></div>
+      <div class="tile"><div class="k">Found</div><div class="v" id="found">–</div></div>
+    </div>
+    <div class="conf">
+      <div class="ring" id="ring"><div id="score">0</div></div>
+      <p><b id="confLabel">Survivor confidence</b>Heat contrast + size of the warm area + warmer when closer + movement (PIR).</p>
+    </div>
+  </section>
+
+  <section class="card" id="driveCard">
+    <h2>Drive <span>tap = short move · hold = keep going · <b id="wsPill">link…</b></span></h2>
+    <div class="pad">
+      <button class="u" data-d="f" aria-label="forward">▲</button>
+      <button class="l" data-d="l" aria-label="left">◀</button>
+      <button class="c" onclick="drive(0,0)" aria-label="stop">■</button>
+      <button class="r" data-d="r" aria-label="right">▶</button>
+      <button class="d" data-d="b" aria-label="back">▼</button>
+    </div>
+    <button class="drill" id="drillBtn" aria-label="drill">⚙ HOLD TO DRILL</button>
+    <div class="row"><label for="spd">Speed</label><input type="range" id="spd" min="100" max="255" value="180"></div>
+    <div class="row" style="margin-top:10px">
+      <button onclick="api('/api/scan')" style="flex:1">Thermal scan</button>
+      <button onclick="api('/api/beep')" class="ghost" style="flex:1">Beep / call out</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Survivors found <span><button onclick="openReport()" style="padding:6px 12px">Mission report</button></span></h2>
+    <div id="evList"></div>
+  </section>
+
+  <section class="card">
+    <h2>Event log <span><a href="/api/log.csv" id="csv">Download CSV</a></span></h2>
+    <ul id="log"><li>Waiting for data…</li></ul>
+  </section>
+</div>
+<div id="toast"></div>
+<footer>Keyboard: W A S D / arrows to drive · hold X = drill · Space = stop · works offline over the robot's own Wi-Fi</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+// Demo data only when the page is opened as a file or with #demo. On the robot it NEVER switches to demo:
+// a Wi-Fi hiccup used to flip it into demo mode for good, and then no button reached the robot any more.
+let demo = location.protocol === 'file:' || /demo|showcase/.test(location.hash);
+let fails = 0, last = null, polling = false;
+
+function timed(ms) { const c = new AbortController(); setTimeout(() => c.abort(), ms); return c.signal; }  // works on older phones too
+let toastTimer = null;
+function toast(msg) {
+  $('toast').textContent = msg; $('toast').classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => $('toast').classList.remove('show'), 3500);
+}
+
+// ---------- talking to the robot ----------
+async function api(path, tries = 2, quiet = false, ms = 2000) {     // a missed command is sent once more
+  if (demo) { demoCmd(path); return true; }
+  for (let i = 0; i < tries; i++) {
+    try { const r = await fetch(path, {cache: 'no-store', signal: timed(ms)}); if (r.ok) return true; } catch (e) {}
+  }
+  if (!quiet) toast('The robot did not answer. Stay close and keep this phone on the ResQBot Wi-Fi.');
+  return false;
+}
+function setMode(m) { api('/api/mode?m=' + m, 3); if (demo) poll(); }
+
+// Fast control channel: a WebSocket to the camera board. One small frame per command instead of a new HTTP
+// request each time (those waited behind status / photo requests, so a quick tap was over before it arrived).
+let ws = null, wsOk = false;
+function wsOpen() {
+  if (demo || !('WebSocket' in window)) { $('wsPill').textContent = demo ? 'demo' : 'http'; return; }
+  try { ws = new WebSocket('ws://' + location.host + '/ws'); } catch (e) { setTimeout(wsOpen, 2000); return; }
+  ws.onopen = () => { wsOk = true; $('wsPill').textContent = 'fast link ✓'; };
+  ws.onclose = () => { wsOk = false; $('wsPill').textContent = 'http (reconnecting)'; setTimeout(wsOpen, 1500); };
+  ws.onerror = () => { try { ws.close(); } catch (e) {} };
+}
+function wsSend(line) {
+  if (wsOk && ws && ws.readyState === 1) { try { ws.send(line); return true; } catch (e) {} }
+  return false;
+}
+setInterval(() => { if (!holdTimer && !drillTimer) wsSend('P'); }, 3000);   // keeps the link open while idle
+
+// Drive: over the WebSocket when it's up. Otherwise HTTP: at most one request on the way, and only the newest
+// command is sent (no pile-up behind a slow one).
+let want = null, sending = false;
+function drive(l, r) {
+  if (!demo && wsSend('D,' + l + ',' + r)) return;
+  want = [l, r]; if (!sending) pump();
+}
+async function pump() {
+  sending = true;
+  while (want) { const [l, r] = want; want = null; await api(`/api/drive?l=${l}&r=${r}`, l || r ? 1 : 3, true, 600); }   // a lost one is given up fast; stop is retried
+  sending = false;
+}
+
+async function poll() {
+  if (demo) { render(demoStatus()); return; }
+  if (polling) return;                                    // never stack status requests
+  polling = true;
+  try {
+    const res = await fetch('/api/status', {cache: 'no-store', signal: timed(2500)});
+    const s = await res.json(); fails = 0; render(s);
+  } catch (e) {
+    if (++fails >= 3) { $('conn').className = 'pill bad'; $('conn').textContent = 'NO CONNECTION · retrying'; }
+  }
+  polling = false;
+}
+setInterval(poll, 500); poll();
+wsOpen();
+
+// ---------- drawing ----------
+function heat(t, lo, hi) {           // temperature -> thermal colour
+  const stops = [[27,42,107],[47,111,214],[46,196,166],[255,210,63],[255,107,26],[255,46,77]];
+  let x = Math.max(0, Math.min(1, (t - lo) / Math.max(hi - lo, 0.1))) * (stops.length - 1);
+  const i = Math.min(stops.length - 2, Math.floor(x)), f = x - i, a = stops[i], b = stops[i + 1];
+  return `rgb(${a.map((v, k) => Math.round(v + (b[k] - v) * f))})`;
+}
+
+function drawRadar(s) {
+  const c = $('radar'), g = c.getContext('2d'), W = c.width, H = c.height, cx = W / 2, cy = H - 34;
+  g.clearRect(0, 0, W, H);
+  const rows = s.grid.rows, cols = rows[0].length, step = s.grid.panStep, pmin = s.grid.panMin;
+  const vals = rows.flat().filter(v => v !== null);
+  const bg = s.finding.background ?? (vals.length ? vals.sort((a, b) => a - b)[vals.length >> 1] : 25);
+  const lo = bg - 1, hi = Math.max(bg + 6, ...(vals.length ? vals : [bg]));
+  $('lo').textContent = lo.toFixed(0) + '°C'; $('hi').textContent = hi.toFixed(0) + '°C';
+  const ang = deg => deg * Math.PI / 180;                      // servo 0° = robot's right, 180° = left
+  const radii = [[70, 175], [182, 290]];                        // inner ring = floor row, outer = level row
+  for (let r = 0; r < rows.length; r++) for (let x = 0; x < cols; x++) {
+    const a0 = ang(pmin + x * step - step / 2), a1 = ang(pmin + x * step + step / 2), v = rows[r][x];
+    g.beginPath();
+    g.arc(cx, cy, radii[r][1], -a0, -a1, true);
+    g.arc(cx, cy, radii[r][0], -a1, -a0, false);
+    g.closePath();
+    g.fillStyle = v === null ? '#1d2430' : heat(v, lo, hi);
+    g.fill(); g.strokeStyle = '#0d1117'; g.lineWidth = 2; g.stroke();
+  }
+  g.fillStyle = '#93a0b4'; g.font = '600 15px system-ui'; g.textAlign = 'center';
+  g.fillText('floor', cx - 122, cy + 22); g.fillText('level', cx - 236, cy + 22);
+  g.fillText('floor', cx + 122, cy + 22); g.fillText('level', cx + 236, cy + 22);
+  g.fillText('LEFT', 30, cy - 40); g.fillText('RIGHT', W - 34, cy - 40);
+  // robot
+  g.fillStyle = '#ff6b1a'; g.beginPath(); g.moveTo(cx, cy - 26); g.lineTo(cx - 16, cy + 8); g.lineTo(cx + 16, cy + 8); g.fill();
+  // current servo direction
+  if (s.pan !== null) {
+    const a = ang(s.pan);
+    g.strokeStyle = 'rgba(232,237,244,.55)'; g.setLineDash([6, 6]); g.lineWidth = 2;
+    g.beginPath(); g.moveTo(cx, cy - 12); g.lineTo(cx + Math.cos(a) * 300, cy - Math.sin(a) * 300); g.stroke();
+    g.setLineDash([]);
+  }
+  // target marker
+  if (s.finding.found) {
+    const a = ang(90 + s.finding.bearing), R = 312, x = cx + Math.cos(a) * R, y = cy - Math.sin(a) * R;
+    g.strokeStyle = '#fff'; g.lineWidth = 3;
+    g.beginPath(); g.moveTo(cx, cy - 12); g.lineTo(cx + Math.cos(a) * 296, cy - Math.sin(a) * 296); g.stroke();
+    g.fillStyle = '#ff3b4e'; g.beginPath(); g.arc(x, y, 12, 0, 7); g.fill();
+    g.fillStyle = '#fff'; g.font = '800 14px system-ui'; g.fillText('!', x, y + 5);
+  }
+}
+
+function fmtT(sec) { sec = Math.round(sec); return sec < 60 ? sec + 's' : Math.floor(sec / 60) + 'm' + String(sec % 60).padStart(2, '0'); }
+function tile(id, cls) { const e = $(id); e.classList.remove('warn', 'bad', 'good'); if (cls) e.classList.add(cls); }
+
+function render(s) {
+  last = s;
+  if (!demo && s.camera) startCam(s.camera);
+  if (demo) $('camState').textContent = 'demo';
+  $('conn').className = 'pill ' + (demo ? 'demo' : s.link === false ? 'bad' : 'live');
+  $('conn').textContent = demo ? 'DEMO DATA – not connected'
+    : s.link === false ? 'CAMERA OK · CAR NOT ANSWERING' : `LIVE · car ✓ · ${s.clients} phone${s.clients == 1 ? '' : 's'}`;
+  checkDelivery(s);
+  syncDrill(s);
+  $('bat').textContent = s.battery > 1 ? `${s.battery.toFixed(1)}V ${s.batteryPct}%` : 'n/a';
+  $('up').textContent = fmtT(s.uptime);
+  $('state').textContent = s.state + (s.state === 'scanning' ? ` (${s.scanProgress}%)` : '');
+  $('mManual').classList.toggle('on', s.mode === 'manual');
+  $('mAuto').classList.toggle('on', s.mode === 'auto');
+  $('driveCard').classList.toggle('disabled', s.mode !== 'manual');
+
+  const t = v => v === null ? '–' : v.toFixed(1) + '<small>°C</small>';
+  const air = s.airTemp ?? s.ambient ?? null;
+  $('obj').innerHTML = t(s.object);
+  $('amb').innerHTML = air === null ? '–' : air.toFixed(1) + `<small>°C${s.humidity != null ? ' · ' + Math.round(s.humidity) + '%' : ''}</small>`;
+  tile('tObj', s.object !== null && air !== null && s.object - air > 2 ? 'warn' : '');
+  $('dist').innerHTML = s.distance >= 400 ? 'clear' : s.distance + '<small>cm</small>';
+  tile('tDist', s.distance < 25 ? 'bad' : '');
+  $('gas').innerHTML = s.gasAlarm ? 'ALARM' : 'clear';
+  tile('tGas', s.gasAlarm ? 'bad' : 'good');
+  $('pir').innerHTML = !s.pirReady ? 'warm-up' : s.motion ? 'YES' : 'none';
+  tile('tPir', s.motion ? 'warn' : '');
+  $('found').innerHTML = s.survivors;
+
+  const sc = s.score, ring = $('ring');
+  ring.style.setProperty('--p', sc);
+  ring.style.setProperty('--c', sc >= 60 ? 'var(--bad)' : sc >= 35 ? 'var(--warn)' : 'var(--ok)');
+  $('score').textContent = sc;
+  $('confLabel').textContent = sc >= 60 ? 'Survivor likely' : sc >= 35 ? 'Possible survivor' : 'Survivor confidence';
+
+  const f = s.finding;
+  $('scanInfo').textContent = s.scans ? `${s.scans} sweep${s.scans > 1 ? 's' : ''}` : '–';
+  if (s.scans) {
+    drawRadar(s);
+    const side = f.bearing >= 0 ? 'left' : 'right';
+    $('target').innerHTML = f.found
+      ? `Heat signature <b>${f.peak.toFixed(1)}°C</b> (+${f.delta.toFixed(1)}° over ${f.background.toFixed(1)}°C background), ` +
+        `<b>${Math.abs(f.bearing)}° ${side}</b>, ${f.cells} cells.`
+      : `No body-like heat. Background ${f.background === null ? '–' : f.background.toFixed(1) + '°C'}.`;
+  } else drawRadar(s);
+  drawThermalVision(s);
+  trackEvents(s);
+
+  const alertEv = s.events.find(e => e.kind === 'survivor');
+  $('alert').classList.toggle('show', s.alert);
+  if (s.alert && alertEv) {
+    $('alertText').textContent = `${alertEv.text} · confidence ${alertEv.score}%`;
+    const tr = triageOf(alertEv.text);
+    $('triage').className = 'tri ' + tr.cls; $('triage').textContent = tr.label;
+  }
+  const hz = [];
+  if (s.gasAlarm) hz.push('Smoke or gas detected near the robot – use breathing protection.');
+  if (f.fire) hz.push('Hot spot over 55°C in the last sweep – possible fire.');
+  if (s.batteryLow) hz.push('Battery low – bring the robot back.');
+  if (!s.thermalOk) hz.push('Thermal sensor not responding – check the I2C wiring (A4/A5).');
+  if (s.link === false) hz.push('Arduino not responding – check the D0/D1 serial wires and the Uno power.');
+  if (s.dhtOk === false) hz.push('DHT11 not responding – check its data wire on D2.');
+  if (s.blocked) hz.push(`Forward blocked: something is ${s.distance} cm in front of the ultrasonic sensor. Reverse or turn.`);
+  syncLights(s);
+  $('hazard').classList.toggle('show', hz.length > 0);
+  $('hazardText').textContent = hz.join(' ');
+
+  $('log').innerHTML = s.events.map(e =>
+    `<li><time>${fmtT(e.t)}</time><span class="tag ${e.kind}">${e.kind}</span><span>${e.text.replace(/</g, '&lt;')}` +
+    `${e.score ? ` <b>(${e.score}%)</b>` : ''}</span></li>`).join('') || '<li>No events yet</li>';
+}
+
+// ---------- ESP32-CAM ----------
+let camUrl = null, lightOn = false, carOn = false, lightSetAt = 0;
+function startCam(url) {
+  if (camUrl === url) return;
+  camUrl = url;
+  const img = $('cam');
+  img.onload = () => { $('camBox').classList.add('on'); $('camState').textContent = 'live'; };
+  img.onerror = () => {
+    $('camBox').classList.remove('on'); $('camState').textContent = 'offline';
+    setTimeout(() => { img.src = camUrl + ':81/stream?t=' + Date.now(); }, 5000);   // retry
+  };
+  img.src = url + ':81/stream';
+}
+function photo() { if (camUrl) window.open(camUrl + '/capture', '_blank'); }
+// camera flash: dimmable and capped in the firmware (the LED overheats at full power); turns itself off after 60 s
+function sendFlash() { lightSetAt = Date.now(); api('/led?level=' + (lightOn ? $('flashLvl').value : 0)); }
+function light() { lightOn = !lightOn; $('lightBtn').classList.toggle('on', lightOn); sendFlash(); }
+$('flashLvl').addEventListener('input', () => { $('flashPct').textContent = $('flashLvl').value + '%'; if (lightOn) sendFlash(); });
+// car LED on the Arduino (D13)
+function carLight() { carOn = !carOn; $('carBtn').classList.toggle('on', carOn); lightSetAt = Date.now(); api('/api/headlight?on=' + (carOn ? 1 : 0)); }
+function syncLights(s) {               // follow the robot (auto-off, other phones), but not right after a click
+  if (Date.now() - lightSetAt < 3000) return;
+  if (s.flash !== undefined) { lightOn = s.flash > 0; $('lightBtn').classList.toggle('on', lightOn); }
+  if (s.headlight !== undefined) { carOn = !!s.headlight; $('carBtn').classList.toggle('on', carOn); }
+}
+
+// ---------- hold-to-drive buttons + keyboard ----------
+let holdTimer = null, holdAt = 0, rxAtHold = null, warned = 0;
+function checkDelivery(s) {          // the Uno counts the commands it got: if that stops while you drive, say so
+  if (!holdTimer || s.rx === undefined) return;
+  if (rxAtHold === null) { rxAtHold = s.rx; return; }
+  if (Date.now() - holdAt > 1500 && s.rx === rxAtHold && s.link && Date.now() - warned > 8000) {
+    warned = Date.now();
+    toast('The car is not receiving commands. Check the wire ESP32-CAM IO14 → Uno D0.');
+  }
+}
+function vector(d) {
+  const v = +$('spd').value, t = Math.min(255, v + 10);
+  return {f: [v, v], b: [-v, -v], l: [-t, t], r: [t, -t]}[d];
+}
+const MIN_PULSE_MS = 350;            // a quick tap still drives this long (a tap used to send start + stop at once)
+let pulseTimer = null;
+function startHold(d, btn) {
+  endHold();
+  btn && btn.classList.add('held');
+  const send = () => drive(...vector(d));
+  send(); holdTimer = setInterval(send, 100);            // robot stops by itself if these stop arriving
+  holdAt = Date.now(); rxAtHold = null;
+}
+function stopHold() {                // finger lifted: stop now, or after the minimum pulse for a quick tap
+  if (!holdTimer) return endHold();
+  const left = MIN_PULSE_MS - (Date.now() - holdAt);
+  clearTimeout(pulseTimer);
+  if (left > 0) pulseTimer = setTimeout(endHold, left); else endHold();
+}
+function endHold() {                 // stop at once (Space, leaving the page, a new direction)
+  clearTimeout(pulseTimer); pulseTimer = null;
+  if (holdTimer) {
+    clearInterval(holdTimer); holdTimer = null;
+    drive(0, 0); setTimeout(() => { if (!holdTimer) drive(0, 0); }, 150);   // stop is sent twice
+  }
+  document.querySelectorAll('.pad .held').forEach(b => b.classList.remove('held'));
+}
+
+// ---------- drill: runs only while the button is held ----------
+let drillTimer = null;
+function drillSend(on) {
+  if (demo) return demoCmd('/api/drill?on=' + (on ? 1 : 0));
+  if (!wsSend(on ? 'R,1' : 'R,0')) api('/api/drill?on=' + (on ? 1 : 0), on ? 1 : 3, true, 600);
+}
+function startDrill() {
+  if (drillTimer) return;
+  if (last && last.mode !== 'manual') { toast('The drill works only in Manual mode.'); return; }
+  $('drillBtn').classList.add('held'); $('drillBtn').textContent = '⚙ DRILLING… release to stop';
+  drillSend(true); drillTimer = setInterval(() => drillSend(true), 150);
+}
+function stopDrill() {
+  if (drillTimer) {
+    clearInterval(drillTimer); drillTimer = null;
+    drillSend(false); setTimeout(() => { if (!drillTimer) drillSend(false); }, 150);
+  }
+  $('drillBtn').classList.remove('held'); $('drillBtn').textContent = '⚙ HOLD TO DRILL';
+}
+function syncDrill(s) { $('drillBtn').classList.toggle('on', !!s.drill && !drillTimer); }
+{
+  const b = $('drillBtn');
+  b.addEventListener('pointerdown', e => { e.preventDefault(); try { b.setPointerCapture(e.pointerId); } catch (x) {} startDrill(); });
+  ['pointerup', 'pointercancel', 'lostpointercapture'].forEach(ev => b.addEventListener(ev, stopDrill));
+  b.addEventListener('contextmenu', e => e.preventDefault());
+}
+document.querySelectorAll('.pad [data-d]').forEach(b => {
+  b.addEventListener('pointerdown', e => { e.preventDefault(); try { b.setPointerCapture(e.pointerId); } catch (x) {} startHold(b.dataset.d, b); });
+  ['pointerup', 'pointercancel', 'lostpointercapture'].forEach(ev => b.addEventListener(ev, stopHold));
+  b.addEventListener('contextmenu', e => e.preventDefault());   // a long press must not open the phone's menu (it cancels the drive)
+});
+const keys = {w: 'f', arrowup: 'f', s: 'b', arrowdown: 'b', a: 'l', arrowleft: 'l', d: 'r', arrowright: 'r'};
+let keyHeld = null;
+addEventListener('keydown', e => {
+  const k = e.key.toLowerCase();
+  if (k === ' ') { endHold(); stopDrill(); keyHeld = null; e.preventDefault(); return; }
+  if (k === 'x') { if (!e.repeat) startDrill(); e.preventDefault(); return; }
+  if (keys[k] && keyHeld !== k) { keyHeld = k; startHold(keys[k]); e.preventDefault(); }
+});
+addEventListener('keyup', e => {
+  const k = e.key.toLowerCase();
+  if (k === 'x') stopDrill();
+  if (k === keyHeld) { keyHeld = null; stopHold(); }
+});
+addEventListener('blur', () => { endHold(); stopDrill(); });
+document.addEventListener('visibilitychange', () => { if (document.hidden) { endHold(); stopDrill(); } });
+
+// ---------- Thermal vision: the heat sweep drawn over the live video ----------
+// The sweep's middle columns fall inside the camera's view, so each cell is painted where the camera sees that
+// direction. Alignment is approximate (lens angle below); the camera must face straight ahead, centred under the sensor.
+const CAM_HFOV = 60;                                   // OV2640 standard lens, horizontal degrees (approximate)
+let tvOn = true, flipped = false;
+try { flipped = localStorage.getItem('rq_flip') === '1'; } catch (e) {}
+function toggleTV() { tvOn = !tvOn; $('tvBtn').classList.toggle('on', tvOn); if (last) drawThermalVision(last); }
+function toggleFlip() {
+  flipped = !flipped; $('cam').classList.toggle('flip', flipped); $('flipBtn').classList.toggle('on', flipped);
+  try { localStorage.setItem('rq_flip', flipped ? '1' : '0'); } catch (e) {}
+}
+$('cam').classList.toggle('flip', flipped); $('flipBtn').classList.toggle('on', flipped);
+const heatA = (t, lo, hi, a) => heat(t, lo, hi).replace('rgb(', 'rgba(').replace(')', `,${a})`);
+
+function drawThermalVision(s) {
+  const c = $('tv'), g = c.getContext('2d'), W = c.width, H = c.height;
+  g.clearRect(0, 0, W, H);
+  $('camBox').classList.toggle('demo', demo);
+  if (!tvOn || !s.scans || !s.grid) return;
+  const rows = s.grid.rows, step = s.grid.panStep, pmin = s.grid.panMin;
+  const vals = rows.flat().filter(v => v !== null);
+  if (!vals.length) return;
+  const sorted = vals.slice().sort((a, b) => a - b);
+  const bg = s.finding.background ?? sorted[sorted.length >> 1], lo = bg - 1, hi = Math.max(bg + 6, sorted[sorted.length - 1]);
+  const colW = step / CAM_HFOV * W, bands = [[0.56, 0.96], [0.14, 0.56]];   // row 0 = floor (lower), row 1 = level
+  for (let r = 0; r < rows.length; r++) for (let x = 0; x < rows[r].length; x++) {
+    const v = rows[r][x];
+    if (v === null) continue;
+    const nx = 0.5 - (pmin + x * step - 90) / CAM_HFOV;  // servo angle -> screen: higher angle = further left
+    if (nx < -0.1 || nx > 1.1) continue;
+    const warm = Math.max(0, Math.min(1, (v - bg - 0.5) / 4));
+    g.fillStyle = heatA(v, lo, hi, 0.06 + 0.5 * warm);
+    const [y0, y1] = bands[r] || bands[0];
+    g.fillRect(nx * W - colW / 2 + 1, y0 * H, colW - 2, (y1 - y0) * H);
+  }
+  g.font = '700 15px system-ui'; g.textAlign = 'left';
+  g.fillStyle = 'rgba(0,0,0,.55)'; g.fillRect(W - 206, 8, 198, 24);
+  g.fillStyle = '#ffd23f'; g.fillText('THERMAL VISION · approx.', W - 200, 25);
+  const f = s.finding;
+  if (!f.found) return;
+  const nx = 0.5 - f.bearing / CAM_HFOV, red = s.alert ? '#ff3b4e' : '#ffb020';
+  const label = `${s.alert ? 'SURVIVOR' : 'HEAT'} ${f.peak.toFixed(1)}°C`;
+  g.lineWidth = 4; g.strokeStyle = red; g.fillStyle = red; g.font = '800 18px system-ui';
+  if (nx >= 0 && nx <= 1) {
+    const bw = colW * 2.4, bx = Math.max(3, Math.min(W - bw - 3, nx * W - bw / 2)), by = H * 0.14 + 20, bh = H * 0.82 - 24;
+    g.strokeRect(bx, by, bw, bh);
+    g.fillRect(bx, by - 26, Math.max(bw, g.measureText(label).width + 16), 26);
+    g.fillStyle = '#fff'; g.fillText(label, bx + 8, by - 7);
+  } else {                                             // outside the camera's view: an arrow at that edge
+    const left = nx < 0, ax = left ? 30 : W - 30;
+    g.beginPath(); g.moveTo(ax + (left ? -18 : 18), H / 2); g.lineTo(ax + (left ? 12 : -12), H / 2 - 18);
+    g.lineTo(ax + (left ? 12 : -12), H / 2 + 18); g.closePath(); g.fill();
+    g.textAlign = left ? 'left' : 'right'; g.fillText(`${label} · ${Math.abs(f.bearing)}° ${left ? 'left' : 'right'}`, left ? 52 : W - 52, H / 2 + 6);
+  }
+}
+
+// ---------- survivors: triage tag, evidence photo, voice alert ----------
+function triageOf(text) {                              // simple START-style hint, rescuers make the real call
+  return /NOT moving/i.test(text) ? {cls: 'red', label: 'PRIORITY RED · not moving'} : {cls: 'yellow', label: 'PRIORITY YELLOW · moving'};
+}
+let voiceOn = false;
+function toggleVoice() {
+  voiceOn = !voiceOn && 'speechSynthesis' in window;
+  $('voiceBtn').textContent = voiceOn ? '🔊 Voice alerts on' : '🔈 Voice alerts off';
+  $('voiceBtn').classList.toggle('live', voiceOn);
+  if (voiceOn) say('Voice alerts on');
+  else if (!('speechSynthesis' in window)) toast('This browser cannot speak. Try Chrome.');
+}
+function say(text) {
+  if (!voiceOn) return;
+  try { const u = new SpeechSynthesisUtterance(text); u.lang = 'en-IN'; u.rate = 1.05; speechSynthesis.speak(u); } catch (e) {}
+}
+
+const seen = new Set(), evHistory = [], survivors = [], missionStart = new Date();
+let baselined = false;
+function trackEvents(s) {
+  const fresh = [];
+  for (const e of (s.events || []).slice().reverse()) {           // oldest first
+    const k = `${e.t}|${e.kind}|${e.text}`;
+    if (seen.has(k)) continue;
+    seen.add(k);
+    evHistory.push({...e, at: new Date()});
+    if (baselined) fresh.push(e);
+  }
+  baselined = true;                                     // events already on the robot when the page opened are not re-announced
+  for (const e of fresh) {
+    if (e.kind === 'survivor') addSurvivor(s, e);
+    else if (e.kind === 'hazard') say('Warning. ' + e.text.replace(/ - /g, '. '));
+    else if (e.kind === 'possible') say('Possible survivor. Check manually.');
+  }
+}
+function addSurvivor(s, e) {
+  const tr = triageOf(e.text), f = s.finding, dist = (e.text.match(/at (\d+) cm/) || [])[1];
+  const side = f.bearing >= 0 ? 'left' : 'right';
+  const rec = {at: new Date(), text: e.text, score: e.score, triage: tr, bearing: f.bearing, peak: f.peak, background: f.background,
+               dist: dist ? +dist : s.distance, heatmap: $('radar').toDataURL('image/png'), photo: null, vision: null};
+  survivors.push(rec);
+  say(`Survivor detected. ${/NOT moving/i.test(e.text) ? 'Not moving. Priority red.' : 'Moving.'} ` +
+      `${Math.abs(f.bearing)} degrees ${side}, ${rec.dist} centimetres. Confidence ${e.score} percent.`);
+  if (camUrl && !demo) {                                // evidence photo, with the thermal vision overlay burned in
+    fetch(camUrl + '/capture?t=' + Date.now(), {cache: 'no-store', signal: timed(6000)}).then(r => r.blob()).then(b => {
+      const img = new Image();
+      img.onload = () => {
+        const c = document.createElement('canvas'); c.width = img.width; c.height = img.height;
+        const g = c.getContext('2d');
+        if (flipped) { g.translate(c.width, c.height); g.rotate(Math.PI); }
+        g.drawImage(img, 0, 0);
+        g.setTransform(1, 0, 0, 1, 0, 0);
+        g.drawImage($('tv'), 0, 0, c.width, c.height);
+        rec.photo = c.toDataURL('image/jpeg', 0.85);
+        URL.revokeObjectURL(img.src); renderSurvivors();
+      };
+      img.src = URL.createObjectURL(b);
+    }).catch(() => {});
+  } else {
+    rec.vision = $('tv').toDataURL('image/png');
+  }
+  renderSurvivors();
+}
+function hhmm(d) { return d.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit', second: '2-digit'}); }
+function renderSurvivors() {
+  $('evList').innerHTML = survivors.map((r, i) =>
+    `<div class="ev"><img src="${r.photo || r.vision || r.heatmap}" alt="Survivor ${i + 1}">` +
+    `<div><b>Survivor ${i + 1} · ${hhmm(r.at)} <span class="tri ${r.triage.cls}">${r.triage.label}</span></b>` +
+    `${r.peak != null ? r.peak.toFixed(1) + ' °C · ' : ''}${Math.abs(r.bearing)}° ${r.bearing >= 0 ? 'left' : 'right'} · ${r.dist} cm · confidence ${r.score}%</div></div>`).join('');
+}
+
+// ---------- mission report: one page a rescue team can save as PDF and hand over ----------
+function openReport() {
+  const s = last || {}, end = new Date(), mins = Math.round((end - missionStart) / 60000);
+  const esc = t => String(t).replace(/[&<>]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;'}[c]));
+  const surv = survivors.map((r, i) => `<div class="sv"><img src="${r.photo || r.vision || r.heatmap}"><img src="${r.heatmap}">
+    <div><h3>Survivor ${i + 1} <span class="t ${r.triage.cls}">${r.triage.label}</span></h3>
+    <p>Found at <b>${hhmm(r.at)}</b> · confidence <b>${r.score}%</b></p>
+    <p>Body heat <b>${r.peak != null ? r.peak.toFixed(1) : '–'} °C</b> (room ${r.background != null ? r.background.toFixed(1) : '–'} °C) ·
+       direction <b>${Math.abs(r.bearing)}° ${r.bearing >= 0 ? 'left' : 'right'}</b> of the robot · distance <b>${r.dist} cm</b></p>
+    <p class="m">${esc(r.text)}</p></div></div>`).join('') || '<p>No survivor was detected during this mission.</p>';
+  const hz = evHistory.filter(e => e.kind === 'hazard');
+  const log = evHistory.map(e => `<tr><td>${hhmm(e.at)}</td><td>${esc(e.kind)}</td><td>${esc(e.text)}</td><td>${e.score || ''}</td></tr>`).join('');
+  const html = `<!doctype html><html><head><meta charset="utf-8"><title>ResQBot mission report</title><style>
+    body{font:14px/1.45 system-ui,Segoe UI,Arial,sans-serif;color:#1d2433;max-width:820px;margin:24px auto;padding:0 16px}
+    h1{margin:0}h2{border-bottom:2px solid #1d2433;padding-bottom:4px;margin-top:22px}.top{display:flex;justify-content:space-between;align-items:center}
+    .k{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}.k div{background:#f2f4f8;border-radius:8px;padding:8px 10px}
+    .k b{display:block;font-size:20px}.sv{display:grid;grid-template-columns:200px 200px 1fr;gap:12px;border:1px solid #d5dbe5;border-radius:10px;padding:10px;margin:10px 0;break-inside:avoid}
+    .sv img{width:200px;height:150px;object-fit:cover;border-radius:6px;background:#0d1117}.sv h3{margin:0 0 6px}.m{color:#5b6475;font-size:12px}
+    .t{font-size:12px;padding:2px 8px;border-radius:6px;color:#fff;background:#ff3b4e}.t.yellow{background:#ffb020;color:#111}
+    table{width:100%;border-collapse:collapse;font-size:12px}td,th{border-bottom:1px solid #e1e5ec;padding:4px 6px;text-align:left}
+    button{font:inherit;padding:8px 14px;border-radius:8px;border:0;background:#ff6b1a;color:#fff;font-weight:700;cursor:pointer}
+    @media print{button{display:none}body{margin:0}}</style></head><body>
+    <div class="top"><div><h1>ResQBot Mini · Mission report</h1><p>Generated ${end.toLocaleString()}</p></div>
+    <button onclick="print()">Save as PDF</button></div>
+    <div class="k"><div>Mission time<b>${mins} min</b></div><div>Survivors found<b>${survivors.length}</b></div>
+    <div>Thermal sweeps<b>${s.scans || 0}</b></div><div>Hazards<b>${hz.length}</b></div></div>
+    <h2>Survivors</h2>${surv}
+    <h2>Hazards</h2>${hz.length ? '<ul>' + hz.map(e => `<li>${hhmm(e.at)} · ${esc(e.text)}</li>`).join('') + '</ul>' : '<p>No smoke, gas or fire hot spot was detected.</p>'}
+    <h2>Conditions at the end</h2><p>Air ${s.airTemp != null ? s.airTemp.toFixed(1) + ' °C' : '–'}, humidity ${s.humidity != null ? Math.round(s.humidity) + '%' : '–'},
+      battery ${s.battery > 1 ? s.battery.toFixed(1) + ' V' : 'n/a'}.</p>
+    <h2>Last thermal sweep</h2><img src="${$('radar').toDataURL('image/png')}" style="width:100%;max-width:640px">
+    <h2>Event log</h2><table><tr><th>Time</th><th>Kind</th><th>Event</th><th>Conf.</th></tr>${log}</table>
+    <p class="m">Triage tags are a hint from movement only; trained rescuers make the final call. A “no survivor” result never clears a space on its own.</p>
+    </body></html>`;
+  const w = window.open('', '_blank');
+  if (!w) { toast('Allow pop-ups to open the report.'); return; }
+  w.document.write(html); w.document.close();
+}
+
+// ---------- demo mode: lets the dashboard be shown without the robot ----------
+const D = {mode: 'manual', state: 'manual control', t0: Date.now(), scans: 0, events: [], score: 0, survivors: 0,
+  grid: null, finding: {found: false, fire: false, background: null, peak: null, delta: 0, bearing: 0, cells: 0},
+  phase: 0, phaseAt: 0, pan: 90, alert: false, scanning: false, scanStart: 0};
+function dEvent(kind, text, score = 0) { D.events.unshift({t: (Date.now() - D.t0) / 1000, kind, text, score}); D.events.length = Math.min(D.events.length, 10); }
+dEvent('info', 'Robot ready, thermal sensor OK');
+function dSweep() {
+  const bg = 26 + Math.random(), warm = Math.random() < 0.75, col = 3 + Math.floor(Math.random() * 9);
+  const rows = [0, 1].map(r => Array.from({length: 15}, (_, x) => {
+    let v = bg + (Math.random() - .5) * .6;
+    if (warm) { const d = Math.abs(x - col); if (d <= 1) v += (r === 0 ? 4.2 : 2.2) * (d ? .55 : 1) + Math.random() * .4; }
+    return +v.toFixed(1);
+  }));
+  D.grid = rows; D.scans++;
+  if (warm) {
+    const peak = Math.max(...rows[0]), bearing = 20 + col * 10 - 90;
+    D.finding = {found: true, fire: false, background: +bg.toFixed(1), peak, delta: +(peak - bg).toFixed(1), bearing, cells: 5};
+    D.score = Math.round(20 + Math.min(20, (peak - bg - 1.5) * 8) + 10);
+    dEvent('heat', `Heat signature ${peak.toFixed(1)} C (+${(peak - bg).toFixed(1)}) at ${Math.abs(bearing)} deg ${bearing >= 0 ? 'left' : 'right'}`, D.score);
+  } else {
+    D.finding = {found: false, fire: false, background: +bg.toFixed(1), peak: null, delta: 0, bearing: 0, cells: 0};
+    D.score = 0;
+  }
+}
+if (location.hash === '#showcase') {      // fixed "survivor found" screen for slides and docs
+  demo = true;
+  D.mode = 'auto'; D.alert = true; D.phase = 5; D.scans = 3; D.survivors = 1; D.score = 75; D.t0 = Date.now() - 98000;
+  D.grid = [[26.1,26.3,26.0,26.4,29.4,31.2,29.8,26.9,26.2,26.1,26.3,26.0,26.2,26.1,26.0],
+            [26.0,26.2,26.1,26.3,27.7,28.6,27.8,26.5,26.1,26.3,26.0,26.2,26.1,26.0,26.2]];
+  D.finding = {found: true, fire: false, background: 26.2, peak: 31.2, delta: 5.0, bearing: -20, cells: 6};
+  D.events = [];
+  [['info', 'Robot ready, thermal sensor OK', 0], ['info', 'Autonomous search started', 0],
+   ['heat', 'Heat signature 31.2 C (+5.0) at 20 deg right', 50],
+   ['survivor', 'SURVIVOR LIKELY - NOT moving (may be unconscious), 33.6 C at 34 cm', 75]].forEach(e => dEvent(...e));
+  D.events.forEach((e, i) => e.t = [96, 71, 12, 0][i]);
+}
+function demoCmd(p) {
+  if (p.startsWith('/api/mode')) {
+    const m = p.split('=')[1]; D.mode = m === 'estop' ? 'estop' : m; D.alert = false;
+    D.state = m === 'auto' ? 'scanning' : m === 'estop' ? 'STOPPED' : 'manual control';
+    if (m === 'auto') { D.phase = 0; D.phaseAt = Date.now(); D.scanning = true; D.scanStart = Date.now(); dEvent('info', 'Autonomous search started'); }
+    if (m === 'estop') dEvent('info', 'EMERGENCY STOP');
+  } else if (p === '/api/scan' && D.mode === 'manual') { D.scanning = true; D.scanStart = Date.now(); }
+  else if (p.startsWith('/led')) D.flash = +p.split('=')[1];
+  else if (p.startsWith('/api/headlight')) D.headlight = p.endsWith('1');
+  else if (p.startsWith('/api/drill')) D.drill = p.endsWith('1') && D.mode === 'manual';
+  else if (p === '/api/ack' && D.alert) { D.alert = false; D.phase = 4; D.phaseAt = Date.now(); dEvent('info', 'Alert acknowledged, search resumed', D.score); }
+}
+function demoStatus() {
+  const now = Date.now(), el = (now - D.phaseAt) / 1000;
+  let prog = 100;
+  if (D.scanning) {
+    prog = Math.min(100, Math.round((now - D.scanStart) / 50));
+    D.pan = 20 + (prog % 50) * 2.86; if (Math.floor(prog / 50) % 2) D.pan = 160 - (prog % 50) * 2.86;
+    if (prog >= 100) { D.scanning = false; D.pan = 90; dSweep(); if (D.mode === 'auto') { D.phase = D.finding.found ? 1 : 4; D.phaseAt = now; } }
+  }
+  if (D.mode === 'auto' && !D.scanning) {
+    const st = ['scanning', 'turning to target', 'approaching', 'confirming', 'searching'];
+    if (D.phase === 1 && el > 1) { D.phase = 2; D.phaseAt = now; }
+    else if (D.phase === 2 && el > 2.5) { D.phase = 3; D.phaseAt = now; }
+    else if (D.phase === 3 && el > 5) {
+      D.score = Math.min(100, D.score + 25 + (Math.random() < .5 ? 25 : 0));
+      if (D.score >= 60) { D.survivors++; D.alert = true; D.phase = 5;
+        dEvent('survivor', `SURVIVOR LIKELY - ${D.score > 85 ? 'moving' : 'NOT moving (may be unconscious)'}, ${(D.finding.peak + 2.4).toFixed(1)} C at 34 cm`, D.score); }
+      else { D.phase = 4; D.phaseAt = now; }
+    } else if (D.phase === 4 && el > 3) { D.scanning = true; D.scanStart = now; D.phase = 0; }
+    D.state = D.alert ? 'SURVIVOR ALERT' : D.scanning ? 'scanning' : st[D.phase] || 'searching';
+  } else if (D.mode === 'manual') D.state = D.scanning ? 'scanning' : 'manual control';
+  return {
+    mode: D.mode, state: D.state, uptime: (now - D.t0) / 1000, object: D.alert ? 33.6 : 26.4 + Math.sin(now / 3000), ambient: 27.1,
+    airTemp: 29.0, humidity: 64, dhtOk: true, link: true, rx: Math.floor(now / 150), flash: D.flash || 0, headlight: !!D.headlight, drill: !!D.drill, blocked: false,
+    distance: [2, 3, 5].includes(D.phase) ? 34 : Math.round(80 + 40 * Math.sin(now / 4000)), gas: 620,
+    battery: 7.9, batteryPct: 75, score: D.score, scanProgress: prog, pan: D.pan, clients: 1,
+    motion: D.phase === 3 && Math.random() < .3, pirReady: true, gasAlarm: false, batteryLow: false, thermalOk: true,
+    alert: D.alert, survivors: D.survivors, scans: D.scans, finding: D.finding,
+    grid: {panMin: 20, panStep: 10, rows: D.grid || [Array(15).fill(null), Array(15).fill(null)]}, events: D.events
+  };
+}
+</script>
+</body>
+</html>

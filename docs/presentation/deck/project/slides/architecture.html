@@ -1,0 +1,35 @@
+<section id="architecture" data-transition="fade" style="background:#F4F1EA;color:#1D2433;font-family:'Public Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<div style="display:flex;flex-direction:column;gap:16px">
+<p style="font-size:24px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#B2410C">System architecture</p>
+<h2 style="font-family:'Oswald', 'Arial Narrow', sans-serif;font-size:72px;font-weight:600;line-height:1.1;color:#1D2433">Two boards, one team</h2>
+</div>
+<div style="display:flex;flex-direction:row;gap:48px;align-items:start">
+<img src="/_blob/3f51af87ce569e3b545eae751599e356" alt="Block diagram: six sensors feed the Arduino Uno, which drives the L298N motors, servos, buzzer and beacon and talks over serial to the ESP32-CAM, which serves the phone over Wi-Fi" style="width:930px;height:618px;object-fit:contain;background:#FFFFFC;border:1px solid #DDD6C8;border-radius:20px">
+<div style="flex:1;display:flex;flex-direction:column;gap:32px">
+<div style="display:flex;flex-direction:column;gap:8px">
+<h3 style="font-size:44px;font-weight:700;line-height:1.2;color:#1D2433">Arduino Uno</h3>
+<p style="font-size:32px;line-height:1.35;color:#3D4656">Reads six sensors, runs the search, drives wheels, servos and alarms.</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<h3 style="font-size:44px;font-weight:700;line-height:1.2;color:#1D2433">ESP32-CAM</h3>
+<p style="font-size:32px;line-height:1.35;color:#3D4656">Live video, its own Wi-Fi hotspot, and the phone dashboard.</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<h3 style="font-size:44px;font-weight:700;line-height:1.2;color:#1D2433">One serial cable</h3>
+<p style="font-size:32px;line-height:1.35;color:#3D4656">Data up, commands down — every command checksummed.</p>
+</div>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#5A6474">ResQBot Mini · 2 · The robot</p>
+<aside>SPEAKER 2 · 5:20–6:20
+
+“Inside, two small computers work as a team.
+
+The Arduino Uno is the brain. On the left you see everything it senses: the heat sensor, air temperature and humidity, distance, motion, smoke and gas, and its own battery. On the right, everything it controls: four wheels, the two servo motors that aim the heat sensor, the buzzer and the beacon.
+
+The ESP32-CAM is the eyes and the voice. It streams live video, creates its own Wi-Fi hotspot, and serves the control page to the rescuer’s phone — all at the same time.
+
+The two talk over a single serial cable: sensor data goes up to the camera board, the rescuer’s commands come down to the Arduino. We even added a checksum to every command, so a garbled signal is ignored instead of making the robot do something wrong. That came from a real bug we found while testing.”
+
+[CLICK]</aside>
+</section>

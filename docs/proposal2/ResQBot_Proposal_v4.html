@@ -1,0 +1,698 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ResQBot Mini — Project Proposal</title>
+<style>
+@page { size: A4; margin: 0; }
+:root { --ink:#141b2b; --muted:#5b6475; --line:#e3e8ef; --accent:#ff6b1a; --accent2:#ff9a52; --red:#e5383b;
+  --teal:#13a874; --blue:#2a78d6; --navy:#0e1424; --soft:#f5f7fa; --cream:#fff5ee; }
+* { box-sizing: border-box; }
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body { margin: 0; font: 10.4pt/1.55 "Segoe UI", Arial, sans-serif; color: var(--ink); background: #fff; }
+.page { width: 210mm; height: 297mm; padding: 17mm 17mm 16mm; position: relative; overflow: hidden; break-after: page; }
+.page:last-child { break-after: auto; }
+.foot { position: absolute; left: 17mm; right: 17mm; bottom: 8mm; display: flex; justify-content: space-between;
+  font-size: 8pt; color: #9aa3b2; border-top: 1px solid var(--line); padding-top: 2mm; }
+.kicker { font-size: 8.5pt; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); margin: 0 0 2mm; }
+h1 { font-size: 25pt; line-height: 1.12; margin: 0 0 4mm; letter-spacing: -.01em; }
+h2 { font-size: 13pt; margin: 6mm 0 2.5mm; }
+h3 { font-size: 10.8pt; margin: 0 0 1mm; }
+p { margin: 0 0 2.6mm; }
+.lead { font-size: 11.6pt; color: #2d3546; line-height: 1.55; }
+.muted { color: var(--muted); }
+.small { font-size: 8.8pt; }
+ul { margin: 0 0 3mm; padding-left: 5mm; } li { margin-bottom: 1.2mm; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; }
+.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3.5mm; }
+.grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3mm; }
+.card { border: 1px solid var(--line); border-radius: 3.5mm; padding: 3.6mm 4mm; background: #fff; break-inside: avoid; }
+.card p { font-size: 9.2pt; color: #3a4354; margin: 0; }
+.card .ic { width: 9mm; height: 9mm; border-radius: 2.6mm; display: grid; place-items: center; margin-bottom: 2mm; }
+.card .ic svg { width: 5.4mm; height: 5.4mm; }
+.ic.o { background: #fff0e6; color: var(--accent); } .ic.r { background: #fdeaea; color: var(--red); }
+.ic.t { background: #e4f6ef; color: var(--teal); } .ic.b { background: #e8f0fb; color: var(--blue); }
+.stat { background: var(--soft); border-radius: 3.5mm; padding: 3.5mm 4mm; }
+.stat .v { font-size: 19pt; font-weight: 800; color: var(--accent); line-height: 1.05; }
+.stat .k { font-size: 8.6pt; color: var(--muted); margin-top: 1mm; }
+.band { background: var(--cream); border-left: 1.4mm solid var(--accent); border-radius: 0 3mm 3mm 0; padding: 3.5mm 5mm; margin: 3mm 0 4mm; }
+.band p:last-child { margin: 0; }
+.quote { font-size: 13pt; font-weight: 650; line-height: 1.4; color: var(--ink); }
+table { width: 100%; border-collapse: collapse; font-size: 9.2pt; margin: 1mm 0 3mm; }
+th { text-align: left; background: var(--navy); color: #fff; font-weight: 600; padding: 2mm 2.6mm; }
+td { padding: 1.8mm 2.6mm; border-bottom: 1px solid var(--line); vertical-align: top; }
+tr:nth-child(even) td { background: #fafbfc; }
+td.r, th.r { text-align: right; white-space: nowrap; }
+tr.hl td { background: #fff3eb !important; font-weight: 700; }
+figure { margin: 0; }
+figcaption { font-size: 8.4pt; color: var(--muted); margin-top: 1.5mm; }
+.pill { display: inline-block; font-size: 8pt; font-weight: 700; border-radius: 10mm; padding: .6mm 2.4mm; }
+.pill.red { background: #fdeaea; color: var(--red); } .pill.yel { background: #fff4d6; color: #a86d00; }
+.pill.grn { background: #e4f6ef; color: var(--teal); }
+
+/* cover */
+.cover { background: radial-gradient(120% 80% at 85% 10%, #2a1a12 0%, var(--navy) 55%); color: #fff; padding: 20mm 18mm; }
+.cover .brand { display: flex; align-items: center; gap: 3mm; font-weight: 700; letter-spacing: .08em; font-size: 9pt; color: #ffb887; }
+.cover .brand .dot { width: 7mm; height: 7mm; border-radius: 2mm; background: var(--accent); display: grid; place-items: center; color: #fff; font-size: 13pt; }
+.cover h1 { font-size: 44pt; margin: 15mm 0 3mm; line-height: 1; }
+.cover h1 span { color: var(--accent); }
+.cover .sub { font-size: 15pt; color: #d7dbe4; max-width: 150mm; line-height: 1.4; }
+.cover .art { position: absolute; left: 0; right: 0; top: 122mm; }
+.cover .chips { position: absolute; left: 18mm; right: 18mm; bottom: 44mm; display: grid; grid-template-columns: repeat(4, 1fr); gap: 3mm; }
+.cover .chip { border: 1px solid #ffffff26; background: #ffffff0d; border-radius: 3mm; padding: 3mm 3.5mm; }
+.cover .chip b { display: block; font-size: 15pt; color: #fff; }
+.cover .chip span { font-size: 8.4pt; color: #aeb5c4; }
+.cover .team { position: absolute; left: 18mm; right: 18mm; bottom: 16mm; display: flex; justify-content: space-between;
+  align-items: end; border-top: 1px solid #ffffff22; padding-top: 4mm; font-size: 9.5pt; color: #c3c9d5; }
+.cover .team b { color: #fff; font-size: 11pt; display: block; }
+
+/* steps */
+.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3.5mm; margin-top: 2mm; }
+.step { border-radius: 3.5mm; padding: 3.5mm 4mm; background: var(--soft); position: relative; }
+.step .n { width: 7.5mm; height: 7.5mm; border-radius: 50%; background: var(--accent); color: #fff; font-weight: 800;
+  display: grid; place-items: center; font-size: 10pt; margin-bottom: 2mm; }
+.step p { font-size: 9.1pt; margin: 0; color: #3a4354; }
+.tight h1 { font-size: 22pt; margin-bottom: 2.5mm; }
+.tight .lead { font-size: 10.8pt; }
+.tight .card { padding: 2.8mm 3.6mm; }
+.tight .card .ic { width: 7.5mm; height: 7.5mm; margin-bottom: 1.4mm; }
+.tight .grid2 { gap: 3mm; }
+.tight h2 { margin: 4.5mm 0 2mm; }
+.tight .step { padding: 3mm 3.6mm; }
+.tight .step .n { width: 6.5mm; height: 6.5mm; margin-bottom: 1.4mm; }
+.tight .step p { font-size: 8.9pt; }
+.bar { height: 2.6mm; border-radius: 2mm; background: #eef1f5; overflow: hidden; margin: 1mm 0 2.4mm; }
+.bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); }
+</style>
+</head>
+<body>
+
+<!-- ============================== 1 · COVER ============================== -->
+<section class="page cover">
+  <div class="brand"><div class="dot">+</div>PROJECT PROPOSAL</div>
+  <h1>ResQBot <span>Mini</span></h1>
+  <p class="sub">A low-cost rescue rover that goes into collapsed buildings first, finds trapped people by their
+    body heat, and guides rescuers straight to them, with no internet needed.</p>
+
+  <svg class="art" viewBox="0 0 800 330" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="heat" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#ff4b2b" stop-opacity=".95"/>
+        <stop offset=".45" stop-color="#ff8a3d" stop-opacity=".55"/><stop offset="1" stop-color="#ff8a3d" stop-opacity="0"/></radialGradient>
+      <linearGradient id="beam" x1="0" x2="1"><stop offset="0" stop-color="#ff6b1a" stop-opacity=".45"/><stop offset="1" stop-color="#ff6b1a" stop-opacity="0"/></linearGradient>
+      <linearGradient id="armor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a4357"/><stop offset="1" stop-color="#232a3a"/></linearGradient>
+    </defs>
+    <!-- rubble -->
+    <path d="M0 290 L60 262 L120 276 L170 250 L230 270 L800 270 L800 330 L0 330 Z" fill="#1a2132"/>
+    <path d="M520 270 L560 232 L600 246 L640 214 L700 236 L740 222 L800 240 L800 270 Z" fill="#232b3d"/>
+    <rect x="600" y="196" width="120" height="16" rx="3" transform="rotate(-9 660 204)" fill="#2c3549"/>
+    <!-- person heat under rubble -->
+    <ellipse cx="690" cy="244" rx="70" ry="38" fill="url(#heat)"/>
+    <g fill="#ffd2b8" opacity=".9"><circle cx="652" cy="244" r="9"/><rect x="660" y="238" width="60" height="13" rx="6"/></g>
+    <!-- beam -->
+    <path d="M392 128 L700 196 L700 262 Z" fill="url(#beam)"/>
+    <path d="M392 128 L690 244" stroke="#ff6b1a" stroke-width="2.5" stroke-dasharray="7 7"/>
+    <!-- robot -->
+    <g transform="translate(150 0)">
+      <circle cx="70" cy="248" r="30" fill="#0b0f1a" stroke="#3a4357" stroke-width="4"/><circle cx="70" cy="248" r="9" fill="#ffcf3f"/>
+      <circle cx="210" cy="248" r="30" fill="#0b0f1a" stroke="#3a4357" stroke-width="4"/><circle cx="210" cy="248" r="9" fill="#ffcf3f"/>
+      <!-- armour shell -->
+      <path d="M28 226 L36 172 L70 152 L210 152 L250 178 L262 226 Z" fill="url(#armor)" stroke="#525d75" stroke-width="2"/>
+      <path d="M44 214 L250 214" stroke="#ff6b1a" stroke-width="4"/>
+      <circle cx="90" cy="186" r="4" fill="#6b7690"/><circle cx="190" cy="186" r="4" fill="#6b7690"/>
+      <!-- camera -->
+      <rect x="226" y="178" width="26" height="22" rx="4" fill="#0b0f1a"/><circle cx="240" cy="189" r="6" fill="#2a78d6"/>
+      <!-- drill -->
+      <rect x="248" y="208" width="26" height="12" rx="3" fill="#59647d"/>
+      <path d="M274 205 L306 214 L274 223 Z" fill="#c9d0dc"/>
+      <path d="M280 207 L284 221 M289 209 L293 219 M298 211 L301 217" stroke="#7c879c" stroke-width="2"/>
+      <!-- beacon mast -->
+      <rect x="112" y="104" width="6" height="48" fill="#6b7690"/><circle cx="115" cy="100" r="11" fill="#e5383b"/>
+      <circle cx="115" cy="100" r="22" fill="#e5383b" opacity=".18"/>
+      <!-- pan tilt thermal head -->
+      <rect x="196" y="126" width="22" height="26" rx="3" fill="#3a4357"/>
+      <rect x="188" y="114" width="56" height="22" rx="5" fill="#141b2b" stroke="#525d75" stroke-width="2"/>
+      <circle cx="242" cy="125" r="6" fill="#ff6b1a"/>
+      <!-- antenna -->
+      <path d="M60 152 L52 118" stroke="#6b7690" stroke-width="3"/><circle cx="51" cy="114" r="4" fill="#13a874"/>
+    </g>
+    <!-- phone -->
+    <g transform="translate(36 30)">
+      <rect width="92" height="160" rx="14" fill="#0b0f1a" stroke="#3a4357" stroke-width="3"/>
+      <rect x="8" y="14" width="76" height="22" rx="5" fill="#e5383b"/>
+      <text x="46" y="29" font-size="9" font-weight="700" fill="#fff" text-anchor="middle" font-family="Segoe UI">SURVIVOR</text>
+      <path d="M14 112 A32 32 0 0 1 78 112" fill="none" stroke="#2a78d6" stroke-width="16"/>
+      <path d="M50 81 A32 32 0 0 1 66 88" fill="none" stroke="#ff6b1a" stroke-width="16"/>
+      <rect x="14" y="126" width="64" height="8" rx="4" fill="#232b3d"/><rect x="14" y="140" width="40" height="8" rx="4" fill="#232b3d"/>
+    </g>
+    <path d="M132 96 Q170 70 200 98" fill="none" stroke="#13a874" stroke-width="2.5" stroke-dasharray="4 6"/>
+    <text x="150" y="70" font-size="12" fill="#7fd9b4" font-family="Segoe UI">Wi-Fi</text>
+  </svg>
+
+  <div class="chips">
+    <div class="chip"><b>Body heat</b><span>finds people in dark, dust and smoke</span></div>
+    <div class="chip"><b>Moving?</b><span>flags unconscious people as top priority</span></div>
+    <div class="chip"><b>0 internet</b><span>its own Wi-Fi, any phone browser</span></div>
+    <div class="chip"><b>≈ ₹4,700</b><span>parts for one robot</span></div>
+  </div>
+  <div class="team">
+    <div><b>Team [Team name]</b>[College]</div>
+    <div style="text-align:right">Thermal search &amp; rescue rover<br>Arduino Uno · ESP32-CAM · MLX90614</div>
+  </div>
+</section>
+
+<!-- ============================== 2 · THE PROBLEM ============================== -->
+<section class="page">
+  <p class="kicker">The problem</p>
+  <h1>After a building collapses,<br>rescuers search blind.</h1>
+  <p class="lead">Earthquakes, old buildings giving way, gas explosions and landslides trap people under concrete.
+    Rescue teams describe the first 72 hours as the most important: after that, the chance of finding someone alive
+    falls quickly. Yet the first search is still mostly done by people crawling into unstable voids, calling out
+    and listening.</p>
+
+  <div class="grid2" style="margin-top:5mm">
+    <div class="card"><div class="ic r"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3 2 20h20L12 3z"/><path d="M12 10v4M12 17h.01"/></svg></div>
+      <h3>It is dangerous to go in first</h3><p>Voids can collapse again, and the air can hold smoke, dust or leaking gas.
+      Every rescuer who goes in to look is also at risk.</p></div>
+    <div class="card"><div class="ic r"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></svg></div>
+      <h3>Silent people get missed</h3><p>Calling out and listening only finds people who can answer. Someone who is
+      unconscious or too weak to shout makes no sound at all, and they need help most urgently.</p></div>
+    <div class="card"><div class="ic r"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M12 3v18"/><circle cx="12" cy="12" r="4"/></svg></div>
+      <h3>It is dark and dusty inside</h3><p>A normal camera sees very little in a dark gap full of dust or smoke.
+      A warm body, though, still gives off heat that a thermal sensor can detect.</p></div>
+    <div class="card"><div class="ic r"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+      <h3>Good tools are expensive</h3><p>Handheld thermal cameras start around ₹25,000, thermal drones over ₹1 lakh, and
+      professional rescue robots and life detectors cost lakhs more. Most local teams can't afford enough of them.</p></div>
+  </div>
+
+  <h2>What a first-response team actually needs</h2>
+  <table>
+    <tr><th style="width:42%">Need</th><th>How ResQBot answers it</th></tr>
+    <tr><td>Look inside before a person goes in</td><td>A small rover drives in and streams live video to a phone outside.</td></tr>
+    <tr><td>Find people who can't call for help</td><td>It searches by body heat and checks for movement, so a silent person still shows up.</td></tr>
+    <tr><td>Know who to reach first</td><td>A person who is warm but not moving is flagged as top priority.</td></tr>
+    <tr><td>Know if the air is safe</td><td>A smoke and gas sensor warns the team before anyone enters.</td></tr>
+    <tr><td>Work where there is no network</td><td>The robot makes its own Wi-Fi; any phone opens the control page with no app and no internet.</td></tr>
+    <tr><td>Cost little enough to have several</td><td>About ₹4,700 in parts, built from common hobby components.</td></tr>
+  </table>
+
+  <div class="band"><p class="quote">ResQBot does not replace rescuers. It is a cheap scout that goes first, so
+    rescuers go in knowing where to dig and what they will face.</p></div>
+  <div class="foot"><span>ResQBot Mini · Project proposal</span><span>2</span></div>
+</section>
+
+<!-- ============================== 3 · WHAT IT HELPS WITH ============================== -->
+<section class="page tight">
+  <p class="kicker">What it helps with</p>
+  <h1>Eight jobs ResQBot does<br>for a rescue team</h1>
+  <p class="lead">Every feature exists to save time or keep a rescuer safe.</p>
+
+  <div class="grid2" style="margin-top:4mm">
+    <div class="card"><div class="ic o"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 14.8V4a2 2 0 1 0-4 0v10.8a4 4 0 1 0 4 0z"/></svg></div>
+      <h3>1 · Finds people by body heat</h3><p>A thermal sensor on a turning head sweeps left to right and floor to eye
+      level. Body heat stands out against cold rubble, even in total darkness, dust or light smoke.</p></div>
+    <div class="card"><div class="ic r"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+      <h3>2 · Spots unconscious people</h3><p>A motion sensor checks whether the person moves. "Warm but not moving" is
+      marked <span class="pill red">PRIORITY RED</span>, because that person may be unconscious.</p></div>
+    <div class="card"><div class="ic b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 12l6-6"/></svg></div>
+      <h3>3 · Points rescuers the right way</h3><p>The phone shows which direction the heat came from ("20° right") and how
+      close it is, so the team knows where to dig instead of searching everywhere.</p></div>
+    <div class="card"><div class="ic t"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+      <h3>4 · Keeps rescuers out of danger</h3><p>The robot takes the first risk. The team stays outside and drives it
+      from a phone, with a live camera feed and an emergency stop.</p></div>
+    <div class="card"><div class="ic r"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3c0 3 4 4 4 8a4 4 0 0 1-8 0c0-2 1-3 1-3"/><path d="M14 9c2 1 4 3 4 6a6 6 0 0 1-12 0"/></svg></div>
+      <h3>5 · Warns about smoke, gas and fire</h3><p>An MQ-2 sensor raises an alarm for smoke or flammable gas. A spot
+      far hotter than a body (55 °C or more) is reported as a possible fire, never as a survivor.</p></div>
+    <div class="card"><div class="ic o"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/></svg></div>
+      <h3>6 · Marks the survivor on the spot</h3><p>When it finds someone, the robot stops beside them, flashes a red beacon
+      and beeps, so rescuers can find the place in the rubble. The person also hears that help has arrived.</p></div>
+    <div class="card"><div class="ic b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></div>
+      <h3>7 · Records every find</h3><p>Each detection gets a photo with the heat overlay, the time, the temperature and a
+      triage tag. One tap makes a mission report to hand over or save as a PDF.</p></div>
+    <div class="card"><div class="ic t"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0M12 19.5h.01"/></svg></div>
+      <h3>8 · Works anywhere, on any phone</h3><p>No mobile network, internet or app is needed. The robot is its own
+      Wi-Fi hotspot, and the control page opens in any phone browser. It can even speak alerts aloud.</p></div>
+  </div>
+
+  <h2>Who can use it</h2>
+  <div class="grid4">
+    <div class="stat"><div class="v" style="font-size:12pt">Fire &amp; rescue</div><div class="k">fire stations, NDRF / SDRF and civil-defence teams</div></div>
+    <div class="stat"><div class="v" style="font-size:12pt">Volunteers</div><div class="k">disaster-relief NGOs, NCC and NSS units</div></div>
+    <div class="stat"><div class="v" style="font-size:12pt">Industry</div><div class="k">factories and warehouses after fire or collapse</div></div>
+    <div class="stat"><div class="v" style="font-size:12pt">Schools</div><div class="k">disaster drills and STEM learning</div></div>
+  </div>
+  <div class="foot"><span>ResQBot Mini · Project proposal</span><span>3</span></div>
+</section>
+
+<!-- ============================== 4 · HOW IT WORKS ============================== -->
+<section class="page tight">
+  <p class="kicker">How it works</p>
+  <h1>One search, step by step</h1>
+  <p class="lead">Press <b>Auto search</b> on the phone, and the robot repeats this loop by itself until it finds
+    someone or is told to stop.</p>
+
+  <svg viewBox="0 0 760 150" style="width:100%;margin:2mm 0 3mm" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI">
+    <defs><marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#c3cad6"/></marker></defs>
+    <g font-size="13" font-weight="700" text-anchor="middle">
+      <g><circle cx="62" cy="58" r="40" fill="#fff0e6"/><text x="62" y="54" fill="#ff6b1a">SWEEP</text><text x="62" y="71" font-size="10" font-weight="500" fill="#5b6475">30 heat readings</text></g>
+      <g><circle cx="190" cy="58" r="40" fill="#fff0e6"/><text x="190" y="54" fill="#ff6b1a">DETECT</text><text x="190" y="71" font-size="10" font-weight="500" fill="#5b6475">body-like heat?</text></g>
+      <g><circle cx="318" cy="58" r="40" fill="#e8f0fb"/><text x="318" y="54" fill="#2a78d6">TURN</text><text x="318" y="71" font-size="10" font-weight="500" fill="#5b6475">face the heat</text></g>
+      <g><circle cx="446" cy="58" r="40" fill="#e8f0fb"/><text x="446" y="54" fill="#2a78d6">APPROACH</text><text x="446" y="71" font-size="10" font-weight="500" fill="#5b6475">crawl, avoid</text></g>
+      <g><circle cx="574" cy="58" r="40" fill="#e4f6ef"/><text x="574" y="54" fill="#13a874">CONFIRM</text><text x="574" y="71" font-size="10" font-weight="500" fill="#5b6475">5 s: heat + motion</text></g>
+      <g><circle cx="702" cy="58" r="40" fill="#fdeaea"/><text x="702" y="54" fill="#e5383b">ALERT</text><text x="702" y="71" font-size="10" font-weight="500" fill="#5b6475">phone, light, beep</text></g>
+    </g>
+    <g stroke="#c3cad6" stroke-width="2.5" marker-end="url(#ar)">
+      <path d="M104 58H146"/><path d="M232 58H274"/><path d="M360 58H402"/><path d="M488 58H530"/><path d="M616 58H658"/>
+    </g>
+    <path d="M190 100 C190 140 62 140 62 102" fill="none" stroke="#c3cad6" stroke-width="2" stroke-dasharray="5 5" marker-end="url(#ar)"/>
+    <text x="126" y="146" font-size="10.5" fill="#5b6475" text-anchor="middle">nothing found → drive on, sweep again</text>
+    <path d="M574 100 C574 140 446 140 446 108" fill="none" stroke="#c3cad6" stroke-width="2" stroke-dasharray="5 5"/>
+    <text x="510" y="146" font-size="10.5" fill="#5b6475" text-anchor="middle">not a person → turn away</text>
+  </svg>
+
+  <div class="steps">
+    <div class="step"><div class="n">1</div><h3>Sweep</h3><p>Two small servos turn the thermal sensor through 15 directions
+      at two heights (floor and level): a 30-point heat map. A cone-shaped tube narrows the sensor's view to 25°,
+      so each reading looks at one spot instead of the whole room.</p></div>
+    <div class="step"><div class="n">2</div><h3>Detect</h3><p>The map is compared with the background temperature. A
+      patch at least 1.5 °C warmer, covering 2 or more neighbouring points and no hotter than 42 °C, looks like
+      a body. 55 °C or more is reported as a fire hazard.</p></div>
+    <div class="step"><div class="n">3</div><h3>Turn</h3><p>The robot knows which direction the warmest point was
+      in. It turns its whole body to face it and points the sensor straight ahead.</p></div>
+    <div class="step"><div class="n">4</div><h3>Approach</h3><p>It crawls forward slowly while the ultrasonic sensor
+      measures the gap, and stops about 35 cm away. It keeps the highest temperature it reads on the way.</p></div>
+    <div class="step"><div class="n">5</div><h3>Confirm</h3><p>It waits 5 seconds, watching with the motion sensor.
+      Then it combines everything into a confidence score (below).</p></div>
+    <div class="step"><div class="n">6</div><h3>Alert</h3><p>60 % or more: <b>survivor likely</b>. The phone shows a red
+      alert with a photo, the beacon flashes and the buzzer sounds until a rescuer taps Acknowledge. 35–59 %:
+      "possible, check manually".</p></div>
+  </div>
+
+  <h2>How it tells a person from a warm object</h2>
+  <div class="grid2">
+    <div>
+      <p class="small muted" style="margin-bottom:1.5mm">Four clues add up to the confidence score:</p>
+      <b class="small">Heat contrast: how much warmer than the surroundings</b><div class="bar"><i style="width:85%"></i></div>
+      <b class="small">Size: a body covers several points, a hot pipe one</b><div class="bar"><i style="width:65%"></i></div>
+      <b class="small">Gets warmer when closer: a real heat source, not a reflection</b><div class="bar"><i style="width:70%"></i></div>
+      <b class="small">Movement from the PIR sensor</b><div class="bar"><i style="width:50%"></i></div>
+    </div>
+    <div class="card" style="background:var(--soft);border:0">
+      <h3>Triage on the phone</h3>
+      <p style="margin-bottom:2mm"><span class="pill red">PRIORITY RED</span> warm, <b>not moving</b>: may be unconscious; reach first.</p>
+      <p style="margin-bottom:2mm"><span class="pill yel">PRIORITY YELLOW</span> warm and moving: conscious; can likely wait a little.</p>
+      <p><span class="pill grn">REJECTED</span> too hot, too small or not body-like: the robot turns away and keeps searching.</p>
+    </div>
+  </div>
+  <div class="foot"><span>ResQBot Mini · Project proposal</span><span>4</span></div>
+</section>
+
+<!-- ============================== 5 · INSIDE THE ROBOT ============================== -->
+<section class="page">
+  <p class="kicker">Inside the robot</p>
+  <h1>Two small boards share the work</h1>
+  <p class="lead">An <b>Arduino Uno</b> is the brain: it reads every sensor, runs the search and drives the motors.
+    An <b>ESP32-CAM</b> is the eyes and voice: it shoots live video, makes the Wi-Fi hotspot and serves the
+    control page to the phone. The two talk over a serial link that checks every command for errors.</p>
+
+  <svg viewBox="0 0 760 330" style="width:100%;margin:2mm 0 2mm" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI">
+    <defs><marker id="a2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="#8a94a6"/></marker></defs>
+    <text x="10" y="16" font-size="11" font-weight="700" fill="#8a94a6" letter-spacing="2">SENSE</text>
+    <text x="290" y="16" font-size="11" font-weight="700" fill="#8a94a6" letter-spacing="2">THINK</text>
+    <text x="560" y="16" font-size="11" font-weight="700" fill="#8a94a6" letter-spacing="2">ACT &amp; SHOW</text>
+    <g font-size="12">
+      <g><rect x="10" y="28" width="210" height="40" rx="9" fill="#fff0e6"/><text x="22" y="46" font-weight="700" fill="#141b2b">MLX90614 thermal</text><text x="22" y="61" font-size="10" fill="#5b6475">body heat, on pan-tilt servos</text></g>
+      <g><rect x="10" y="76" width="210" height="40" rx="9" fill="#e4f6ef"/><text x="22" y="94" font-weight="700" fill="#141b2b">PIR motion</text><text x="22" y="109" font-size="10" fill="#5b6475">is the person moving?</text></g>
+      <g><rect x="10" y="124" width="210" height="40" rx="9" fill="#e8f0fb"/><text x="22" y="142" font-weight="700" fill="#141b2b">HC-SR04 ultrasonic</text><text x="22" y="157" font-size="10" fill="#5b6475">obstacles, approach distance</text></g>
+      <g><rect x="10" y="172" width="210" height="40" rx="9" fill="#fdeaea"/><text x="22" y="190" font-weight="700" fill="#141b2b">MQ-2 smoke / gas</text><text x="22" y="205" font-size="10" fill="#5b6475">hazard warning</text></g>
+      <g><rect x="10" y="220" width="210" height="40" rx="9" fill="#f5f7fa"/><text x="22" y="238" font-weight="700" fill="#141b2b">DHT11</text><text x="22" y="253" font-size="10" fill="#5b6475">air temperature, humidity</text></g>
+    </g>
+    <rect x="270" y="60" width="220" height="170" rx="16" fill="#0e1424"/>
+    <text x="380" y="92" font-size="17" font-weight="800" fill="#fff" text-anchor="middle">Arduino Uno</text>
+    <g font-size="10.5" fill="#ffd0b0"><text x="290" y="118">• thermal sweep + detection</text><text x="290" y="136">• search loop, confidence score</text>
+      <text x="290" y="154">• obstacle avoidance</text><text x="290" y="172">• safety stops (dead-man)</text><text x="290" y="190">• motors, servos, drill, alarm</text>
+      <text x="290" y="208">• status to the camera board</text></g>
+    <g font-size="12">
+      <g><rect x="540" y="28" width="210" height="40" rx="9" fill="#f5f7fa"/><text x="552" y="46" font-weight="700" fill="#141b2b">4WD drive (L298N)</text><text x="552" y="61" font-size="10" fill="#5b6475">4 gear motors, skid steering</text></g>
+      <g><rect x="540" y="76" width="210" height="40" rx="9" fill="#f5f7fa"/><text x="552" y="94" font-weight="700" fill="#141b2b">12 V drill (MOSFET)</text><text x="552" y="109" font-size="10" fill="#5b6475">clears light debris, hold-to-run</text></g>
+      <g><rect x="540" y="124" width="210" height="40" rx="9" fill="#fdeaea"/><text x="552" y="142" font-weight="700" fill="#141b2b">Beacon LED + buzzer</text><text x="552" y="157" font-size="10" fill="#5b6475">marks the survivor</text></g>
+      <g><rect x="540" y="184" width="210" height="48" rx="9" fill="#e4f6ef" stroke="#13a874" stroke-width="1.5"/><text x="552" y="203" font-weight="700" fill="#141b2b">ESP32-CAM</text><text x="552" y="219" font-size="10" fill="#5b6475">live video · own Wi-Fi · control page</text></g>
+      <g><rect x="540" y="270" width="210" height="48" rx="9" fill="#fff0e6" stroke="#ff6b1a" stroke-width="1.5"/><text x="552" y="289" font-weight="700" fill="#141b2b">Rescuer's phone</text><text x="552" y="305" font-size="10" fill="#5b6475">any browser · no app · no internet</text></g>
+    </g>
+    <g stroke="#8a94a6" stroke-width="1.8" fill="none" marker-end="url(#a2)">
+      <path d="M220 48 C250 48 245 100 268 104"/><path d="M220 96 C245 96 245 120 268 124"/><path d="M220 144 H268"/>
+      <path d="M220 192 C245 192 245 170 268 166"/><path d="M220 240 C250 240 245 196 268 192"/>
+      <path d="M490 100 C515 100 515 48 538 48"/><path d="M490 120 C515 120 515 96 538 96"/><path d="M490 150 H538"/>
+    </g>
+    <path d="M492 200 C515 200 515 208 536 208" stroke="#13a874" stroke-width="2" fill="none" marker-end="url(#a2)" marker-start="url(#a2)"/>
+    <text x="500" y="250" font-size="9.5" fill="#13a874">serial link,</text><text x="500" y="262" font-size="9.5" fill="#13a874">error-checked</text>
+    <path d="M645 234 V266" stroke="#ff6b1a" stroke-width="2" fill="none" marker-end="url(#a2)" marker-start="url(#a2)"/>
+    <text x="654" y="254" font-size="10" fill="#ff6b1a">Wi-Fi</text>
+    <rect x="10" y="278" width="480" height="40" rx="9" fill="#f5f7fa"/>
+    <text x="22" y="296" font-size="12" font-weight="700" fill="#141b2b">Power</text>
+    <text x="22" y="311" font-size="10" fill="#5b6475">2S Li-ion pack (7.4 V) with fuse and switch · motors direct · two 5 V buck converters (logic / servos + camera)</text>
+  </svg>
+
+  <h2>Why these parts</h2>
+  <table>
+    <tr><th style="width:30%">Part</th><th>Why we chose it</th></tr>
+    <tr><td>MLX90614 IR thermometer</td><td>Measures temperature without touching, works in total darkness, and costs a small fraction of a thermal camera. Turning it on servos builds a heat map from a single sensor.</td></tr>
+    <tr><td>25° cone tube (our design)</td><td>The bare sensor sees a 90° cone, which blurs a person into the background. The tube narrows it, which our estimate puts at about 1.5 m of detection range for a lying person, against about 0.4 m bare.</td></tr>
+    <tr><td>PIR motion sensor</td><td>Cheap and very sensitive to human movement: it tells "conscious and moving" from "still".</td></tr>
+    <tr><td>ESP32-CAM</td><td>Camera, Wi-Fi and a web server on one ₹500-class board: the phone needs nothing installed.</td></tr>
+    <tr><td>Arduino Uno</td><td>Simple, sturdy and easy to repair; separating it from the camera board means a Wi-Fi problem can't stop the safety logic.</td></tr>
+  </table>
+  <div class="foot"><span>ResQBot Mini · Project proposal</span><span>5</span></div>
+</section>
+
+<!-- ============================== BUILD · EXPLODED VIEW ============================== -->
+<section class="page tight">
+  <p class="kicker">How we built it</p>
+  <h1>Three decks and a shell</h1>
+  <p class="lead">The robot is built in layers: heavy parts low, sensors high. Each layer can be lifted off for
+    repairs without unwiring the rest.</p>
+
+  <figure style="margin:1mm 0 1mm"><img src="../render3d/exploded.png" style="width:100%;display:block;border-radius:3mm">
+    <figcaption>3D model of our layout, exploded so every part is visible. Front of the robot is on the right.</figcaption></figure>
+
+  <h2>Build in six stages</h2>
+  <div class="steps">
+    <div class="step"><div class="n">1</div><h3>Chassis and drive</h3><p>4WD frame, four gear motors and the L298N.
+      Tested first on its own: forward, back and turns.</p></div>
+    <div class="step"><div class="n">2</div><h3>Safe power</h3><p>2S Li-ion pack through a fuse and switch. Motors get the
+      battery directly; two buck converters make clean 5 V, one for logic, one for servos and camera.</p></div>
+    <div class="step"><div class="n">3</div><h3>Brain and sensors</h3><p>Uno on the middle deck. Each sensor is added and
+      checked one at a time on the Serial Monitor before the next one goes in.</p></div>
+    <div class="step"><div class="n">4</div><h3>Thermal head</h3><p>MLX90614 inside our black 25° tube on a pan-tilt
+      bracket, mounted high and centred so nothing blocks its sweep.</p></div>
+    <div class="step"><div class="n">5</div><h3>Camera and software</h3><p>ESP32-CAM linked to the Uno; our own firmware
+      for both boards and the phone control page, written and tested by the team.</p></div>
+    <div class="step"><div class="n">6</div><h3>Shell, drill, testing</h3><p>Protective shell and front drill fitted last,
+      then full search runs with a team-mate as the "survivor".</p></div>
+  </div>
+  <div class="foot"><span>ResQBot Mini · Project proposal</span><span>6</span></div>
+</section>
+
+<!-- ============================== BUILD · THERMAL HEAD ============================== -->
+<section class="page tight">
+  <p class="kicker">The heart of the robot</p>
+  <h1>One cheap sensor, turned into<br>a heat-mapping eye</h1>
+  <p class="lead">A thermal camera costs tens of thousands of rupees. We get a useful heat map from a single ₹759
+    infrared thermometer by narrowing what it sees and moving it with two servos.</p>
+
+  <div class="grid2" style="margin-top:3mm;align-items:start">
+    <div class="card">
+      <h3>1 · The black tube narrows its view</h3>
+      <svg viewBox="0 0 340 190" style="width:100%" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI">
+        <path d="M60 95 L330 -40 L330 230 Z" fill="#e3e8ef" opacity=".7"/>
+        <text x="296" y="20" font-size="10" fill="#8a94a6" text-anchor="end">bare sensor: 90°, sees the whole room</text>
+        <path d="M60 95 L330 35 L330 155 Z" fill="#ffd9c2"/>
+        <path d="M60 95 L330 35 M60 95 L330 155" stroke="#ff6b1a" stroke-width="1.6" stroke-dasharray="5 4"/>
+        <text x="250" y="99" font-size="15" font-weight="800" fill="#ff6b1a">25°</text>
+        <rect x="14" y="60" width="10" height="70" fill="#13a874"/>
+        <rect x="24" y="76" width="30" height="38" fill="#c9d0dc" stroke="#7c879c"/>
+        <rect x="24" y="62" width="100" height="12" fill="#141b2b"/><rect x="24" y="116" width="100" height="12" fill="#141b2b"/>
+        <path d="M54 136 H124" stroke="#141b2b" stroke-width="1.2"/><text x="89" y="150" font-size="9.5" fill="#5b6475" text-anchor="middle">22 mm tube, Ø10 mm</text>
+        <ellipse cx="300" cy="95" rx="22" ry="12" fill="#ff4b2b" opacity=".75"/>
+        <text x="300" y="128" font-size="9.5" fill="#5b6475" text-anchor="middle">a person</text>
+        <text x="16" y="178" font-size="9.5" fill="#5b6475">GY-906 board + metal can</text>
+      </svg>
+      <p>Without the tube, a person far away is only a small part of a huge view and gets averaged into the cold
+        background. Rolled black card, 22 mm long, cuts the view to about 25°, so each reading looks at one spot.</p>
+    </div>
+    <div class="card">
+      <h3>2 · Servos sweep it into a heat map</h3>
+      <svg viewBox="0 0 340 190" style="width:100%" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI">
+        <g transform="translate(170 172)">
+          <g id="ring" fill="#e8f0fb" stroke="#fff" stroke-width="1.5"></g>
+        </g>
+        <g transform="translate(170 172)" stroke="#fff" stroke-width="1.5">
+          <!-- 15 sectors x 2 rings drawn from 20 deg to 160 deg -->
+          <path d="M-150 -54.6 A160 160 0 0 1 150 -54.6 L84.6 -30.8 A90 90 0 0 0 -84.6 -30.8 Z" fill="#cfe0f7"/>
+          <path d="M-84.6 -30.8 A90 90 0 0 1 84.6 -30.8 L37.6 -13.7 A40 40 0 0 0 -37.6 -13.7 Z" fill="#b5cff2"/>
+          <path d="M38.8 -157.2 A160 160 0 0 1 75.1 -141.3 L42.3 -79.5 A90 90 0 0 0 21.8 -88.4 Z" fill="#ff7a3d"/>
+          <path d="M21.8 -88.4 A90 90 0 0 1 42.3 -79.5 L18.8 -35.3 A40 40 0 0 0 9.7 -39.3 Z" fill="#ffb27a"/>
+          <path d="M75.1 -141.3 A160 160 0 0 1 106 -119.9 L59.6 -67.4 A90 90 0 0 0 42.3 -79.5 Z" fill="#ffd2b0"/>
+          <g stroke="#fff" stroke-width="1.2" fill="none">
+            <path d="M0 0 L-150.4 -54.7"/><path d="M0 0 L-141.3 -75.1"/><path d="M0 0 L-129.4 -94"/><path d="M0 0 L-114.6 -111.6"/><path d="M0 0 L-97.5 -126.9"/>
+            <path d="M0 0 L-78.4 -139.5"/><path d="M0 0 L-57.8 -149.2"/><path d="M0 0 L-35.9 -155.9"/><path d="M0 0 L-13.9 -159.4"/><path d="M0 0 L13.9 -159.4"/>
+            <path d="M0 0 L35.9 -155.9"/><path d="M0 0 L57.8 -149.2"/><path d="M0 0 L78.4 -139.5"/><path d="M0 0 L97.5 -126.9"/><path d="M0 0 L114.6 -111.6"/>
+            <path d="M0 0 L129.4 -94"/><path d="M0 0 L141.3 -75.1"/><path d="M0 0 L150.4 -54.7"/>
+          </g>
+          <path d="M-125 -62 A140 140 0 0 1 125 -62" fill="none" stroke="#141b2b" stroke-width="1.6" stroke-dasharray="4 4"/>
+          <path d="M122 -66 l6 2 l-5 4" fill="none" stroke="#141b2b" stroke-width="1.6"/>
+          <path d="M66 -28 A70 70 0 0 1 -66 -28" fill="none" stroke="#141b2b" stroke-width="1.6" stroke-dasharray="4 4"/>
+          <path d="M0 0 L56 -100" stroke="#e5383b" stroke-width="2.5"/>
+          <path d="M-12 8 L0 -14 L12 8 Z" fill="#ff6b1a"/>
+        </g>
+        <text x="8" y="182" font-size="9.5" fill="#5b6475">LEFT</text><text x="332" y="182" font-size="9.5" fill="#5b6475" text-anchor="end">RIGHT</text>
+        <text x="236" y="22" font-size="10" font-weight="700" fill="#e5383b">heat found: 20° right</text>
+      </svg>
+      <p>Pan goes from 20° to 160° in 10° steps (15 directions), first at floor level, then back along the level row:
+        30 readings in a few seconds. The warm cluster, and the direction of its peak, tell the robot where to turn.</p>
+    </div>
+  </div>
+
+  <h2>3 · How far it can see (our estimate)</h2>
+  <div style="display:grid;grid-template-columns:1.35fr 1fr;gap:5mm;align-items:center">
+    <figure><img src="../images/fov_range.png" style="width:100%;border:1px solid var(--line);border-radius:3mm;display:block">
+      <figcaption>Geometric model of a lying person: the reading must rise 1.5 °C above the background to count.</figcaption></figure>
+    <div>
+      <table>
+        <tr><th>Sensor view</th><th class="r">Range</th></tr>
+        <tr><td>Bare sensor, 90°</td><td class="r">≈ 0.4 m</td></tr>
+        <tr><td>Tube, 35°</td><td class="r">≈ 1.1 m</td></tr>
+        <tr class="hl"><td>Our tube, 25°</td><td class="r">≈ 1.5 m</td></tr>
+      </table>
+      <p class="small muted">A simple, cheap part makes the sensor about 4× more useful. These are model estimates; we
+        measure the real range with volunteers in our field trials.</p>
+    </div>
+  </div>
+  <div class="foot"><span>ResQBot Mini · Project proposal</span><span>7</span></div>
+</section>
+
+<!-- ============================== BUILD · WIRING ============================== -->
+<section class="page tight">
+  <p class="kicker">Wiring at a glance</p>
+  <h1>Every pin has a job</h1>
+  <p class="lead">All 20 of the Uno's pins are in use. Power is split so the motors can't disturb the sensors, and
+    every ground is joined.</p>
+
+  <svg viewBox="0 0 760 360" style="width:100%;margin:1mm 0 2mm" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI">
+    <rect x="290" y="20" width="180" height="320" rx="14" fill="#0e1424"/>
+    <text x="380" y="52" font-size="17" font-weight="800" fill="#fff" text-anchor="middle">Arduino Uno</text>
+    <g font-size="11" font-weight="700" fill="#ffd0b0">
+      <text x="302" y="86">D0 / D1</text><text x="302" y="118">D2</text><text x="302" y="150">D3</text><text x="302" y="182">D4</text>
+      <text x="302" y="214">D5 – D10</text><text x="302" y="246">D11 / D12</text><text x="302" y="278">D13</text>
+      <g text-anchor="end"><text x="458" y="86">A0</text><text x="458" y="150">A1</text><text x="458" y="214">A2 / A3</text><text x="458" y="278">A4 / A5</text></g>
+    </g>
+    <g stroke="#8a94a6" stroke-width="1.6">
+      <path d="M290 82 H262"/><path d="M290 114 H262"/><path d="M290 146 H262"/><path d="M290 178 H262"/><path d="M290 210 H262"/><path d="M290 242 H262"/><path d="M290 274 H262"/>
+      <path d="M470 82 H498"/><path d="M470 146 H498"/><path d="M470 210 H498"/><path d="M470 274 H498"/>
+    </g>
+    <g font-size="11.5">
+      <g><rect x="20" y="66" width="242" height="30" rx="7" fill="#e4f6ef"/><text x="30" y="80" font-weight="700">ESP32-CAM link</text><text x="30" y="92" font-size="9.5" fill="#5b6475">serial; Uno TX through a 1k/2k divider</text></g>
+      <g><rect x="20" y="100" width="242" height="28" rx="7" fill="#f5f7fa"/><text x="30" y="118" font-weight="700">DHT11 <tspan font-weight="400" fill="#5b6475" font-size="9.5">air temperature, humidity</tspan></text></g>
+      <g><rect x="20" y="132" width="242" height="28" rx="7" fill="#fdeaea"/><text x="30" y="150" font-weight="700">Buzzer module <tspan font-weight="400" fill="#5b6475" font-size="9.5">5 V, alarm</tspan></text></g>
+      <g><rect x="20" y="164" width="242" height="28" rx="7" fill="#e4f6ef"/><text x="30" y="182" font-weight="700">PIR <tspan font-weight="400" fill="#5b6475" font-size="9.5">motion</tspan></text></g>
+      <g><rect x="20" y="196" width="242" height="28" rx="7" fill="#f5f7fa"/><text x="30" y="214" font-weight="700">L298N <tspan font-weight="400" fill="#5b6475" font-size="9.5">2 PWM speeds + 4 directions</tspan></text></g>
+      <g><rect x="20" y="228" width="242" height="28" rx="7" fill="#fff0e6"/><text x="30" y="246" font-weight="700">Pan / tilt servos <tspan font-weight="400" fill="#5b6475" font-size="9.5">thermal head</tspan></text></g>
+      <g><rect x="20" y="260" width="242" height="28" rx="7" fill="#fdeaea"/><text x="30" y="278" font-weight="700">Beacon LED <tspan font-weight="400" fill="#5b6475" font-size="9.5">220 Ω, lights + alert</tspan></text></g>
+      <g><rect x="498" y="68" width="242" height="28" rx="7" fill="#fdeaea"/><text x="508" y="86" font-weight="700">MQ-2 <tspan font-weight="400" fill="#5b6475" font-size="9.5">smoke / gas level</tspan></text></g>
+      <g><rect x="498" y="132" width="242" height="28" rx="7" fill="#fff0e6"/><text x="508" y="150" font-weight="700">Drill MOSFET <tspan font-weight="400" fill="#5b6475" font-size="9.5">12 V motor on / off</tspan></text></g>
+      <g><rect x="498" y="196" width="242" height="28" rx="7" fill="#e8f0fb"/><text x="508" y="214" font-weight="700">HC-SR04 <tspan font-weight="400" fill="#5b6475" font-size="9.5">trigger / echo</tspan></text></g>
+      <g><rect x="498" y="260" width="242" height="28" rx="7" fill="#fff0e6"/><text x="508" y="278" font-weight="700">MLX90614 <tspan font-weight="400" fill="#5b6475" font-size="9.5">I²C SDA / SCL</tspan></text></g>
+    </g>
+    <text x="380" y="320" font-size="10" fill="#8a94a6" text-anchor="middle">all 14 digital + 6 analog pins used</text>
+  </svg>
+
+  <div class="grid2">
+    <div class="card">
+      <h3>Drill switch (low-side MOSFET)</h3>
+      <svg viewBox="0 0 330 200" style="width:100%" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI" font-size="10.5">
+        <g stroke="#141b2b" stroke-width="2" fill="none">
+          <path d="M200 18 V40"/><circle cx="200" cy="66" r="22"/><path d="M200 88 V112"/>
+          <path d="M200 30 H262 V58"/><path d="M262 78 V100 H200"/>
+          <path d="M200 112 V124"/><path d="M188 124 V156"/><path d="M200 124 H190 M200 156 H190"/>
+          <path d="M200 124 V118"/><path d="M200 156 V180"/>
+          <path d="M60 140 H90"/><path d="M118 140 H178 V140"/><path d="M178 128 V152"/>
+          <path d="M140 140 V156"/><path d="M140 176 V186 H200"/>
+          <path d="M180 186 H220"/>
+        </g>
+        <text x="200" y="71" text-anchor="middle" font-weight="700">M</text>
+        <rect x="90" y="134" width="28" height="12" fill="#fff" stroke="#141b2b" stroke-width="2"/>
+        <rect x="134" y="156" width="12" height="20" fill="#fff" stroke="#141b2b" stroke-width="2"/>
+        <path d="M254 70 H270 L262 58 Z M254 58 H270" fill="#141b2b" stroke="#141b2b" stroke-width="2"/>
+        <text x="206" y="14" font-weight="700" fill="#e5383b">+12 V</text>
+        <text x="276" y="68" fill="#5b6475">diode</text>
+        <text x="14" y="144" font-weight="700" fill="#ff6b1a">Uno A1</text>
+        <text x="94" y="128" fill="#5b6475">220 Ω</text><text x="150" y="172" fill="#5b6475">10 kΩ</text>
+        <text x="210" y="142" fill="#5b6475">MOSFET</text><text x="226" y="190" font-weight="700">GND (shared)</text>
+      </svg>
+      <p>A1 switches the MOSFET; the 10 kΩ keeps the drill off while the Uno starts; the diode absorbs the motor's
+        switch-off spike. The code only allows hold-to-run.</p>
+    </div>
+    <div class="card">
+      <h3>Power split</h3>
+      <svg viewBox="0 0 330 200" style="width:100%" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI" font-size="10.5">
+        <defs><marker id="pa" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="#d6336c"/></marker></defs>
+        <rect x="8" y="80" width="86" height="40" rx="8" fill="#fdeaea"/><text x="51" y="97" text-anchor="middle" font-weight="700">2S pack</text><text x="51" y="111" text-anchor="middle" fill="#5b6475">fuse + switch</text>
+        <g stroke="#d6336c" stroke-width="2" fill="none" marker-end="url(#pa)"><path d="M94 92 C130 92 130 30 168 30"/><path d="M94 100 H168"/><path d="M94 108 C130 108 130 170 168 170"/></g>
+        <rect x="170" y="12" width="152" height="36" rx="8" fill="#f5f7fa"/><text x="180" y="28" font-weight="700">L298N → motors</text><text x="180" y="41" fill="#5b6475">battery voltage, direct</text>
+        <rect x="170" y="82" width="152" height="36" rx="8" fill="#e8f0fb"/><text x="180" y="98" font-weight="700">Buck 1 → 5 V</text><text x="180" y="111" fill="#5b6475">Uno and sensors</text>
+        <rect x="170" y="152" width="152" height="36" rx="8" fill="#e8f0fb"/><text x="180" y="168" font-weight="700">Buck 2 → 5 V</text><text x="180" y="181" fill="#5b6475">servos and ESP32-CAM</text>
+      </svg>
+      <p>Servos and the camera draw sudden current; on their own converter they can't reset the Uno. The drill gets
+        its own 12 V feed with a shared ground.</p>
+    </div>
+  </div>
+
+  <h2>Checks before every run</h2>
+  <div class="grid3">
+    <div class="step"><div class="n">1</div><h3>Power-on</h3><p>Two short beeps = the Uno started; the event log says
+      "thermal sensor OK", or names the exact wiring fault.</p></div>
+    <div class="step"><div class="n">2</div><h3>Link</h3><p>The phone shows "LIVE · car ✓" and "fast link ✓": both boards
+      talk and commands reach the car.</p></div>
+    <div class="step"><div class="n">3</div><h3>Safety</h3><p>Tap test (short hop), E-STOP test, and the drill spins only
+      while held, with the wheels lifted.</p></div>
+  </div>
+  <div class="foot"><span>ResQBot Mini · Project proposal</span><span>8</span></div>
+</section>
+
+<!-- ============================== 6 · THE PHONE SCREEN ============================== -->
+<section class="page">
+  <p class="kicker">The rescuer's screen</p>
+  <h1>Everything on one phone page</h1>
+  <p class="lead">Rescuers join the robot's Wi-Fi and open one address. The page works on old and new phones, on a
+    laptop, and on several phones at once.</p>
+
+  <div style="display:grid;grid-template-columns:86mm 1fr;gap:6mm;margin-top:4mm;align-items:start">
+    <figure><img src="dash_crop.png" style="width:100%;border-radius:4mm;display:block">
+      <figcaption>The control page with sample data: a survivor alert and the thermal sweep map. The white line
+        points to the heat; warm colours are warmer spots.</figcaption></figure>
+    <div>
+      <h3>See</h3>
+      <ul class="small">
+        <li><b>Live video</b> from the robot's camera, with a dimmable light for dark spaces.</li>
+        <li><b>Thermal vision:</b> the heat map drawn over the video, so a warm patch shows where it is in the picture.</li>
+        <li><b>Thermal sweep map</b> (left) with the direction and temperature of the strongest heat.</li>
+        <li><b>Sensor panel:</b> temperature ahead, air temperature and humidity, obstacle distance, smoke/gas, motion.</li>
+      </ul>
+      <h3>Act</h3>
+      <ul class="small">
+        <li><b>Auto search</b> runs the whole loop by itself; <b>Manual</b> lets a rescuer drive.</li>
+        <li><b>Fast controls:</b> a quick tap gives a short, precise move; holding keeps it going. Commands travel over
+          a fast live link and the robot stops by itself the moment the phone stops sending.</li>
+        <li><b>Hold to drill</b> and <b>car lights</b>, <b>beep / call out</b> to reassure a trapped person.</li>
+        <li><b>E-STOP</b> stops everything at once.</li>
+      </ul>
+      <h3>Record</h3>
+      <ul class="small">
+        <li><b>Voice alerts</b> read finds aloud, so the operator can watch the rubble, not the screen.</li>
+        <li><b>Survivors list:</b> every find with a photo, time, temperature and triage tag.</li>
+        <li><b>Mission report</b> in one tap, ready to hand to the incident commander or save as a PDF; the event log
+          downloads as a spreadsheet file.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot"><span>ResQBot Mini · Project proposal</span><span>9</span></div>
+</section>
+
+<!-- ============================== 7 · TOUGH + SAFE ============================== -->
+<section class="page">
+  <p class="kicker">Built for rough places</p>
+  <h1>Armoured, able to clear a path,<br>and safe around people</h1>
+
+  <div class="grid3" style="margin-top:4mm">
+    <div class="card"><div class="ic b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+      <h3>Protective shell</h3><p>A light, sloped plastic shell covers the electronics, so falling dust and small pieces
+      slide off. Windows are left open for the sensors, camera and drill, plus air vents. It's plastic, not metal,
+      so the Wi-Fi signal still gets out.</p></div>
+    <div class="card"><div class="ic o"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h9l3-3v6l-3-3M15 12h6"/></svg></div>
+      <h3>Front drill</h3><p>A 12 V gear motor, switched by a MOSFET, clears light debris and opens small view holes
+      in thin panels, so the camera and sensor can look further in. It runs only while the button is held.</p></div>
+    <div class="card"><div class="ic t"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 18h16M7 18V9l5-4 5 4v9"/></svg></div>
+      <h3>Stable chassis</h3><p>Four-wheel drive with skid steering. The battery sits low and in the middle, and the
+      thermal head is on top with a clear view, so the robot stays steady on uneven ground.</p></div>
+  </div>
+
+  <h2>Safety is designed in, not added later</h2>
+  <table>
+    <tr><th style="width:34%">Risk</th><th>What the robot does</th></tr>
+    <tr><td>Phone loses connection</td><td>A dead-man rule: motors and drill stop by themselves within a second if commands stop arriving.</td></tr>
+    <tr><td>Drill near a person</td><td>Hold-to-run only; Manual mode only; stops on E-STOP, Auto search and any survivor alert; never more than 30 s in one go.</td></tr>
+    <tr><td>Driving into something</td><td>The ultrasonic sensor refuses forward movement when an obstacle is closer than 10 cm; in Auto it backs off and turns.</td></tr>
+    <tr><td>A damaged command on the wire</td><td>Every command carries a checksum; a damaged one is ignored instead of being misread.</td></tr>
+    <tr><td>A hot object mistaken for a person</td><td>Body-like rules, a 5-second confirmation and a confidence score; very hot spots are reported as fire.</td></tr>
+    <tr><td>Overheating light</td><td>The camera's bright LED is limited in power and switches itself off after 60 s.</td></tr>
+    <tr><td>Short circuit or crash</td><td>A fuse on the battery, a main switch, and an E-STOP button on the screen.</td></tr>
+  </table>
+
+  <div class="band"><p><b>Honest limits.</b> The thermal sensor reaches about 1.5 m (our estimate) and can't see
+    through solid walls or thick concrete; it finds heat that has a line of sight. The small motors suit rubble
+    gaps and indoor debris, not large boulders. ResQBot is a first-look scout that helps a team decide where to
+    search. It is not a replacement for trained rescuers, dogs or professional life detectors.</p></div>
+  <div class="foot"><span>ResQBot Mini · Project proposal</span><span>10</span></div>
+</section>
+
+<!-- ============================== 8 · COST + FUTURE ============================== -->
+<section class="page">
+  <p class="kicker">Cost and reach</p>
+  <h1>Cheap enough to send in first</h1>
+  <p class="lead">Because it costs a fraction of a single thermal camera, a fire station could keep several robots
+    and send them into different gaps at the same time, and losing one inside the rubble is acceptable.</p>
+
+  <div class="grid4" style="margin:4mm 0">
+    <div class="stat"><div class="v">₹4,684</div><div class="k">parts for one robot (base build)</div></div>
+    <div class="stat"><div class="v">₹3,523</div><div class="k">estimated cost each, when 100 are made</div></div>
+    <div class="stat"><div class="v">≈ ¼</div><div class="k">of a ₹25,000 handheld thermal camera</div></div>
+    <div class="stat"><div class="v">0</div><div class="k">running cost besides charging the battery</div></div>
+  </div>
+
+  <div class="grid2">
+    <div>
+      <h2 style="margin-top:0">Where the money goes</h2>
+      <table>
+        <tr><th>Parts</th><th class="r">₹</th></tr>
+        <tr><td>Arduino Uno + ESP32-CAM + programmer</td><td class="r">1,214</td></tr>
+        <tr><td>MLX90614 thermal sensor</td><td class="r">759</td></tr>
+        <tr><td>Ultrasonic, PIR, DHT11, MQ-2</td><td class="r">336</td></tr>
+        <tr><td>4WD chassis + L298N driver</td><td class="r">738</td></tr>
+        <tr><td>2 servos + pan-tilt bracket</td><td class="r">267</td></tr>
+        <tr><td>Battery, buck converter, switch</td><td class="r">736</td></tr>
+        <tr><td>Wires, board, bolts, buzzer, LED</td><td class="r">634</td></tr>
+        <tr class="hl"><td>One robot (base build)</td><td class="r">4,684</td></tr>
+      </table>
+      <p class="small muted">Prices from Robu.in and Amazon.in, October 2026. The drill motor, MOSFET and shell are added on
+        top of this base build.</p>
+    </div>
+    <div>
+      <h2 style="margin-top:0">Compared with what exists</h2>
+      <table>
+        <tr><th>Option</th><th class="r">Approx. price (₹)</th></tr>
+        <tr><td>Professional rescue robot</td><td class="r">3,00,000+</td></tr>
+        <tr><td>Acoustic / seismic life detector</td><td class="r">≈ 2,00,000</td></tr>
+        <tr><td>Thermal drone</td><td class="r">1,00,000+</td></tr>
+        <tr><td>Handheld thermal camera</td><td class="r">25,000+</td></tr>
+        <tr class="hl"><td>ResQBot Mini</td><td class="r">≈ 4,700</td></tr>
+      </table>
+      <p class="small muted">The professional tools reach further and are tougher. ResQBot's place is the first look,
+        where a cheap scout can go when no one else should.</p>
+    </div>
+  </div>
+
+  <h2>What comes next</h2>
+  <div class="grid3">
+    <div class="step"><div class="n">1</div><h3>Field trials</h3><p>Mock rubble tests with volunteers to measure detection
+      range and false alarms in real conditions, then tune the detection rules.</p></div>
+    <div class="step"><div class="n">2</div><h3>Reach further</h3><p>A low-cost thermal array sensor for a full heat
+      image, tracked wheels for rubble, and a two-way microphone to talk to the trapped person.</p></div>
+    <div class="step"><div class="n">3</div><h3>Many robots</h3><p>A custom circuit board for easy assembly, and several
+      robots on one map so a team can search a whole site at once.</p></div>
+  </div>
+
+  <div class="band" style="margin-top:5mm"><p class="quote">Find them faster. Reach the silent ones first.
+    Keep rescuers safe.</p><p class="small muted">Team [Team name] · [College]</p></div>
+  <div class="foot"><span>ResQBot Mini · Project proposal</span><span>11</span></div>
+</section>
+</body>
+</html>

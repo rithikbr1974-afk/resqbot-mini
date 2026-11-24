@@ -1,0 +1,613 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ResQBot Mini — Project Proposal and Technical Documentation</title>
+<style>
+@page { size: A4; margin: 18mm 17mm 20mm 17mm;
+  @bottom-center { content: "ResQBot Mini  ·  page " counter(page); font: 9pt "Segoe UI", Arial, sans-serif; color: #8a94a6; } }
+@page :first { margin: 0; @bottom-center { content: none; } }
+:root { --ink:#1d2433; --muted:#5b6475; --line:#dde3ec; --accent:#ff6b1a; --red:#e5383b; --soft:#f6f8fb; --teal:#1baf7a; --blue:#2a78d6; }
+* { box-sizing: border-box; }
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body { font: 10.5pt/1.55 "Segoe UI", Arial, sans-serif; color: var(--ink); margin: 0; }
+h1 { font-size: 22pt; margin: 0 0 4mm; line-height: 1.15; break-after: avoid; }
+h2 { font-size: 15pt; margin: 9mm 0 3mm; break-after: avoid; display: flex; align-items: center; gap: 3mm; }
+h2 .n { display: inline-grid; place-items: center; width: 9mm; height: 9mm; border-radius: 50%; background: var(--accent);
+  color: #fff; font-size: 11pt; flex: none; }
+h3 { font-size: 11.5pt; margin: 5mm 0 2mm; break-after: avoid; }
+p { margin: 0 0 2.6mm; }
+ul, ol { margin: 0 0 3mm; padding-left: 5.5mm; }
+li { margin-bottom: 1mm; }
+.section { break-before: page; }
+.lead { font-size: 11.5pt; color: #333b4a; }
+.muted { color: var(--muted); }
+.small { font-size: 9pt; }
+figure { margin: 3mm 0 4mm; break-inside: avoid; }
+figure img { width: 100%; border: 1px solid var(--line); border-radius: 3mm; display: block; }
+figcaption { font-size: 8.8pt; color: var(--muted); margin-top: 1.5mm; }
+table { width: 100%; border-collapse: collapse; margin: 2mm 0 4mm; font-size: 9.4pt; break-inside: auto; }
+th { text-align: left; background: var(--ink); color: #fff; font-weight: 600; padding: 2mm 2.4mm; }
+td { padding: 1.7mm 2.4mm; border-bottom: 1px solid var(--line); vertical-align: top; }
+tr { break-inside: avoid; }
+tr:nth-child(even) td { background: #fafbfd; }
+td.r, th.r { text-align: right; white-space: nowrap; }
+tr.total td { font-weight: 800; background: #fff3eb !important; border-top: 2px solid var(--accent); }
+.box { background: var(--soft); border: 1px solid var(--line); border-radius: 3mm; padding: 3.5mm 4.5mm; margin: 3mm 0 4mm; break-inside: avoid; }
+.box.warn { background: #fff7e6; border-color: #f1c66a; }
+.box.key { background: #fff3eb; border-color: #ffc9a6; }
+.box h4 { margin: 0 0 1.5mm; font-size: 10.5pt; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; }
+.grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 3.5mm; }
+.card { border: 1px solid var(--line); border-radius: 3mm; padding: 3mm 3.5mm; break-inside: avoid; }
+.card b.t { display: block; font-size: 10.5pt; margin-bottom: 1mm; }
+.card p { font-size: 9.3pt; color: #333b4a; margin: 0; }
+.stat { text-align: left; }
+.stat .v { font-size: 22pt; font-weight: 800; color: var(--accent); line-height: 1.1; }
+.stat .k { font-size: 9pt; color: var(--muted); }
+code, .mono { font-family: Consolas, "Cascadia Mono", monospace; font-size: 9pt; background: #f0f3f8; padding: 0 1mm; border-radius: 1mm; }
+pre { font-family: Consolas, monospace; font-size: 8.6pt; background: #f6f8fb; border: 1px solid var(--line); border-radius: 2mm;
+  padding: 3mm; white-space: pre-wrap; break-inside: avoid; margin: 2mm 0 4mm; }
+.toc { columns: 2; column-gap: 10mm; font-size: 10.5pt; }
+.toc div { display: flex; gap: 2mm; padding: 1.2mm 0; border-bottom: 1px dotted var(--line); break-inside: avoid; }
+.toc span.n { color: var(--accent); font-weight: 800; width: 7mm; }
+
+/* cover */
+.cover { height: 297mm; width: 210mm; background: #0d1117; color: #fff; position: relative; overflow: hidden; break-after: page; }
+.cover .inner { position: absolute; inset: 22mm 20mm; display: flex; flex-direction: column; }
+.cover .tag { color: var(--accent); font-weight: 800; letter-spacing: 2.5px; font-size: 10pt; text-transform: uppercase; }
+.cover h1 { font-size: 40pt; margin: 4mm 0 3mm; color: #fff; }
+.cover .sub { font-size: 15pt; color: #c9d1de; max-width: 150mm; line-height: 1.35; }
+.cover .img { margin-top: 10mm; background: #fff; border-radius: 5mm; padding: 2mm; }
+.cover .img img { width: 100%; display: block; border-radius: 4mm; }
+.cover .facts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4mm; margin-top: 9mm; }
+.cover .facts div { border-left: 0; background: #161b24; border-radius: 3mm; padding: 3.5mm; }
+.cover .facts b { display: block; font-size: 17pt; color: var(--accent); }
+.cover .facts span { font-size: 9pt; color: #c9d1de; }
+.cover .who { margin-top: auto; font-size: 10.5pt; color: #c9d1de; display: flex; justify-content: space-between; }
+.cover .who b { color: #fff; }
+</style>
+</head>
+<body>
+
+<!-- ============ COVER ============ -->
+<section class="cover">
+  <div class="inner">
+    <div class="tag">Project proposal &amp; technical documentation</div>
+    <h1>ResQBot Mini</h1>
+    <div class="sub">A low-cost thermal search-and-rescue rover that finds trapped people faster — and keeps rescuers out of harm's way.</div>
+    <div class="img"><img src="../images/robot.png" alt="ResQBot Mini concept illustration"></div>
+    <div class="facts">
+      <div><b>₹3,589</b><span>new parts (₹4,684 all new)</span></div>
+      <div><b>30-pixel</b><span>thermal sweep from one ₹759 sensor</span></div>
+      <div><b>0–100</b><span>survivor confidence score</span></div>
+      <div><b>Offline</b><span>own Wi-Fi, any phone, no app</span></div>
+    </div>
+    <div class="who">
+      <span> </span>
+      <span>Version 1.0 · October 2026</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTENTS + ABSTRACT ============ -->
+<h1>Contents</h1>
+<div class="toc">
+  <div><span class="n">1</span>Abstract</div>
+  <div><span class="n">2</span>The problem</div>
+  <div><span class="n">3</span>Objectives</div>
+  <div><span class="n">4</span>Existing solutions and the gap</div>
+  <div><span class="n">5</span>Our solution: ResQBot Mini</div>
+  <div><span class="n">6</span>System architecture</div>
+  <div><span class="n">7</span>Hardware and budget</div>
+  <div><span class="n">8</span>Circuit and wiring</div>
+  <div><span class="n">9</span>How it finds survivors</div>
+  <div><span class="n">10</span>Software</div>
+  <div><span class="n">11</span>The rescuer's dashboard</div>
+  <div><span class="n">12</span>Safety by design</div>
+  <div><span class="n">13</span>Build guide</div>
+  <div><span class="n">14</span>Testing and validation plan</div>
+  <div><span class="n">15</span>Innovation</div>
+  <div><span class="n">16</span>Applications and impact</div>
+  <div><span class="n">17</span>Limitations and future scope</div>
+  <div><span class="n">18</span>Project timeline</div>
+  <div><span class="n">19</span>Conclusion</div>
+  <div><span class="n">A</span>Appendix: pins, files, references</div>
+</div>
+
+<h2><span class="n">1</span>Abstract</h2>
+<p class="lead">After an earthquake, building collapse, fire or flood, the first hours decide who survives. Rescue teams must
+search dark, smoke-filled and unstable spaces where every step is a risk to their own lives, and the tools that see body
+heat — thermal cameras, professional rescue robots, thermal drones — cost from tens of thousands to several lakh rupees.</p>
+<p><b>ResQBot Mini</b> is a palm-sized, four-wheel rover built entirely from common hobby parts: about <b>₹3,589</b> of new parts if you already own an Arduino Uno and an ESP32-CAM (₹4,684 if everything is bought new). A single
+infrared thermometer (MLX90614) mounted on two hobby servos sweeps the scene in a 2 × 15 grid, turning a ₹759 sensor
+into a 30-pixel thermal scanner. The Arduino Uno looks for a body-temperature heat signature, turns toward it,
+creeps closer, and confirms it with three more clues: the reading rises as it approaches, the warm area has the size of a
+person, and a PIR sensor checks for movement. A DHT11 adds the air temperature and humidity at the scene. The result is a <b>0–100 survivor confidence score</b> that finds
+<b>unconscious</b> people too, while rejecting heaters, sunlit walls and reflections.</p>
+<p>When a survivor is likely, the robot stops beside them, flashes a beacon and sounds a buzzer, and alerts the rescue team's
+phone with the temperature, direction, distance and live video from an ESP32-CAM. It also warns of smoke or gas and
+of fire hot spots. Everything runs over the robot's own Wi-Fi hotspot — no internet, no app, any phone browser —
+so it works where mobile networks are down. The design is open, reproducible and ready to be built by any school,
+college, NGO or civil-defence volunteer team.</p>
+
+<!-- ============ PROBLEM ============ -->
+<div class="section"></div>
+<h2><span class="n">2</span>The problem</h2>
+<p>India is one of the most disaster-prone countries in the world: earthquakes, monsoon floods, landslides, cyclones,
+urban fires and the frequent collapse of old or illegally built structures. When buildings fall, people are trapped in
+voids under the rubble, often injured, in the dark and unable to call out.</p>
+<div class="grid3">
+  <div class="card stat"><div class="v">72 h</div><div class="k">The "golden" window: survivors' chances drop sharply with every hour they stay trapped.</div></div>
+  <div class="card stat"><div class="v">~20,000</div><div class="k">lives lost in the 2001 Gujarat (Bhuj) earthquake, many under collapsed buildings.</div></div>
+  <div class="card stat"><div class="v">50,000+</div><div class="k">deaths in the 2023 Türkiye–Syria earthquakes, where search teams worked for weeks.</div></div>
+</div>
+<h3>Why searching is slow and dangerous</h3>
+<ul>
+  <li><b>Rescuers risk their own lives.</b> Entering unstable rubble, smoke or gas-filled rooms exposes rescuers to secondary
+    collapse, toxic air and fire. Every unnecessary entry is a risk.</li>
+  <li><b>People are hard to see.</b> Survivors are hidden in dark voids, covered in dust, or unconscious and silent.
+    Normal cameras and the human eye cannot see body heat.</li>
+  <li><b>The right tools are expensive.</b> Thermal cameras, thermal drones and professional rescue robots cost from tens
+    of thousands to several lakh rupees. Local fire stations, village volunteers and NGOs — the first people on the
+    scene — rarely have them.</li>
+  <li><b>Networks fail.</b> Disasters often take down mobile networks and power, so tools that need the internet or cloud
+    services stop working exactly when they are needed.</li>
+  <li><b>Time is wasted on empty spaces.</b> Without a quick way to check a void, teams must search everywhere by hand.</li>
+</ul>
+<div class="box key"><h4>Problem statement</h4>
+Rescue teams need an affordable, easy-to-build device that can enter spaces too dangerous or too small for people,
+detect the body heat of trapped survivors (including unconscious ones), report where they are, and warn of hazards —
+without depending on the internet.</div>
+
+<h2><span class="n">3</span>Objectives</h2>
+<ol>
+  <li><b>Detect survivors by body heat</b> in the dark, through dust and in light smoke, using a low-cost thermal sensor.</li>
+  <li><b>Reduce response time</b>: search a space autonomously and raise an alert with direction and distance within minutes.</li>
+  <li><b>Protect rescuers</b>: send the robot first; warn of smoke/gas and fire hot spots before people go in.</li>
+  <li><b>Protect civilians</b>: move slowly, never ram anything, stop instantly on command, and stay beside a found person as a marker.</li>
+  <li><b>Keep the cost low</b>: about ₹3,600 of new parts, all available in any electronics market or online store in India.</li>
+  <li><b>Work offline</b> from any phone browser over the robot's own Wi-Fi.</li>
+  <li><b>Be open and reproducible</b>: documented code, wiring and calibration so any team can build and improve it.</li>
+</ol>
+
+<!-- ============ EXISTING ============ -->
+<h2><span class="n">4</span>Existing solutions and the gap</h2>
+<table>
+  <tr><th>Approach</th><th>Strengths</th><th>Limits for local first responders</th><th class="r">Typical cost*</th></tr>
+  <tr><td>Manual search, calling out, listening</td><td>No equipment</td><td>Slow, dangerous, misses unconscious people</td><td class="r">—</td></tr>
+  <tr><td>Search-and-rescue dogs</td><td>Excellent at finding people</td><td>Years of training, few teams, tire quickly</td><td class="r">High</td></tr>
+  <tr><td>Handheld thermal camera</td><td>Clear heat image</td><td>Rescuer must still go in; needs line of sight</td><td class="r">₹25,000+</td></tr>
+  <tr><td>Thermal drone</td><td>Covers large open areas fast</td><td>Cannot enter rubble voids or rooms; needs a trained pilot</td><td class="r">₹1 lakh+</td></tr>
+  <tr><td>Acoustic / seismic life detectors</td><td>Hear tapping and breathing</td><td>Need silence on site; specialist equipment</td><td class="r">Lakhs</td></tr>
+  <tr><td>Professional rescue robots</td><td>Rugged, many sensors</td><td>Very expensive; only national teams have them</td><td class="r">Lakhs+</td></tr>
+  <tr style="font-weight:700"><td>ResQBot Mini (this project)</td><td>Thermal + motion + gas + air + video, autonomous, offline</td><td>Short range, small obstacles only (see section 17)</td><td class="r">₹2,965</td></tr>
+</table>
+<p class="small muted">*Approximate Indian market prices, for comparison only.</p>
+<div class="box"><h4>The gap we fill</h4>
+There is nothing between "search by hand" and "buy professional equipment". ResQBot Mini is a first-look scout that a
+local team can build for less than the cost of a mobile phone accessory, send ahead into a dangerous space, and use to
+decide where to dig first.</div>
+
+<!-- ============ SOLUTION ============ -->
+<h2><span class="n">5</span>Our solution: ResQBot Mini</h2>
+<figure><img src="../images/robot.png" alt="Side view of ResQBot Mini with labelled parts">
+<figcaption>Figure 1 — ResQBot Mini concept. The IR thermometer in a 25° viewing tube sits on a pan-tilt head at the
+front, next to the ESP32-CAM. The ultrasonic sensor watches for obstacles; the PIR checks for movement; the MQ-2 sniffs
+for smoke and gas; the beacon and buzzer mark a found survivor.</figcaption></figure>
+
+<h3>How a rescue mission works</h3>
+<ol>
+  <li><b>Deploy.</b> A rescuer switches the robot on, joins its Wi-Fi <span class="mono">ResQBot-01</span> from any phone
+    and opens <span class="mono">192.168.4.1</span>. The robot is placed at the entrance of a collapsed room or void.</li>
+  <li><b>Search.</b> In <i>Auto search</i> the robot stops every 2.5 s and sweeps its thermal sensor across 140° at two
+    heights (floor and level), building a 30-pixel heat map shown live on the phone. Between sweeps it drives forward and
+    avoids obstacles. The operator can also drive manually while watching live video.</li>
+  <li><b>Detect.</b> A warm area at least 1.5 °C above the background, no hotter than a human body (≤ 42 °C), covering at
+    least two cells, is a candidate.</li>
+  <li><b>Confirm.</b> The robot turns toward it, creeps forward until it is 35 cm away, then waits 5 s, checking that the
+    reading got warmer as it came closer and whether there is movement.</li>
+  <li><b>Alert.</b> With confidence ≥ 60 it stops beside the person, flashes the beacon, sounds the buzzer (telling the
+    survivor help is near) and shows a red alert on the phone: temperature, distance, moving / not moving, and live video.
+    The robot stays as a marker until a rescuer taps <i>Acknowledge</i>, then resumes searching.</li>
+  <li><b>Report.</b> Every detection, hazard and event is logged and can be downloaded as a CSV file for the incident record.</li>
+</ol>
+
+<h3>Key features</h3>
+<div class="grid2">
+  <div class="card"><b class="t">Thermal survivor detection</b><p>Servo-swept IR thermometer acts as a 2 × 15 thermal camera; sees body heat in darkness and dust.</p></div>
+  <div class="card"><b class="t">Finds unconscious people</b><p>Movement is a bonus clue, not a requirement — heat, size and "warmer when closer" are enough for an alert.</p></div>
+  <div class="card"><b class="t">Live video + flash</b><p>ESP32-CAM streams video to the dashboard, takes evidence photos and lights dark voids.</p></div>
+  <div class="card"><b class="t">Rescuer hazard warnings</b><p>MQ-2 smoke/gas alarm and &gt; 55 °C hot-spot (possible fire) warning before people go in.</p></div>
+  <div class="card"><b class="t">Autonomous or manual</b><p>Self-guided search with obstacle avoidance, or hold-to-drive control from the phone.</p></div>
+  <div class="card"><b class="t">Works with no network</b><p>The robot is its own Wi-Fi hotspot; any phone or laptop browser is the control station.</p></div>
+  <div class="card"><b class="t">Survivor beacon</b><p>Stays beside a found person with a flashing light and buzzer pattern until acknowledged.</p></div>
+  <div class="card"><b class="t">Fail-safe by default</b><p>E-STOP, dead-man stop if the phone goes quiet, slow approach, low-battery stop.</p></div>
+</div>
+
+<!-- ============ ARCHITECTURE ============ -->
+<div class="section"></div>
+<h2><span class="n">6</span>System architecture</h2>
+<figure><img src="../images/block_diagram.png" alt="Block diagram of the system">
+<figcaption>Figure 2 — Sensors feed the Arduino Uno, which drives the motors, servos and alert outputs. It sends all data to the ESP32-CAM over a serial link; the ESP32-CAM makes the Wi-Fi hotspot, serves the dashboard and streams live video at the same time.</figcaption></figure>
+<div class="grid2">
+  <div>
+    <h3>Hardware layers</h3>
+    <ul>
+      <li><b>Sensing:</b> MLX90614 IR thermometer (I²C) on pan-tilt, DHT11 air temperature and humidity, HC-SR04 ultrasonic, HC-SR501 PIR, MQ-2 gas, battery monitor, ESP32-CAM.</li>
+      <li><b>Control:</b> Arduino Uno reads every sensor and runs the search. The ESP32-CAM is the camera and the Wi-Fi/dashboard gateway, linked to the Uno by a serial cable.</li>
+      <li><b>Actuation:</b> L298N driving four BO gear motors, two SG90 servos, buzzer, LED beacon.</li>
+      <li><b>Power:</b> two 18650 Li-ion cells (7.4 V) direct to the motor driver, and an LM2596 buck converter making a clean 5 V rail.</li>
+    </ul>
+  </div>
+  <div>
+    <h3>Software layers</h3>
+    <ul>
+      <li><b>Drivers:</b> motors (PWM), thermal scanner (SMBus + servos), sensors.</li>
+      <li><b>Detection:</b> heat-blob finder and confidence score (plain C++, mirrored and tested in Python).</li>
+      <li><b>Behaviour:</b> non-blocking state machine — scan, turn, approach, confirm, alert, cruise, avoid.</li>
+      <li><b>Interface:</b> the ESP32-CAM runs a web server with a JSON API and a single-file dashboard stored inside its firmware, and forwards phone commands to the Uno.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ============ HARDWARE / BOM ============ -->
+<div class="section"></div>
+<h2><span class="n">7</span>Hardware and budget</h2>
+<p>Every part is a standard hobby module sold in local electronics markets and by online stores such as Robu.in,
+Robocraze or Amazon.in. Prices are typical Indian retail prices in 2026; they vary by shop.</p>
+<table>
+  <tr><th>#</th><th>Component</th><th>Qty</th><th>Role in the robot</th><th class="r">₹</th></tr>
+  <tr><td>1</td><td>Arduino Uno R3 (CH340 compatible)</td><td>1</td><td>Main board: reads every sensor, runs the search, drives motors and servos</td><td class="r">249</td></tr>
+  <tr><td>2</td><td>ESP32-CAM board with OV2640 2 MP camera</td><td>1</td><td>Live video, Wi-Fi hotspot and the dashboard; gets all data from the Uno</td><td class="r">846</td></tr>
+  <tr><td>3</td><td>ESP32-CAM-MB USB programmer board</td><td>1</td><td>Uploads code to the ESP32-CAM (skip if your camera listing includes it)</td><td class="r">119</td></tr>
+  <tr><td>4</td><td>MLX90614 IR temperature sensor (GY-906)</td><td>1</td><td>Body-heat detection: the &#x27;thermal camera&#x27; on the pan-tilt head</td><td class="r">759</td></tr>
+  <tr><td>5</td><td>HC-SR04 ultrasonic distance sensor</td><td>1</td><td>Obstacle avoidance and stopping 35 cm from a person</td><td class="r">79</td></tr>
+  <tr><td>6</td><td>HC-SR501 PIR motion sensor</td><td>1</td><td>Detects whether the survivor is moving</td><td class="r">69</td></tr>
+  <tr><td>7</td><td>DHT11 temperature and humidity module</td><td>1</td><td>Air temperature and humidity next to the IR readings</td><td class="r">59</td></tr>
+  <tr><td>8</td><td>MQ-2 smoke / gas sensor module (Winsen)</td><td>1</td><td>Smoke and LPG warning for rescuers</td><td class="r">129</td></tr>
+  <tr><td>9</td><td>4WD robot car chassis kit (2 plates, 4 BO motors, 4 wheels, screws)</td><td>1</td><td>Robot body and wheels</td><td class="r">609</td></tr>
+  <tr><td>10</td><td>L298N dual motor driver module</td><td>1</td><td>Drives the left and right motor pairs</td><td class="r">129</td></tr>
+  <tr><td>11</td><td>TowerPro SG90 micro servo</td><td>2</td><td>Pan and tilt of the thermal sensor</td><td class="r">178</td></tr>
+  <tr><td>12</td><td>2-axis pan-tilt bracket for SG90</td><td>1</td><td>Holds the thermal sensor on the two servos</td><td class="r">89</td></tr>
+  <tr><td>13</td><td>7.4 V 2500 mAh 2S Li-ion pack, protected, with DC jack</td><td>1</td><td>Powers everything; built-in protection board</td><td class="r">579</td></tr>
+  <tr><td>14</td><td>5.5 mm DC jack, male, with wire</td><td>1</td><td>Connects the battery pack to the robot</td><td class="r">29</td></tr>
+  <tr><td>15</td><td>LM2596 buck converter (step-down)</td><td>1</td><td>Clean 5 V for the ESP32, camera, servos and sensors</td><td class="r">98</td></tr>
+  <tr><td>16</td><td>Mini rocker switch, 2-pin (pack of 2)</td><td>1</td><td>Main power ON/OFF</td><td class="r">30</td></tr>
+  <tr><td>17</td><td>5 V active buzzer</td><td>1</td><td>Alert sound and call-out beep</td><td class="r">18</td></tr>
+  <tr><td>18</td><td>BC547 NPN transistor (Q1, Q2)</td><td>2</td><td>Switch the buzzer and the beacon LED from Uno pins</td><td class="r">6</td></tr>
+  <tr><td>19</td><td>Bright 5 mm Piranha LED</td><td>1</td><td>Beacon light that marks the survivor</td><td class="r">29</td></tr>
+  <tr><td>20</td><td>Resistors ¼ W: 1 kΩ ×3, 2 kΩ, 10 kΩ ×3, 100 Ω (R1–R8)</td><td>1</td><td>Serial-link and battery dividers, transistor bases, LED current, DHT pull-up</td><td class="r">10</td></tr>
+  <tr><td>21</td><td>Capacitors, diode, fuse: 470 µF + 220 µF 10 V, 4 × 100 nF, 1N4148, 3 A fuse + inline holder</td><td>1</td><td>C1–C6, D1, F1 from the schematic: power filtering and protection</td><td class="r">40</td></tr>
+  <tr><td>22</td><td>Jumper wires, male–female, 40 pcs, 30 cm</td><td>1</td><td>Module connections</td><td class="r">69</td></tr>
+  <tr><td>23</td><td>Jumper wires, female–female, 40 pcs, 20 cm</td><td>1</td><td>Module-to-ESP32 connections</td><td class="r">49</td></tr>
+  <tr><td>24</td><td>Zero PCB (general-purpose board)</td><td>1</td><td>Base for the ESP32, dividers and transistor</td><td class="r">91</td></tr>
+  <tr><td>25</td><td>Female berg strip 1×40 (pack of 5)</td><td>1</td><td>Plug-in sockets so the ESP32 is removable</td><td class="r">98</td></tr>
+  <tr><td>26</td><td>M3 × 10 mm bolt and nut set (25 pcs)</td><td>1</td><td>Mounting the modules on the chassis</td><td class="r">78</td></tr>
+  <tr><td>27</td><td>Black heat-shrink tube kit (127 pcs)</td><td>1</td><td>Insulating joints; a 10 mm piece is the IR viewing tube</td><td class="r">146</td></tr>
+  <tr class="total"><td></td><td colspan="3">Total — all 27 items bought new (online prices)</td><td class="r">₹4,684</td></tr>
+</table>
+<div class="grid2">
+  <div class="box"><h4>What you may already own</h4>
+  The Arduino Uno (₹249) and the ESP32-CAM (₹846) are common in student labs. Without them the rest of the robot costs about <b>₹3,589</b>.
+  Small parts (resistors, capacitors, switch, jumpers) are cheaper at a local electronics shop.</div>
+  <div class="box"><h4>Why these parts</h4>
+  The MLX90614 is the cheapest reliable non-contact thermometer with a digital output. Thermal-array sensors (8 × 8 and up) cost
+  several times more; sweeping one sensor gives a usable heat map within budget. Prices were read from Robu.in and Amazon.in on 9 October 2026.</div>
+</div>
+<p class="small muted">Not included: a 2S charger (about ₹549 once) for the battery pack and basic tools (soldering iron, screwdriver), which most labs already have.</p>
+
+<!-- ============ WIRING ============ -->
+<div class="section"></div>
+<h2><span class="n">8</span>Circuit and wiring</h2>
+<figure><img src="../images/wiring.png" alt="Wiring diagram from Arduino Uno pins to each module">
+<figcaption>Figure 3 — Complete wiring. The pin numbers match <span class="mono">firmware/ResQBot_Uno/config.h</span>.</figcaption></figure>
+<h3>Design choices that matter</h3>
+<ul>
+  <li><b>Everything on the Uno runs at 5 V.</b> The HC-SR04, PIR, MQ-2, DHT11 and MLX90614 module connect directly, with no level shifting.</li>
+  <li><b>One level shifter only:</b> the Uno's 5 V serial output (D1) reaches the ESP32-CAM's 3.3 V input (IO13) through a 1 kΩ / 2 kΩ divider.</li>
+  <li><b>Serial link:</b> D1 → IO13 and IO14 → D0 at 115200 baud. The D0 wire is unplugged while uploading to the Uno.</li>
+  <li><b>Full schematics</b> (power, controller, sensors, drive, alerts, netlist) are in <span class="mono">docs/ResQBot_Schematics.pdf</span>.</li>
+  <li><b>Separate 5 V rail.</b> Servos and the ESP32-CAM draw current spikes; the LM2596 (3 A) feeds them, with a 470 µF capacitor on the rail and 220 µF at the camera, so neither board resets.</li>
+  <li><b>The MLX90614 and DHT11 modules</b> have their own regulators and pull-ups, so they sit directly on the 5 V rail.</li>
+  <li><b>ESP32-CAM</b> takes 5 V and GND plus the two serial wires; it talks to the phone over its own Wi-Fi. Leave its micro-SD slot empty (IO13/IO14 are SD pins).</li>
+</ul>
+
+<!-- ============ DETECTION ============ -->
+<div class="section"></div>
+<h2><span class="n">9</span>How it finds survivors</h2>
+<h3>9.1 A 30-pixel thermal camera from one sensor</h3>
+<p>The MLX90614 measures the average temperature of everything inside its field of view. The pan servo steps it from 20°
+to 160° in 10° steps (15 columns) and the tilt servo looks at two heights — down at the floor and straight ahead — giving
+a 2 × 15 heat map every ~5 seconds. The path is a serpentine (right-to-left, then left-to-right), so the servo never
+makes a long jump, and each cell is read twice and averaged.</p>
+<h3>9.2 Narrowing the view: the ₹5 upgrade that triples the range</h3>
+<p>The common GY-906 module sees a very wide 90° cone, so a person a metre away fills only a small part of its view and
+barely changes the reading. A short black tube (about 10 mm inside diameter, 22 mm long) slipped over the sensor narrows
+the view to about 25°. Our geometric model below shows the effect for a person lying on the floor.</p>
+<figure><img src="../images/fov_range.png" alt="Chart of estimated detection range for 90, 35 and 25 degree views">
+<figcaption>Figure 4 — Estimated detection range (simple geometric model, not a measurement): bare sensor ≈ 0.4 m,
+35° tube ≈ 1.1 m, 25° tube ≈ 1.5 m for a lying person. Real ranges are measured in test T2 (section 14). Source:
+<span class="mono">sim/fov_model.py</span>.</figcaption></figure>
+
+<h3>9.3 Finding a body-like heat signature</h3>
+<ol>
+  <li><b>Background</b> = the median of all 30 readings, so a warm room or a hot summer day does not fool the robot.</li>
+  <li><b>Warm cells</b> are at least <b>+1.5 °C</b> above the background but no hotter than <b>42 °C</b> (hotter means a heater,
+    engine, lamp or fire — not a person).</li>
+  <li><b>Blob</b> = the largest run of neighbouring warm columns. It must cover at least <b>2 cells</b>, which rejects single
+    hot pixels and sensor noise.</li>
+  <li><b>Direction</b> = the warm columns' angles weighted by how warm they are; the robot turns by that angle.</li>
+  <li><b>Fire warning</b>: any cell at <b>55 °C</b> or more is logged as a hot spot for the rescuers.</li>
+</ol>
+
+<h3>9.4 Confirming with four independent clues</h3>
+<table>
+  <tr><th>Clue</th><th>Why it matters</th><th class="r">Points</th></tr>
+  <tr><td>Heat contrast</td><td>How much warmer than the background (20 at +1.5 °C, up to 40 at +4 °C)</td><td class="r">20–40</td></tr>
+  <tr><td>Size</td><td>A person covers several cells; a cup of tea or a phone does not</td><td class="r">0–10</td></tr>
+  <tr><td>Warmer when closer</td><td>A real heat source fills more of the view as the robot approaches; reflections and
+    distant warm walls do not</td><td class="r">+25</td></tr>
+  <tr><td>Movement (PIR)</td><td>A conscious, moving person; read only while the robot stands still</td><td class="r">+25</td></tr>
+  <tr class="total"><td colspan="2">≥ 60 = SURVIVOR LIKELY (alert) · 35–59 = possible (logged) · below 35 = rejected</td><td class="r">0–100</td></tr>
+</table>
+<div class="box key"><h4>Unconscious survivors are not missed</h4>
+Heat + size + "warmer when closer" already reach 60 or more without any movement. Movement only raises confidence and
+tells rescuers whether the person is <i>moving</i> or <i>not moving (may be unconscious)</i> — useful for triage.</div>
+
+<figure><img src="../images/flowchart.png" alt="Flowchart of the autonomous search">
+<figcaption>Figure 5 — Autonomous search logic, as implemented in <span class="mono">firmware/ResQBot_Uno/ResQBot_Uno.ino</span>.</figcaption></figure>
+
+<!-- ============ SOFTWARE ============ -->
+<h2><span class="n">10</span>Software</h2>
+<p>Two programs: the <b>Arduino Uno</b> sketch (Servo and Wire built in, plus the Adafruit <i>DHT sensor library</i>) and the <b>ESP32-CAM</b> sketch (Arduino-ESP32 core 3.x). The Uno code is non-blocking: sensors, thermal sweep, search logic and the serial link all run in one fast loop. On the ESP32-CAM the video stream has its own server task, so live video and sensor data run at the same time.</p>
+<table>
+  <tr><th>File</th><th>What it does</th></tr>
+  <tr><td><span class="mono">ResQBot_Uno/ResQBot_Uno.ino</span></td><td>Arduino Uno main code: sensors, thermal sweep, search state machine, motors, servos, alerts, serial link</td></tr>
+  <tr><td><span class="mono">ResQBot_Uno/config.h</span></td><td>Every pin, speed and threshold in one place</td></tr>
+  <tr><td><span class="mono">ResQBot_Uno/detection.h</span></td><td>Heat-blob finder and confidence score (pure C++)</td></tr>
+  <tr><td><span class="mono">ResQCam_Gateway/ResQCam_Gateway.ino</span></td><td>ESP32-CAM: Wi-Fi hotspot, web server and API, MJPEG stream, photo, flash LED, serial bridge to the Uno</td></tr>
+  <tr><td><span class="mono">ResQCam_Gateway/dashboard_html.h</span></td><td>The phone dashboard, embedded into the firmware</td></tr>
+  <tr><td><span class="mono">dashboard/index.html</span></td><td>Dashboard source (open it in a browser for demo mode)</td></tr>
+  <tr><td><span class="mono">sim/</span></td><td>Python copy of the detection logic, 12 scenario tests, range model</td></tr>
+</table>
+<h3>Web API (robot at 192.168.4.1)</h3>
+<table>
+  <tr><th>Request</th><th>Action</th></tr>
+  <tr><td><span class="mono">GET /api/status</span></td><td>All telemetry as JSON: mode, state, IR and air temperature, humidity, distance, gas, battery, heat map, finding, events, link status</td></tr>
+  <tr><td><span class="mono">GET /api/drive?l=..&amp;r=..</span></td><td>Left/right motor speed −255…255 (manual mode, repeated every 200 ms)</td></tr>
+  <tr><td><span class="mono">GET /api/mode?m=manual|auto|estop</span></td><td>Change mode; <i>estop</i> stops everything</td></tr>
+  <tr><td><span class="mono">GET /api/scan</span>, <span class="mono">/api/ack</span>, <span class="mono">/api/beep</span></td><td>One thermal sweep · acknowledge alert · call-out beep</td></tr>
+  <tr><td><span class="mono">GET /api/log.csv</span></td><td>Download the event log</td></tr>
+  <tr><td><span class="mono">192.168.4.1:81/stream</span>, <span class="mono">/capture</span>, <span class="mono">/led?on=1</span></td><td>Live video, photo, flash light</td></tr>
+</table>
+<h3>Verified so far</h3>
+<ul>
+  <li>Both sketches compile for their boards: Arduino Uno (64 % of flash, 51 % of RAM) and ESP32-CAM with Arduino-ESP32 core 3.3 (33 % of flash).</li>
+  <li>The detection logic passes 12 scenario tests: empty room, person left/right, unconscious person, moving person,
+    single hot pixel, heater, fire, person next to fire, reflection, failed readings, hot day, two warm areas.</li>
+  <li>The dashboard was tested in a browser in its built-in demo mode, on phone and desktop sizes.</li>
+</ul>
+
+<!-- ============ DASHBOARD ============ -->
+<h2><span class="n">11</span>The rescuer's dashboard</h2>
+<p>The dashboard is a single web page stored inside the robot. It needs no app and no internet: join the robot's Wi-Fi
+and open <span class="mono">192.168.4.1</span>. It refreshes twice a second.</p>
+<figure><img src="../images/dashboard_desktop.png" alt="Dashboard showing a survivor alert, thermal radar and camera panel" style="max-height:175mm;object-fit:contain">
+<figcaption>Figure 6 — Dashboard during a survivor alert (demo data). The thermal "radar" shows the 2 × 15 sweep — inner ring
+floor, outer ring level — with the target bearing. Shown here in demo mode, which is used for presentations without the robot.</figcaption></figure>
+<ul>
+  <li><b>Alert banner</b> with confidence, temperature, distance and moving / not moving; <i>Acknowledge</i> resumes the search.</li>
+  <li><b>Hazard banner</b> for smoke/gas, fire hot spots, low battery or a disconnected thermal sensor.</li>
+  <li><b>Live camera</b> with photo and flash-light buttons.</li>
+  <li><b>Drive pad</b> (hold to move, keyboard W A S D on a laptop), speed slider, manual thermal scan, call-out beep.</li>
+  <li><b>Event log</b> with CSV download for the incident report.</li>
+</ul>
+
+<!-- ============ SAFETY ============ -->
+<h2><span class="n">12</span>Safety by design</h2>
+<div class="grid3">
+  <div class="card"><b class="t">Civilians</b><p>Slow crawl speed near people; stops 35 cm away; no sharp parts or high voltage;
+    blocks forward driving below 12 cm even in manual mode; buzzer and light reassure the survivor that help is near.</p></div>
+  <div class="card"><b class="t">Rescuers</b><p>Robot goes first; smoke/gas and fire hot-spot warnings before entry; live video and
+    heat map reduce blind entries; survivor location is marked by the beacon.</p></div>
+  <div class="card"><b class="t">Device</b><p>E-STOP from the phone; dead-man stop if commands stop for 0.6 s; low-battery stop
+    (6.8 V) protects the Li-ion cells; separate 5 V rail; fuse recommended on the battery lead.</p></div>
+</div>
+<div class="box warn"><h4>Responsible use</h4>
+ResQBot Mini is a <b>scout and decision aid</b>, not a replacement for trained rescuers. A "no survivor" result never
+clears a space on its own. It must not be used in explosive atmospheres (it is not intrinsically safe), and Li-ion
+cells must be charged with a proper charger and never left charging unattended.</div>
+
+<!-- ============ BUILD GUIDE ============ -->
+<div class="section"></div>
+<h2><span class="n">13</span>Build guide</h2>
+<h3>13.1 Tools</h3>
+<p>Soldering iron and solder, small screwdrivers, wire stripper, multimeter, hot-glue gun, double-sided tape, a laptop
+with the Arduino IDE 2.x, a USB-B cable for the Uno and a micro-USB cable for the ESP32-CAM programmer board.</p>
+<h3>13.2 Assembly (about 4–6 hours)</h3>
+<ol>
+  <li><b>Chassis.</b> Fix the four BO motors to the lower plate, fit the wheels, and join the two motors on each side in
+    parallel (same polarity). Mount the plates with the standoffs.</li>
+  <li><b>Power.</b> Mount the 2 × 18650 holder on the lower plate. Wire battery + → rocker switch → L298N <i>+12V</i> and
+    LM2596 <i>IN+</i>; battery − → L298N GND and LM2596 <i>IN−</i>. <b>Before connecting anything else, turn the LM2596
+    screw until its output reads 5.0 V on the multimeter.</b></li>
+  <li><b>Motor driver.</b> Mount the L298N on the lower plate. Left motors → OUT1/OUT2, right motors → OUT3/OUT4.
+    Remove the ENA and ENB jumpers (the Uno controls speed).</li>
+  <li><b>Controller.</b> Fix the Arduino Uno on the upper plate. Wire it exactly as in Figure 3 and the schematics. Join every GND.</li>
+  <li><b>Thermal head.</b> Assemble the SG90 pan-tilt bracket at the front of the upper plate. Set both servos to 90° first
+    (upload the Uno firmware once, it centres them), then attach the horns facing straight ahead. Glue the GY-906 to the tilt
+    bracket and slip a 22 mm black tube (10 mm inside) over the sensor can.</li>
+  <li><b>Sensors.</b> HC-SR04 at the front bumper (TRIG A2, ECHO A3); PIR on D4 facing forward; MQ-2 on A0; DHT11 on D2 where air can reach it; battery divider 10k/10k to A1.</li>
+  <li><b>Alerts.</b> Buzzer via a BC547 transistor (1 kΩ to the base) on D3; LED beacon on D13 through a second BC547 (1 kΩ base, 100 Ω from +5 V), on a
+    short mast so it is visible over rubble.</li>
+  <li><b>Camera.</b> Mount the ESP32-CAM at the front facing forward; 5 V and GND from the rail, Uno D1 → 1 kΩ → IO13 (2 kΩ to GND), IO14 → Uno D0.</li>
+  <li><b>Tidy up.</b> Zip-tie wires away from the wheels; keep the IR sensor's view clear.</li>
+</ol>
+<h3>13.3 Software setup</h3>
+<ol>
+  <li>Arduino IDE → Boards Manager → install <b>esp32 by Espressif</b> (3.x). Library Manager → install <b>DHT sensor library</b> (Adafruit) with <b>Adafruit Unified Sensor</b>.</li>
+  <li><b>Uno:</b> unplug the D0 wire, open <span class="mono">firmware/ResQBot_Uno/ResQBot_Uno.ino</span> (config.h and detection.h open with it), choose <b>Arduino Uno</b>, upload once, then plug D0 back in.</li>
+  <li><b>ESP32-CAM:</b> put it on its MB USB board, open <span class="mono">firmware/ResQCam_Gateway/ResQCam_Gateway.ino</span>, choose <b>AI Thinker ESP32-CAM</b>, upload.</li>
+  <li>To change the Wi-Fi name or password, edit the top of the ESP32-CAM sketch.</li>
+  <li>After editing the dashboard, run <span class="mono">python tools/embed_dashboard.py</span> and upload the ESP32-CAM again.</li>
+  </ol>
+<h3>13.4 First run and calibration</h3>
+<ol>
+  <li>Switch on: two short beeps = ready. Join Wi-Fi <span class="mono">ResQBot-01</span> (password <span class="mono">rescue123</span>), open <span class="mono">192.168.4.1</span>.</li>
+  <li><b>Directions:</b> hold ▲. If a side runs backwards, swap that side's motor wires.</li>
+  <li><b>Turn rate:</b> spin on the spot for 3 s and measure the angle; set <span class="mono">TURN_DEG_PER_SEC</span> = angle ÷ 3.</li>
+  <li><b>Battery reading:</b> compare with a multimeter; adjust <span class="mono">BATTERY_ADC_CAL</span>.</li>
+  <li><b>Gas threshold:</b> let the MQ-2 warm up 2–3 minutes in clean air, note the reading, set <span class="mono">GAS_ALARM_RAW</span> about 40 % higher.</li>
+  <li><b>Thermal threshold:</b> run scans of an empty room; if the background varies by more than ±0.7 °C, raise <span class="mono">DELTA_MIN_C</span>.</li>
+  <li><b>PIR:</b> set its sensitivity knob to mid and the time knob to minimum; wait 30 s after power-on before trusting it.</li>
+</ol>
+<h3>13.5 Troubleshooting</h3>
+<table>
+  <tr><th>Symptom</th><th>Fix</th></tr>
+  <tr><td>"Thermal sensor not responding"</td><td>SDA → A4, SCL → A5, VIN → 5 V; GY-906 address must be 0x5A</td></tr>
+  <tr><td>"Arduino not responding"</td><td>Check D1 → 1k → IO13, IO14 → D0 and the common GND; unplug the Uno's USB cable</td></tr>
+  <tr><td>"DHT11 not responding"</td><td>DATA on D2; a bare 4-pin sensor needs a 10 kΩ pull-up to 5 V</td></tr>
+  <tr><td>A board resets when the servos move</td><td>Servos must be on the LM2596 5 V rail; check the 470 µF capacitor</td></tr>
+  <tr><td>Distance always "clear"</td><td>ECHO divider wiring; sensor needs 5 V VCC</td></tr>
+  <tr><td>Camera shows "offline"</td><td>Reseat the camera ribbon; add 220–470 µF at the 5 V pins of the camera; keep its power wires short</td></tr>
+  <tr><td>Robot does not move in auto mode</td><td>Battery below 6.8 V stops the search: charge the cells</td></tr>
+</table>
+
+<!-- ============ TESTING ============ -->
+<div class="section"></div>
+<h2><span class="n">14</span>Testing and validation plan</h2>
+<p>Each test has a measurable pass target. The last column is filled in during trials, so judges can see real results
+next to the design targets.</p>
+<table>
+  <tr><th>ID</th><th>Test</th><th>Method</th><th>Pass target</th><th>Result</th></tr>
+  <tr><td>T1</td><td>Sensor accuracy</td><td>IR reading vs a reference thermometer on a warm water bottle</td><td>±1 °C</td><td></td></tr>
+  <tr><td>T2</td><td>Detection range</td><td>Volunteer lying on the floor; increase distance in 10 cm steps until no alert</td><td>≥ 1.0 m</td><td></td></tr>
+  <tr><td>T3</td><td>False alarms</td><td>20 sweeps each: empty room, sunlit wall, laptop charger, hot cup</td><td>0 survivor alerts</td><td></td></tr>
+  <tr><td>T4</td><td>Direction accuracy</td><td>Person at known angles (−60° to +60°)</td><td>±15°</td><td></td></tr>
+  <tr><td>T5</td><td>Unconscious survivor</td><td>Volunteer lying perfectly still</td><td>Alert, "not moving"</td><td></td></tr>
+  <tr><td>T6</td><td>Obstacle avoidance</td><td>10 runs toward walls and boxes</td><td>No collisions</td><td></td></tr>
+  <tr><td>T7</td><td>Dead-man stop</td><td>Turn phone Wi-Fi off while driving</td><td>Stops in &lt; 1 s</td><td></td></tr>
+  <tr><td>T8</td><td>E-STOP</td><td>Press E-STOP during auto search</td><td>Stops in &lt; 0.5 s</td><td></td></tr>
+  <tr><td>T9</td><td>Smoke alarm</td><td>Incense-stick smoke near the MQ-2 (outdoors)</td><td>Alarm in &lt; 10 s</td><td></td></tr>
+  <tr><td>T10</td><td>Wi-Fi range</td><td>Walk away with the phone, line of sight</td><td>≥ 20 m</td><td></td></tr>
+  <tr><td>T11</td><td>Video</td><td>Count frames of the ESP32-CAM stream</td><td>≥ 10 fps at 640 × 480</td><td></td></tr>
+  <tr><td>T12</td><td>Battery life</td><td>Continuous auto search from full charge</td><td>≥ 45 min</td><td></td></tr>
+  <tr><td>T13</td><td>End-to-end</td><td>Volunteer hidden behind cardboard "rubble" in a 3 × 3 m arena</td><td>Alert in &lt; 3 min</td><td></td></tr>
+</table>
+<h3>Test arena</h3>
+<p>A 3 × 3 m area with cardboard boxes as rubble, one volunteer lying in a gap, and distractors: a warm laptop charger, a
+cup of hot water, a sunlit wall and a phone. The room is darkened for the camera and flash-light test.</p>
+
+<!-- ============ INNOVATION ============ -->
+<h2><span class="n">15</span>Innovation</h2>
+<div class="grid2">
+  <div class="card"><b class="t">1 · Thermal imaging for the price of one sensor</b><p>Sweeping a single IR thermometer with two hobby servos produces a 30-pixel heat map — enough to find and point to a person — at a fraction of the cost of thermal-array sensors.</p></div>
+  <div class="card"><b class="t">2 · The ₹5 viewing tube</b><p>A short black tube narrows the sensor's view from 90° to about 25°, roughly tripling the estimated detection range at almost no cost.</p></div>
+  <div class="card"><b class="t">3 · Multi-clue confidence score</b><p>Heat contrast, size, "warmer when closer" and motion combine into one score, so the robot finds unconscious survivors while rejecting heaters, reflections and hot cups.</p></div>
+  <div class="card"><b class="t">4 · The robot becomes the marker</b><p>Instead of only reporting coordinates, ResQBot parks beside the survivor with a beacon and buzzer — rescuers simply follow the light and sound.</p></div>
+  <div class="card"><b class="t">5 · Zero-infrastructure control</b><p>Its own Wi-Fi hotspot and a web page stored in the firmware mean any phone becomes the control station, even when networks are down.</p></div>
+  <div class="card"><b class="t">6 · Built to be copied</b><p>Common parts, one config file, documented wiring, a tested detection algorithm and a demo mode — any school or NGO can reproduce it.</p></div>
+</div>
+
+<!-- ============ APPLICATIONS ============ -->
+<h2><span class="n">16</span>Applications and impact</h2>
+<div class="grid2">
+  <div>
+    <h3>Where it can be used</h3>
+    <ul>
+      <li>Collapsed houses and buildings after earthquakes or structural failures</li>
+      <li>Smoke-filled rooms during fires (from a safe distance, with the hot-spot warning)</li>
+      <li>Landslide and flood debris, basements and crawl spaces</li>
+      <li>Industrial accidents, tunnels and mines (non-explosive areas)</li>
+      <li>Disaster drills and training for NDRF/SDRF, fire services, civil defence and NCC/NSS volunteers</li>
+      <li>STEM education: a complete, real-world robotics project for schools and colleges</li>
+    </ul>
+  </div>
+  <div>
+    <h3>Impact</h3>
+    <ul>
+      <li><b>Faster response:</b> a space can be checked in minutes without a person entering it.</li>
+      <li><b>Safer rescuers:</b> fewer blind entries into unstable, smoky or gas-filled spaces.</li>
+      <li><b>Affordable at scale:</b> one professional thermal camera costs as much as ten or more ResQBots, so every fire
+        station or village volunteer group could own several.</li>
+      <li><b>Local capacity:</b> can be built and repaired with parts from any electronics market.</li>
+    </ul>
+    <h3>Sustainable Development Goals</h3>
+    <p><b>SDG 3</b> Good health and well-being · <b>SDG 9</b> Industry, innovation and infrastructure ·
+    <b>SDG 11</b> Sustainable cities and communities (disaster risk reduction) — in line with the UN Sendai Framework for
+    Disaster Risk Reduction 2015–2030.</p>
+  </div>
+</div>
+
+<!-- ============ LIMITATIONS ============ -->
+<h2><span class="n">17</span>Limitations and future scope</h2>
+<table>
+  <tr><th>Limitation today</th><th>Planned improvement</th></tr>
+  <tr><td>Detection range about 1–1.5 m; low resolution</td><td>Upgrade to an AMG8833 (8 × 8) or MLX90640 (32 × 24) thermal array when budget allows</td></tr>
+  <tr><td>Wheels manage small obstacles only</td><td>Tracked chassis, higher ground clearance, rubber treads</td></tr>
+  <tr><td>Cannot see through walls or deep rubble</td><td>Add a microphone for tapping/voices and a CO₂ sensor for breathing</td></tr>
+  <tr><td>Hot surroundings (close to 37 °C) reduce contrast</td><td>Use the camera and motion more; thermal-array upgrade</td></tr>
+  <tr><td>No map: turns are timed, no wheel encoders</td><td>Wheel encoders + IMU for a map of the search path and survivor positions</td></tr>
+  <tr><td>Wi-Fi range about 20–50 m</td><td>LoRa radio relay chain for long range; drop-off Wi-Fi repeaters</td></tr>
+  <tr><td>One robot at a time</td><td>Several robots sharing one dashboard (swarm search)</td></tr>
+  <tr><td>Buzzer only</td><td>DFPlayer Mini (₹150) for recorded voice messages and two-way audio</td></tr>
+  <tr><td>Not water- or dust-proof</td><td>3D-printed enclosure, conformal coating</td></tr>
+</table>
+
+<!-- ============ TIMELINE ============ -->
+<h2><span class="n">18</span>Project timeline</h2>
+<table>
+  <tr><th>Week</th><th>Work</th><th>Deliverable</th></tr>
+  <tr><td>1</td><td>Buy parts, set up tools, flash test sketches</td><td>All modules tested individually</td></tr>
+  <tr><td>2</td><td>Chassis, power system, motor driver</td><td>Robot drives from the phone</td></tr>
+  <tr><td>3</td><td>Thermal head, sensors, alerts, camera</td><td>Live heat map and video on the dashboard</td></tr>
+  <tr><td>4</td><td>Autonomous search, detection tuning</td><td>Finds a volunteer in the test arena</td></tr>
+  <tr><td>5</td><td>Tests T1–T13, calibration, fixes</td><td>Filled-in results table</td></tr>
+  <tr><td>6</td><td>Final documentation, demo video, presentation</td><td>Competition submission</td></tr>
+</table>
+
+<!-- ============ CONCLUSION ============ -->
+<h2><span class="n">19</span>Conclusion</h2>
+<p class="lead">ResQBot Mini shows that the core of thermal search-and-rescue — seeing body heat, pointing to a survivor,
+warning of hazards and staying with the person until help arrives — can be delivered for about ₹3,600 of new parts (an Arduino Uno, an ESP32-CAM and common modules
+anyone can buy). It does not replace professional teams; it gives every local first responder a robot scout that goes in
+first, so that rescuers spend their time where people are actually trapped and take fewer risks to get there.</p>
+
+<!-- ============ APPENDIX ============ -->
+<div class="section"></div>
+<h2><span class="n">A</span>Appendix</h2>
+<h3>A.1 Pin map (Arduino Uno)</h3>
+<table>
+  <tr><th>Pin</th><th>Connected to</th><th>Pin</th><th>Connected to</th></tr>
+  <tr><td>A0</td><td>MQ-2 AO</td><td>D5 / D6</td><td>L298N ENA / ENB (speed, PWM)</td></tr>
+  <tr><td>A1</td><td>Battery divider (10k/10k)</td><td>D7 / D8</td><td>L298N IN1 / IN2</td></tr>
+  <tr><td>A2 / A3</td><td>HC-SR04 TRIG / ECHO</td><td>D9 / D10</td><td>L298N IN3 / IN4</td></tr>
+  <tr><td>A4 / A5</td><td>MLX90614 SDA / SCL</td><td>D11 / D12</td><td>Servo pan / tilt signal</td></tr>
+  <tr><td>D0 / D1</td><td>ESP32-CAM IO14 / IO13 (D1 via 1k/2k)</td><td>D3</td><td>Buzzer (via BC547)</td></tr>
+  <tr><td>D2</td><td>DHT11 data</td><td>D13</td><td>LED beacon (via BC547)</td></tr>
+  <tr><td>D4</td><td>PIR output</td><td>5V / GND</td><td>+5V rail / common ground</td></tr>
+</table>
+<h3>A.2 Project files</h3>
+<pre>rescue-bot/
+  firmware/ResQBot_Uno/        main robot firmware (Arduino Uno)
+  firmware/ResQCam_Gateway/   camera, Wi-Fi and dashboard firmware (ESP32-CAM)
+  dashboard/          phone dashboard (open index.html in a browser for demo mode)
+  sim/                detection logic in Python, scenario tests, range model
+  docs/               this document, build guide, diagrams and images
+  tools/              dashboard embedder, diagram rendering, PDF build</pre>
+<h3>A.3 References</h3>
+<ol class="small">
+  <li>Melexis, <i>MLX90614 family datasheet</i> — single and dual zone infrared thermometer in TO-39.</li>
+  <li>Arduino, <i>Arduino Uno R3 documentation</i>; Espressif Systems, <i>Arduino-ESP32 documentation</i> (Wi-Fi soft-AP).</li>
+  <li>Espressif Systems, <i>esp32-camera</i> driver documentation (OV2640, MJPEG streaming).</li>
+  <li>STMicroelectronics, <i>L298 dual full-bridge driver datasheet</i>.</li>
+  <li>Hanwei Electronics, <i>MQ-2 semiconductor gas sensor datasheet</i>.</li>
+  <li>HC-SR04 ultrasonic ranging module, HC-SR501 PIR module and Aosong DHT11 datasheets.</li>
+  <li>Adafruit DHT sensor library and the Arduino Servo library.</li>
+  <li>United Nations Office for Disaster Risk Reduction, <i>Sendai Framework for Disaster Risk Reduction 2015–2030</i>.</li>
+  <li>INSARAG (International Search and Rescue Advisory Group), <i>INSARAG Guidelines</i>.</li>
+  <li>National Disaster Management Authority (NDMA), India — national disaster management guidelines.</li>
+</ol>
+</body>
+</html>

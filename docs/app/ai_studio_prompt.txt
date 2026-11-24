@@ -1,0 +1,91 @@
+ROLE
+You are a senior mobile product engineer and UI designer. Build a complete, production-quality, phone-first web app called "ResQBot Control" — the rescue team's control app for ResQBot Mini, a low-cost thermal search-and-rescue robot. Write all of the code; no placeholders, no "TODO", no lorem ipsum.
+
+WHAT THE ROBOT IS (context you must design for)
+- ResQBot Mini is a small 4WD rover. An Arduino Uno reads every sensor and runs the search; an ESP32-CAM (the gateway) makes the Wi-Fi, serves the API and streams video. An MLX90614 infrared thermometer on two servos sweeps 140° (pan 20°..160°, 10° steps = 15 columns) at two heights (row 0 = floor, row 1 = level), giving a 2 x 15 grid of temperatures every ~5 s.
+- The robot finds a body-heat patch, turns toward it, drives to 35 cm, waits 5 s, and computes a survivor confidence score 0–100:
+  heat contrast 20–40 + size 0–10 + "warmer when closer" +25 + movement (PIR) +25. Score >= 60 = SURVIVOR LIKELY (alert), 35–59 = possible, < 35 = rejected.
+- It also has: HC-SR04 distance sensor, HC-SR501 PIR motion sensor, MQ-2 smoke/gas sensor, a DHT11 (air temperature and humidity), battery monitor, buzzer, LED beacon, and an ESP32-CAM camera.
+- The robot creates its OWN Wi-Fi hotspot (SSID "ResQBot-01", no internet). The phone joins it. Robot API base URL: http://192.168.4.1 (the ESP32-CAM). Video is on the same address, port 81: http://192.168.4.1:81/stream.
+- Users are firefighters, disaster-response volunteers and student teams, often wearing gloves, outdoors, in sunlight or darkness, under stress. Big touch targets, high contrast, zero ambiguity.
+
+ROBOT HTTP API (exact contract — implement against this, do not invent other endpoints)
+All requests are simple GET requests with query parameters and no custom headers (so no CORS preflight). The robot sends Access-Control-Allow-Origin: *.
+1. GET /api/info  -> {"name":"ResQBot-01","firmware":"2.0-uno","camera":"http://192.168.4.1"}
+2. GET /api/status -> poll every 500 ms. Example:
+{"mode":"auto","state":"SURVIVOR ALERT","camera":"http://192.168.4.1","uptime":98,"object":33.6,"ambient":27.1,"airTemp":29.0,"humidity":64,"link":true,"dhtOk":true,
+ "distance":34,"gas":620,"battery":7.92,"batteryPct":75,"score":75,"scanProgress":100,"pan":90,"clients":1,
+ "motion":false,"pirReady":true,"gasAlarm":false,"batteryLow":false,"thermalOk":true,"alert":true,"survivors":1,"scans":3,
+ "finding":{"found":true,"fire":false,"background":26.2,"peak":31.2,"delta":5.0,"bearing":-20,"cells":6},
+ "grid":{"panMin":20,"panStep":10,"rows":[[26.1,26.3,26.0,26.4,29.4,31.2,29.8,26.9,26.2,26.1,26.3,26.0,26.2,26.1,26.0],
+                                          [26.0,26.2,26.1,26.3,27.7,28.6,27.8,26.5,26.1,26.3,26.0,26.2,26.1,26.0,26.2]]},
+ "events":[{"t":96,"kind":"survivor","text":"SURVIVOR LIKELY - NOT moving (may be unconscious), 33.6 C at 34 cm","score":75},
+           {"t":71,"kind":"heat","text":"Heat signature 31.2 C (+5.0) at 20 deg right","score":50}]}
+   Field notes: link = false means the camera gateway has lost the Arduino (show a red "Arduino not responding" banner); dhtOk = false means the DHT11 failed (show "DHT11 not responding"); airTemp/humidity may be null for the first 5 s. mode = "manual" | "auto" | "estop". Any temperature may be null (sensor error). distance 400 = nothing in range.
+   bearing is degrees from straight ahead, POSITIVE = robot's LEFT, negative = right. Grid column c is at servo angle panMin + c*panStep (0° = robot's right, 180° = left). grid values may be null before the first sweep. events are newest first, max 10; kind = survivor | possible | heat | hazard | info; t = seconds since robot start.
+3. GET /api/drive?l=<-255..255>&r=<-255..255> -> left/right motor speed. ONLY works in manual mode. The robot stops by itself if no drive command arrives for 600 ms (dead-man), so while a drive button is held, resend the command every 200 ms; on release send l=0&r=0.
+   Forward = (s, s), back = (-s, -s), spin left = (-t, t), spin right = (t, -t); t = min(255, s + 10).
+4. GET /api/mode?m=manual|auto|estop
+5. GET /api/scan  -> one thermal sweep (manual mode)
+6. GET /api/ack   -> acknowledge a survivor alert; the robot resumes searching
+7. GET /api/beep  -> short buzzer call-out
+8. GET /api/log.csv -> event log as CSV text
+Camera (ESP32-CAM, same address as the API): GET http://192.168.4.1:81/stream (MJPEG, show it in an <img>), GET http://192.168.4.1/capture (one JPEG), GET http://192.168.4.1/led?on=1|0 (flash light).
+
+TECH STACK AND ARCHITECTURE
+- React + TypeScript, functional components and hooks, Tailwind for styling, no backend. Gemini through the @google/genai SDK using the current default fast Gemini model.
+- Create a RobotClient interface with two implementations:
+  a) HttpRobotClient(baseUrl) — real robot, fetch with an AbortController timeout of 1500 ms on every call.
+  b) SimulatedRobotClient — a realistic built-in simulator that runs the whole search loop (scanning with a moving pan angle and scanProgress, turning, approaching, confirming, alert, acknowledge, drive commands changing distance, occasional gas alarm, battery slowly draining) so the app can be demoed and judged without hardware. Seed a "survivor found" scenario within ~20 s of starting Auto search.
+- A ConnectionProvider (React context) owns the client, the polling loop, connection state and the last status. Connection states: "demo", "connecting", "online", "lost" (3 failed polls in a row), "offline". Back off polling to 2 s while lost; recover automatically.
+- Settings (persisted in localStorage): robot URL (default http://192.168.4.1), camera URL (default from /api/info), drive speed (100–255, default 180), haptics on/off, sounds on/off, Gemini API key (entered by the user, stored only on this device, never hard-coded, never logged), units °C.
+- Mixed-content guard: if the app itself is served over https: and the robot URL is http:, show a clear, friendly banner on the Connect screen: "Browsers block an https web app from talking to the robot's local address. Use the ResQBot Android app (APK), or open http://192.168.4.1 in Chrome while on the robot's Wi-Fi. Demo mode works everywhere." Still allow Demo mode.
+- Make the build Capacitor-ready: relative asset paths, no server-side code, no dependency that needs Node at runtime, works from a file/WebView origin. Include a web app manifest (name, short_name "ResQBot", theme color, icons generated as inline SVG) so it can also be installed as a PWA.
+
+SCREENS (bottom tab bar on phone, side rail on tablet/desktop)
+1. Connect (first launch and whenever offline)
+   - Big status card: "Join the Wi-Fi ResQBot-01 on your phone, then tap Connect." Robot URL field, Connect button, "Try demo mode" secondary button.
+   - On Connect: call /api/info, show robot name and firmware; then go to Mission.
+   - Troubleshooting accordion: Android "Wi-Fi has no internet — keep connected?" → tap Keep connected; turn off mobile data if the app cannot reach the robot; robot must be powered on (two beeps = ready).
+2. Mission (home)
+   - Top bar: robot name, connection pill (ONLINE green / DEMO amber / LOST red pulsing), battery %, uptime.
+   - Mode switch: Manual | Auto search, and a large always-visible E-STOP button (also pinned on every screen as a floating button). E-STOP sends /api/mode?m=estop immediately with no confirmation; leaving E-STOP needs a deliberate tap on Manual.
+   - Thermal Radar: a canvas semicircle fan drawn from the grid — inner ring = floor row, outer ring = level row, 15 wedges each, colored with a thermal ramp (dark blue → blue → teal → yellow → orange → red) scaled from background−1 °C to max(background+6, hottest). Labels LEFT/RIGHT, the robot as a triangle at the bottom centre, the current pan angle as a dashed line while scanning, and when finding.found a white line + red "!" marker at the bearing. Under it: "Heat signature 31.2 °C (+5.0° over 26.2 °C) · 20° right · 6 cells", or "No body-like heat". Show scan progress while scanning.
+   - Survivor Alert takeover: when status.alert becomes true, show a full-width red alert card that pulses, with the event text, confidence, moving / not moving, temperature, distance, the camera image, and two buttons: "Take photo" and "Acknowledge & resume search" (/api/ack). Vibrate the phone (navigator.vibrate pattern) and play a short alarm tone (WebAudio) if enabled. Keep it until acknowledged.
+   - Hazard banners (amber; also link === false → "Arduino not responding, check the D0/D1 wires", and dhtOk === false → "DHT11 not responding"): gasAlarm → "Smoke or gas near the robot — use breathing protection"; finding.fire → "Hot spot over 55 °C — possible fire"; batteryLow → "Battery low — bring the robot back"; thermalOk false → "Thermal sensor not responding".
+   - Confidence gauge: a ring 0–100 colored green < 35, amber 35–59, red >= 60, with a 4-part breakdown bar (heat contrast, size, warmer up close, movement) computed with the same formula from finding + events.
+3. Drive
+   - Live camera view (MJPEG stream) filling the top; on stream error show "Camera offline" and retry every 5 s.
+   - A D-pad of 4 large hold-to-drive buttons (min 72 px) + center stop, using pointer events with pointer capture; repeat /api/drive every 200 ms while held; release, pointercancel, visibility change or app background → send stop. Disable and grey out the pad unless mode == manual, with a hint "Switch to Manual to drive".
+   - Speed slider, "Thermal scan", "Beep / call out", "Flash light" toggle, "Take photo".
+   - Distance warning: obstacle < 25 cm → red outline on the forward button.
+4. Sensors
+   - Tiles with big tabular numbers: IR ahead, air temperature + humidity (DHT11, fields airTemp and humidity; ambient is the IR sensor body temperature), obstacle distance, smoke/gas (raw + clear/ALARM), motion (warm-up / none / YES), battery voltage and %, connected phones, scans done, survivors found.
+   - Sparklines for IR ahead, distance and gas over the last 2 minutes (kept in memory).
+5. Log & Report
+   - Event timeline (newest first) with colored tags: survivor red, possible amber, heat orange, hazard brown, info grey; mm:ss time. Keep a merged mission log in memory across polls (de-duplicate by t+text) so older events aren't lost when the robot's list rolls over.
+   - "Export CSV" (download the merged log; also offer /api/log.csv) and "Copy summary".
+   - "AI mission report" (Gemini): send the merged event log, survivors, hazards, mission duration and the last finding as JSON and ask for a concise incident report for the rescue commander: summary, survivors found (location by bearing/distance, moving or not, confidence), hazards, recommended next actions, and limitations ("thermal scout result, a 'no survivor' result never clears a space"). Render as formatted sections, with Copy. If there's no internet (fetch fails) say "AI report needs internet — reconnect to mobile data or Wi-Fi with internet and try again; your log is kept." Never block robot control on Gemini.
+   - "Analyze photo" (Gemini vision, optional): take a /capture JPEG and ask Gemini to describe visible people, injuries-at-a-glance, hazards (fire, smoke, unstable debris, water, wires), with a disclaimer that it is an aid, not a diagnosis.
+6. Settings — all fields listed above, plus "Reset to defaults" and an About panel (version, robot firmware from /api/info).
+
+VISUAL DESIGN (match the ResQBot brand)
+- Feel: rugged field instrument, calm under pressure. Dark theme by default (better in darkness, saves battery), with a light theme toggle that follows the system setting.
+- Colors (dark): background #0f161c, surface #17212a, line #27343f, text #e6edf2, muted #98a8b6, accent (rescue orange) #ff7b33, danger #ff3b4e, warning #ffb020, ok #2ec4a6, info #4da3ff. Light: background #f2f4f6, surface #ffffff, line #d7dee5, text #14202b, muted #566472, accent #d9480f.
+- Type: "Big Shoulders Display" (uppercase, 800) for screen titles and big numbers, "IBM Plex Sans" for body, "IBM Plex Mono" for readouts and labels (uppercase, letter-spaced). Use tabular numbers for all live values.
+- Orange is only for actions and the brand; red only for danger/E-STOP/alerts; never decorate with red.
+- Touch targets >= 56 px (D-pad 72 px), 16 px side gutters, safe-area insets respected (env(safe-area-inset-*)), no horizontal scrolling at 360 px width.
+- Motion: subtle 150–250 ms transitions; the alert card pulses; respect prefers-reduced-motion.
+- Accessibility: WCAG AA contrast in both themes, aria-labels on icon buttons, focus rings, alerts announced with aria-live="assertive", never use color alone (icons + words on every status).
+
+SAFETY RULES (must hold in code)
+- E-STOP is reachable from every screen in one tap and is never disabled, even when connection is "lost" (it retries 3 times).
+- The app never sends drive commands unless a drive button is physically held. Stop on release, blur, tab switch, app background and connection loss.
+- The app never switches the robot to Auto by itself.
+- Show "DEMO DATA" clearly whenever the simulator is active, everywhere status is shown, so demo data is never mistaken for a real survivor.
+
+DELIVERABLE
+- Clean folder structure: src/api (RobotClient, HttpRobotClient, SimulatedRobotClient, types), src/state (ConnectionProvider, mission log store), src/components (Radar, ConfidenceRing, AlertCard, DPad, CameraView, SensorTile, Sparkline, HazardBanner, EStopButton, StatusPill), src/screens (Connect, Mission, Drive, Sensors, LogReport, Settings), src/ai (gemini.ts), manifest + icons.
+- TypeScript types for the full /api/status JSON above.
+- Start in Demo mode on first launch so the app is instantly usable, with a prominent "Connect to robot" button.
+- Before finishing, self-check: build passes, no console errors, demo mode runs the full search → alert → acknowledge loop, D-pad stops on release, E-STOP works from every screen, layout works at 360 x 740 and on a tablet, both themes are readable.

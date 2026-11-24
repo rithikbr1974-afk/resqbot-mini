@@ -1,0 +1,278 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  html, body { margin: 0; background: #ffffff; font-family: "Segoe UI", Arial, sans-serif; }
+  #wrap { position: relative; width: 1600px; height: 1000px; overflow: hidden;
+    background: radial-gradient(90% 80% at 45% 45%, #ffffff 0%, #f3f5f9 70%, #eceff4 100%); }
+  canvas { position: absolute; inset: 0; }
+  svg#ov { position: absolute; inset: 0; width: 1600px; height: 1000px; pointer-events: none; }
+  .lb { font-size: 31px; font-weight: 700; fill: #141b2b; }
+  .ls { font-size: 24px; fill: #5b6475; }
+  .tag { font-size: 14px; font-weight: 800; letter-spacing: 2.5px; fill: #ff6b1a; }
+</style>
+<script type="importmap">{ "imports": { "three": "./three.module.js" } }</script>
+</head>
+<body>
+<div id="wrap"><svg id="ov" xmlns="http://www.w3.org/2000/svg"></svg></div>
+<script type="module">
+import * as THREE from 'three';
+
+const W = 1600, H = 1000;
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(window.devicePixelRatio || 1);
+renderer.setSize(W, H);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
+document.getElementById('wrap').prepend(renderer.domElement);
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(28.5, W / H, 1, 1000);
+camera.position.set(64, 52, 92);
+camera.lookAt(0.5, 15.2, 0);
+
+// ---------- lights ----------
+scene.add(new THREE.HemisphereLight(0xffffff, 0xdfe4ee, 1.35));
+const key = new THREE.DirectionalLight(0xfff4ea, 2.3);
+key.position.set(30, 80, 45);
+key.castShadow = true;
+key.shadow.mapSize.set(2048, 2048);
+Object.assign(key.shadow.camera, { left: -45, right: 45, top: 45, bottom: -45, near: 10, far: 200 });
+key.shadow.radius = 6; key.shadow.bias = -0.0004;
+scene.add(key);
+const fill = new THREE.DirectionalLight(0xdfe9ff, 0.8); fill.position.set(50, 30, -30); scene.add(fill);
+const rim = new THREE.DirectionalLight(0xffd6bd, 0.7); rim.position.set(-40, 40, 60); scene.add(rim);
+
+const ground = new THREE.Mesh(new THREE.PlaneGeometry(400, 400), new THREE.ShadowMaterial({ opacity: 0.13 }));
+ground.rotation.x = -Math.PI / 2; ground.position.y = -4.4; ground.receiveShadow = true; scene.add(ground);
+
+// ---------- helpers ----------
+const M = (color, o = {}) => new THREE.MeshStandardMaterial({ color, roughness: 0.55, metalness: 0.05, ...o });
+const mat = {
+  plate: M(0xff6b1a, { roughness: 0.42 }), plateEdge: M(0xd9540c),
+  black: M(0x1b1f29, { roughness: 0.6 }), rubber: M(0x15181f, { roughness: 0.9 }), hub: M(0xffc928, { roughness: 0.45 }),
+  yellow: M(0xf5c020), teal: M(0x00878f, { roughness: 0.5 }), blue: M(0x2667c9, { roughness: 0.5 }),
+  red: M(0xc8243a), silver: M(0xc9ced8, { metalness: 0.75, roughness: 0.3 }), brass: M(0xc9a34a, { metalness: 0.7, roughness: 0.35 }),
+  green: M(0x1f8a4c), white: M(0xf6f7f9, { roughness: 0.35 }), dark: M(0x2c3140), cell: M(0x2fb6a5, { roughness: 0.35 }),
+  grey: M(0x6c7486), beacon: M(0xff3b3b, { emissive: 0xff1a1a, emissiveIntensity: 0.55, roughness: 0.25 }),
+  lens: M(0x203a7a, { metalness: 0.4, roughness: 0.15 }),
+};
+function box(w, h, d, m, x = 0, y = 0, z = 0, parent) {
+  const g = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m);
+  g.position.set(x, y, z); g.castShadow = g.receiveShadow = true; (parent || scene).add(g); return g;
+}
+function cyl(r, len, m, x, y, z, axis = 'y', parent, r2 = r, seg = 32) {
+  const g = new THREE.Mesh(new THREE.CylinderGeometry(r2, r, len, seg), m);
+  if (axis === 'x') g.rotation.z = -Math.PI / 2;
+  if (axis === 'z') g.rotation.x = Math.PI / 2;
+  g.position.set(x, y, z); g.castShadow = g.receiveShadow = true; (parent || scene).add(g); return g;
+}
+function roundedPlate(w, d, t, r, m, parent, y = 0) {        // rounded-corner acrylic deck
+  const s = new THREE.Shape(), hw = w / 2, hd = d / 2;
+  s.moveTo(-hw + r, -hd); s.lineTo(hw - r, -hd); s.quadraticCurveTo(hw, -hd, hw, -hd + r);
+  s.lineTo(hw, hd - r); s.quadraticCurveTo(hw, hd, hw - r, hd); s.lineTo(-hw + r, hd);
+  s.quadraticCurveTo(-hw, hd, -hw, hd - r); s.lineTo(-hw, -hd + r); s.quadraticCurveTo(-hw, -hd, -hw + r, -hd);
+  for (const [hx, hz] of [[-hw + 1.4, -hd + 1.4], [hw - 1.4, -hd + 1.4], [-hw + 1.4, hd - 1.4], [hw - 1.4, hd - 1.4]]) {
+    const h = new THREE.Path(); h.absarc(hx, hz, 0.35, 0, Math.PI * 2, true); s.holes.push(h);
+  }
+  const g = new THREE.Mesh(new THREE.ExtrudeGeometry(s, { depth: t, bevelEnabled: true, bevelSize: 0.12, bevelThickness: 0.12, bevelSegments: 2 }), m);
+  g.rotation.x = Math.PI / 2; g.position.y = y + t; g.castShadow = g.receiveShadow = true; parent.add(g); return g;
+}
+function pcb(w, d, m, x, y, z, parent) { return box(w, 0.16, d, m, x, y + 0.08, z, parent); }
+function standoffs(parent, w, d, len) {
+  for (const sx of [-1, 1]) for (const sz of [-1, 1]) cyl(0.32, len, mat.brass, sx * (w / 2 - 1.4), -len / 2, sz * (d / 2 - 1.4), 'y', parent, 0.32, 6);
+}
+const anchors = {};
+function anchor(name, obj, dx = 0, dy = 0, dz = 0) { anchors[name] = { obj, off: new THREE.Vector3(dx, dy, dz) }; }
+
+// Exploded heights
+const Y = { base: 0, mid: 10, top: 20, shell: 32.5 };
+
+// ================= BASE: drive =================
+const base = new THREE.Group(); base.position.y = Y.base; scene.add(base);
+roundedPlate(26, 14, 0.5, 1.2, mat.plate, base);
+for (const sx of [-1, 1]) for (const sz of [-1, 1]) {
+  const x = sx * 8.6, z = sz * 8.65;
+  const tire = cyl(3.3, 2.6, mat.rubber, x, -1.2, z, 'z', base, 3.3, 48);
+  const hub = cyl(1.65, 2.7, mat.hub, x, -1.2, z, 'z', base, 1.65, 32);
+  const side = new THREE.Mesh(new THREE.TorusGeometry(2.55, 0.42, 12, 48), mat.rubber);   // tyre sidewall bulge
+  side.position.set(x, -1.2, z + sz * 1.25); side.castShadow = true; base.add(side);
+  box(6.6, 2.2, 2.0, mat.yellow, sx * 5.6, -1.2, sz * 5.6, base);       // BO gear motor
+}
+// battery: 2 x 18650 in a holder
+box(7.8, 1.0, 4.4, mat.black, -1.5, 0.95, 0, base);
+cyl(0.92, 6.6, mat.cell, -1.5, 1.85, -1.05, 'x', base); cyl(0.92, 6.6, mat.cell, -1.5, 1.85, 1.05, 'x', base);
+anchor('battery', base, -1.5, 2.8, 0);
+// L298N
+pcb(4.4, 4.4, mat.red, 6.4, 0.5, -2.6, base);
+box(2.4, 2.4, 1.6, mat.black, 6.4, 1.9, -3.0, base);
+for (let i = 0; i < 3; i++) box(0.5, 1.0, 0.5, mat.blue, 4.7 + i * 0.6, 1.0, -0.8, base);
+anchor('l298', base, 6.4, 3.0, -3.0);
+// fuse + switch
+box(1.6, 1.0, 1.0, mat.black, -9.5, 1.0, 4.5, base); box(0.5, 0.5, 0.6, mat.red, -9.5, 1.7, 4.5, base);
+// HC-SR04 at the front edge, facing +x
+box(0.18, 2.1, 4.6, mat.blue, 13.3, 1.6, 0, base);
+cyl(0.8, 1.3, mat.silver, 14.0, 1.7, -1.3, 'x', base); cyl(0.8, 1.3, mat.silver, 14.0, 1.7, 1.3, 'x', base);
+anchor('sonar', base, 14.4, 2.8, 0);
+// drill under the front: gear motor + bit
+box(3.4, 2.2, 2.2, mat.yellow, 11.2, -1.6, 0, base);
+cyl(1.15, 3.2, mat.silver, 14.3, -1.6, 0, 'x', base);
+cyl(0.2, 1.2, mat.silver, 16.4, -1.6, 0, 'x', base);
+const bit = cyl(0.01, 4.0, mat.silver, 18.9, -1.6, 0, 'x', base, 0.55, 24);  // tapered bit
+for (let k = 0; k < 7; k++) {
+  const t = new THREE.Mesh(new THREE.TorusGeometry(0.5 - k * 0.06, 0.07, 6, 24), mat.grey);
+  t.position.set(17.4 + k * 0.48, -1.6, 0); t.rotation.y = Math.PI / 2 + 0.35; base.add(t);
+}
+anchor('drill', base, 19.5, -1.6, 0);
+
+// ================= MIDDLE: brain + power =================
+const mid = new THREE.Group(); mid.position.y = Y.mid; scene.add(mid);
+roundedPlate(24, 13, 0.4, 1.2, mat.plate, mid);
+standoffs(mid, 24, 13, 4.2);
+// Arduino Uno
+pcb(6.9, 5.3, mat.teal, -2.2, 0.4, 0.4, mid);
+box(3.4, 0.4, 1.0, mat.black, -1.4, 0.75, 1.1, mid);                    // ATmega
+box(1.6, 1.1, 1.2, mat.silver, -5.3, 1.05, -0.9, mid);                   // USB
+box(1.4, 1.1, 0.9, mat.black, -5.3, 1.0, 2.0, mid);                      // DC jack
+box(5.2, 0.85, 0.25, mat.black, -1.6, 0.9, -2.15, mid); box(4.6, 0.85, 0.25, mat.black, -1.9, 0.9, 2.9, mid);
+anchor('uno', mid, -2.2, 1.2, 0.4);
+// two LM2596 buck converters
+for (const [x, z] of [[6.2, -3.2], [6.2, 2.6]]) {
+  pcb(4.3, 2.1, mat.blue, x, 0.4, z, mid);
+  cyl(0.62, 0.7, mat.dark, x - 0.6, 0.95, z, 'y', mid);
+  cyl(0.38, 1.0, mat.black, x + 1.3, 1.1, z - 0.5, 'y', mid); cyl(0.38, 1.0, mat.black, x + 1.3, 1.1, z + 0.5, 'y', mid);
+  box(0.5, 0.5, 0.9, mat.blue, x + 0.4, 0.85, z + 0.6, mid);
+}
+anchor('buck', mid, 6.6, 1.4, -0.3);
+// MOSFET module
+pcb(2.8, 1.8, mat.red, -8.4, 0.4, -3.4, mid);
+box(1.0, 1.4, 0.3, mat.black, -8.6, 1.3, -3.4, mid); box(1.0, 0.5, 0.15, mat.silver, -8.6, 2.2, -3.45, mid);
+anchor('fet', mid, -8.6, 2.3, -3.4);
+// DHT11
+box(1.6, 2.0, 0.7, mat.blue, -8.6, 1.4, 3.6, mid);
+anchor('dht', mid, -8.6, 2.4, 3.6);
+
+// ================= TOP: sensing =================
+const top = new THREE.Group(); top.position.y = Y.top; scene.add(top);
+roundedPlate(24, 13, 0.4, 1.2, mat.plate, top);
+standoffs(top, 24, 13, 6.2);
+// pan-tilt head
+box(2.3, 2.4, 1.25, mat.blue, 6.6, 1.6, 0, top);                          // pan servo
+cyl(0.35, 0.6, mat.white, 6.6, 3.1, 0, 'y', top);
+box(2.8, 0.25, 2.8, mat.black, 6.6, 3.5, 0, top);                         // bracket
+box(0.25, 3.2, 2.8, mat.black, 5.3, 5.1, 0, top); box(0.25, 3.2, 2.8, mat.black, 7.9, 5.1, 0, top);
+box(2.3, 1.25, 2.2, mat.blue, 6.6, 5.0, 1.9, top);                        // tilt servo
+const head = new THREE.Group(); head.position.set(6.6, 6.9, 0); head.rotation.z = -0.06; top.add(head);
+box(2.2, 0.16, 2.6, mat.green, 0, 0, 0, head);
+cyl(1.0, 3.0, mat.black, 1.9, 0.75, 0, 'x', head);                        // black view tube
+cyl(0.62, 0.05, mat.dark, 3.42, 0.75, 0, 'x', head);
+anchor('thermal', head, 2.2, 1.9, 0);
+// ESP32-CAM, centred under the head, facing forward
+box(0.25, 4.0, 2.7, mat.black, 10.8, 2.4, 0, top);
+box(0.6, 1.0, 1.0, mat.dark, 11.2, 3.2, 0, top); cyl(0.42, 0.6, mat.lens, 11.6, 3.2, 0, 'x', top);
+box(0.3, 0.5, 0.5, mat.white, 11.05, 1.6, 0.8, top);                      // flash LED
+anchor('cam', top, 11.8, 3.6, 0);
+// PIR
+pcb(3.2, 2.4, mat.green, -8.6, 0.4, 0, top);
+const dome = new THREE.Mesh(new THREE.SphereGeometry(1.15, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2), mat.white);
+dome.position.set(-8.6, 0.6, 0); dome.castShadow = true; top.add(dome);
+anchor('pir', top, -8.6, 1.8, 0);
+// MQ-2
+pcb(3.2, 2.2, mat.blue, -2.0, 0.4, -3.4, top);
+cyl(0.95, 1.5, mat.silver, -2.0, 1.3, -3.4, 'y', top);
+anchor('mq2', top, -2.0, 2.1, -3.4);
+// buzzer module
+pcb(2.4, 1.6, mat.black, -2.6, 0.4, 3.4, top); cyl(0.6, 0.8, mat.dark, -2.6, 0.95, 3.4, 'y', top);
+anchor('buzz', top, -2.6, 1.4, 3.4);
+// beacon mast
+cyl(0.22, 5.4, mat.grey, 1.6, 3.1, 4.2, 'y', top);
+const bl = new THREE.Mesh(new THREE.SphereGeometry(0.95, 32, 16), mat.beacon); bl.position.set(1.6, 6.3, 4.2); top.add(bl);
+const glow = new THREE.PointLight(0xff3b3b, 6, 9); glow.position.copy(bl.position); top.add(glow);
+anchor('beacon', top, 1.6, 7.2, 4.2);
+
+// ================= SHELL =================
+const shell = new THREE.Group(); shell.position.y = Y.shell; scene.add(shell);
+const prof = new THREE.Shape();                                           // side profile (x forward, y up)
+prof.moveTo(-14, 0); prof.lineTo(14.6, 0); prof.lineTo(12.4, 5.6); prof.lineTo(8.0, 8.6);
+prof.lineTo(-10.6, 8.6); prof.lineTo(-14, 5.0); prof.lineTo(-14, 0);
+const shellGeo = new THREE.ExtrudeGeometry(prof, { depth: 15.2, bevelEnabled: true, bevelSize: 0.5, bevelThickness: 0.5, bevelSegments: 4 });
+shellGeo.translate(0, 0, -7.6);
+const shellMat = new THREE.MeshPhysicalMaterial({ color: 0x9fb0cc, roughness: 0.25, metalness: 0.0, transparent: true, opacity: 0.32,
+  clearcoat: 1, clearcoatRoughness: 0.15, side: THREE.DoubleSide, depthWrite: false });
+const sh = new THREE.Mesh(shellGeo, shellMat); shell.add(sh);
+const edges = new THREE.LineSegments(new THREE.EdgesGeometry(shellGeo, 25), new THREE.LineBasicMaterial({ color: 0x4d5d7d }));
+shell.add(edges);
+// window frames (sensor openings) on the shell
+const frame = M(0x26324a);
+function windowFrame(w, h, x, y, z, ry) {
+  const g = new THREE.Group(); g.position.set(x, y, z); g.rotation.y = ry; shell.add(g);
+  const t = 0.28;
+  box(w, t, t, frame, 0, h / 2, 0, g); box(w, t, t, frame, 0, -h / 2, 0, g);
+  box(t, h, t, frame, -w / 2, 0, 0, g); box(t, h, t, frame, w / 2, 0, 0, g);
+  return g;
+}
+for (let k = 0; k < 4; k++) box(0.35, 0.12, 4.0, frame, -5 + k * 0.9, 8.65 + 0.05, 0, shell);   // vents on the roof
+anchor('shell', shell, -4, 9.2, -4);
+
+// ---------- exploded guide lines ----------
+const dashMat = new THREE.LineDashedMaterial({ color: 0xa3adbf, dashSize: 0.8, gapSize: 0.7 });
+for (const [x, z] of [[-10.6, -5.1], [10.6, -5.1], [-10.6, 5.1], [10.6, 5.1]]) {
+  const g = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(x, 0.6, z), new THREE.Vector3(x, Y.shell, z)]);
+  const l = new THREE.Line(g, dashMat); l.computeLineDistances(); scene.add(l);
+}
+
+renderer.render(scene, camera);
+
+// ---------- labels ----------
+scene.updateMatrixWorld(true);
+function screen(name) {
+  const a = anchors[name]; const v = a.off.clone(); a.obj.localToWorld(v); v.project(camera);
+  return [(v.x + 1) / 2 * W, (1 - v.y) / 2 * H];
+}
+const ov = document.getElementById('ov');
+const NS = 'http://www.w3.org/2000/svg';
+function el(tag, attrs, text) { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (text) e.textContent = text; ov.appendChild(e); return e; }
+const L = [
+  ['shell', 'Protective shell', 'plastic, windows, vents'],
+  ['beacon', 'Red beacon', 'marks the survivor'],
+  ['thermal', 'Thermal sensor', 'in a 25° tube, pan-tilt'],
+  ['cam', 'ESP32-CAM', 'video + own Wi-Fi'],
+  ['pir', 'PIR sensor', 'is the person moving?'],
+  ['mq2', 'MQ-2 gas sensor', 'smoke / gas warning'],
+  ['buzz', 'Buzzer module', '5 V alarm'],
+  ['uno', 'Arduino Uno', 'search + safety'],
+  ['buck', '2 × buck converters', 'clean 5 V power'],
+  ['fet', 'Drill MOSFET', 'switches the drill'],
+  ['dht', 'DHT11', 'air temp + humidity'],
+  ['battery', '2 × 18650 battery', 'low and centred'],
+  ['l298', 'L298N driver', '4WD gear motors'],
+  ['sonar', 'Ultrasonic sensor', 'obstacle distance'],
+  ['drill', '12 V drill', 'clears light debris'],
+];
+const pts = L.map(([n, t, s]) => { const [x, y] = screen(n); return { n, t, s, x, y }; });
+const cx = pts.reduce((a, p) => a + p.x, 0) / pts.length;
+for (const side of ['L', 'R']) {
+  const RIGHT = ['beacon', 'thermal', 'cam', 'buck', 'l298', 'sonar', 'drill'];
+  const g = pts.filter(p => (side === 'R') === RIGHT.includes(p.n)).sort((a, b) => a.y - b.y);
+  const top = 70, bot = 950, step = Math.min(125, (bot - top) / Math.max(1, g.length - 1));
+  // keep labels near their anchor height but never closer than `step`
+  let prev = -1e9;
+  g.forEach(p => { p.ly = Math.max(p.y, prev + step, top); prev = p.ly; });
+  const over = prev - bot; if (over > 0) { prev = 1e9; for (let i = g.length - 1; i >= 0; i--) { g[i].ly = Math.min(g[i].ly - 0, prev - step, bot); prev = g[i].ly; } }
+  for (const p of g) {
+    const lx = side === 'L' ? 405 : 1195, ex = side === 'L' ? lx + 12 : lx - 12, kx = side === 'L' ? lx + 40 : lx - 40;
+    el('path', { d: `M${ex} ${p.ly} L${kx} ${p.ly} L${p.x} ${p.y}`, fill: 'none', stroke: '#141b2b', 'stroke-width': 1.5, opacity: 0.5 });
+    el('circle', { cx: p.x, cy: p.y, r: 5, fill: '#ff6b1a', stroke: '#fff', 'stroke-width': 2 });
+    const anchorTxt = side === 'L' ? 'end' : 'start';
+    el('text', { x: lx, y: p.ly - 4, class: 'lb', 'text-anchor': anchorTxt }, p.t);
+    el('text', { x: lx, y: p.ly + 27, class: 'ls', 'text-anchor': anchorTxt }, p.s);
+  }
+}
+document.title = 'ready';
+</script>
+</body>
+</html>

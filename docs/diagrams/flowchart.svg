@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1000" viewBox="0 0 1400 1000" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5b6475"/>
+    </marker>
+    <style>
+      .n{fill:#ffffff;stroke:#c9d1de;stroke-width:2}
+      .t{font-size:18px;font-weight:700;fill:#1d2433}
+      .s{font-size:14px;fill:#5b6475}
+      .e{stroke:#5b6475;stroke-width:2.5;fill:none}
+      .y{font-size:14px;font-weight:800;fill:#1baf7a}
+      .no{font-size:14px;font-weight:800;fill:#e5383b}
+      .d{fill:#fff7e6;stroke:#eda100;stroke-width:2}
+    </style>
+  </defs>
+  <rect width="1400" height="1000" fill="#ffffff"/>
+  <text x="40" y="52" font-size="28" font-weight="800" fill="#1d2433">Autonomous search — how ResQBot decides</text>
+
+  <!-- start -->
+  <rect x="80" y="100" width="240" height="64" rx="32" fill="#1d2433"/>
+  <text x="200" y="138" text-anchor="middle" font-size="18" font-weight="700" fill="#fff">Auto search ON</text>
+  <path class="e" d="M320,132 L418,132" marker-end="url(#a)"/>
+
+  <!-- scan -->
+  <rect class="n" x="420" y="92" width="300" height="84" rx="14"/>
+  <text x="444" y="126" class="t">1 · Thermal sweep</text>
+  <text x="444" y="150" class="s">30 readings, 140° × 2 rows, ~5 s</text>
+  <path class="e" d="M720,134 L808,134" marker-end="url(#a)"/>
+
+  <!-- decision blob -->
+  <polygon class="d" points="960,84 1110,134 960,184 810,134"/>
+  <text x="960" y="130" text-anchor="middle" class="t" font-size="16">Body-like</text>
+  <text x="960" y="150" text-anchor="middle" class="t" font-size="16">warm area?</text>
+  <text x="1120" y="122" class="s">+1.5 °C over background,</text>
+  <text x="1120" y="140" class="s">≤ 42 °C, ≥ 2 cells</text>
+
+  <!-- no: cruise -->
+  <path class="e" d="M960,184 L960,258" marker-end="url(#a)"/>
+  <text x="972" y="226" class="no">NO</text>
+  <rect class="n" x="810" y="260" width="300" height="84" rx="14"/>
+  <text x="834" y="294" class="t">Drive 2.5 s</text>
+  <text x="834" y="318" class="s">obstacle &lt; 25 cm → back up + turn</text>
+  <path class="e" d="M810,302 C620,302 570,250 570,178" marker-end="url(#a)"/>
+
+  <!-- yes: align -->
+    <path class="e" d="M880,160 C700,230 300,250 240,400" marker-end="url(#a)"/>
+  <text x="812" y="200" class="y">YES</text>
+
+  <rect class="n" x="80" y="402" width="320" height="84" rx="14"/>
+  <text x="104" y="436" class="t">2 · Turn toward it</text>
+  <text x="104" y="460" class="s">bearing from the warm cells' centre</text>
+  <path class="e" d="M400,444 L478,444" marker-end="url(#a)"/>
+
+  <rect class="n" x="480" y="402" width="320" height="84" rx="14"/>
+  <text x="504" y="436" class="t">3 · Approach slowly</text>
+  <text x="504" y="460" class="s">stop at 35 cm · track IR reading</text>
+  <path class="e" d="M800,444 L878,444" marker-end="url(#a)"/>
+
+  <rect class="n" x="880" y="402" width="320" height="84" rx="14"/>
+  <text x="904" y="436" class="t">4 · Confirm (5 s still)</text>
+  <text x="904" y="460" class="s">warmer up close? · PIR movement?</text>
+  <path class="e" d="M1040,486 L1040,560" marker-end="url(#a)"/>
+
+  <!-- score -->
+  <rect x="820" y="562" width="440" height="150" rx="14" fill="#f6f8fb" stroke="#c9d1de" stroke-width="2"/>
+  <text x="844" y="596" class="t">Confidence score (0–100)</text>
+  <g class="s" font-size="15">
+    <text x="844" y="626">heat contrast 20–40  +  size 0–10</text>
+    <text x="844" y="652">warmer when closer +25</text>
+    <text x="844" y="678">movement (PIR) +25</text>
+  </g>
+  <text x="844" y="702" font-size="13" fill="#8a94a6">no movement needed: unconscious people are found too</text>
+
+  <path class="e" d="M820,640 C720,640 640,700 560,770" marker-end="url(#a)"/>
+  <path class="e" d="M1040,712 L1040,770" marker-end="url(#a)"/>
+  <path class="e" d="M1260,640 C1320,640 1320,740 1300,770" marker-end="url(#a)"/>
+
+  <!-- outcomes -->
+  <rect x="300" y="772" width="420" height="120" rx="14" fill="#fdecee" stroke="#e5383b" stroke-width="2.5"/>
+  <text x="324" y="806" font-size="19" font-weight="800" fill="#c1121f">≥ 60 · SURVIVOR LIKELY</text>
+  <text x="324" y="832" class="s">stop next to them · beacon + buzzer</text>
+  <text x="324" y="854" class="s">alert on phone with bearing, temp, distance</text>
+  <text x="324" y="876" class="s">stays as a marker until Acknowledge → resume search</text>
+
+  <rect x="860" y="772" width="300" height="120" rx="14" fill="#fff7e6" stroke="#eda100" stroke-width="2"/>
+  <text x="884" y="806" font-size="18" font-weight="800" fill="#9a6700">35–59 · possible</text>
+  <text x="884" y="832" class="s">logged for a manual check</text>
+  <text x="884" y="854" class="s">back up, turn, keep searching</text>
+
+  <rect x="1180" y="772" width="190" height="120" rx="14" class="n"/>
+  <text x="1200" y="806" font-size="18" font-weight="800" fill="#5b6475">&lt; 35 · reject</text>
+  <text x="1200" y="832" class="s">heater, sunlit</text>
+  <text x="1200" y="854" class="s">wall, reflection</text>
+
+  <!-- always -->
+  <rect x="40" y="920" width="1320" height="56" rx="12" fill="#1d2433"/>
+  <text x="64" y="954" font-size="16" fill="#ffffff"><tspan font-weight="800" fill="#ffb020">Always on: </tspan>E-STOP from the phone · smoke/gas and &gt;55 °C hot-spot warnings · battery-low stop · manual mode stops if the phone goes quiet for 0.6 s</text>
+</svg>

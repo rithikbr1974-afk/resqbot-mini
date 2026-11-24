@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>ResQBot Mini — Components and Shopping List</title>
+<style>
+@page { size: A4; margin: 15mm 13mm 17mm 13mm;
+  @bottom-center { content: "ResQBot Mini · components list · page " counter(page); font: 8.5pt "Segoe UI", Arial; color: #8a94a6; } }
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body { font: 9.6pt/1.45 "Segoe UI", Arial, sans-serif; color: #1d2433; margin: 0; }
+h1 { font-size: 21pt; margin: 0 0 1mm; }
+h2 { font-size: 13pt; margin: 7mm 0 2.5mm; }
+.sub { color: #5b6475; font-size: 10.5pt; margin-bottom: 5mm; }
+.head { display: flex; justify-content: space-between; align-items: flex-end; gap: 6mm; border-bottom: 3px solid #ff6b1a; padding-bottom: 3mm; margin-bottom: 4mm; }
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; margin: 0 0 4mm; }
+.stat { background: #f6f8fb; border: 1px solid #dde3ec; border-radius: 3mm; padding: 3mm 4mm; }
+.stat b { display: block; font-size: 17pt; color: #ff6b1a; }
+.stat span { font-size: 8.8pt; color: #5b6475; }
+table { width: 100%; border-collapse: collapse; }
+th { background: #1d2433; color: #fff; text-align: left; padding: 2mm; font-weight: 600; font-size: 8.8pt; }
+td { padding: 1.8mm 2mm; border-bottom: 1px solid #e4e8ef; vertical-align: top; }
+tr { break-inside: avoid; }
+tr.grp td { background: #fff3eb; color: #b34700; font-weight: 800; font-size: 9pt; text-transform: uppercase; letter-spacing: .6px; padding: 1.6mm 2mm; }
+tr.total td { background: #1d2433; color: #fff; font-weight: 800; font-size: 10.5pt; }
+td.n { color: #8a94a6; width: 5mm; }
+td.c { text-align: center; }
+td.r, th.r { text-align: right; white-space: nowrap; }
+td.s { font-size: 8.4pt; color: #1b8a5a; white-space: nowrap; }
+.why { color: #5b6475; font-size: 8.6pt; }
+.alt { font-size: 8.3pt; color: #5b6475; margin-top: .8mm; }
+a { color: #1c5cab; text-decoration: none; }
+.box { background: #f6f8fb; border: 1px solid #dde3ec; border-radius: 3mm; padding: 3mm 4mm; margin: 3mm 0; break-inside: avoid; }
+.warn { background: #fff7e6; border-color: #f1c66a; }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; }
+ul { margin: 1mm 0 0; padding-left: 5mm; } li { margin-bottom: .8mm; }
+</style></head><body>
+<div class="head">
+  <div><h1>ResQBot Mini — Components &amp; Shopping List</h1>
+  <div class="sub">Every part needed to build the robot, with a store link and today's price for each.</div></div>
+  <div class="sub" style="text-align:right">Prices checked on 9 October 2026<br>incl. GST · shipping extra</div>
+</div>
+<div class="stats">
+  <div class="stat"><b>₹4,684</b><span>full robot incl. Uno and ESP32-CAM (27 items, online prices)</span></div>
+  <div class="stat"><b>₹3,589</b><span>still to buy: you already have the Uno and ESP32-CAM (₹1,095)</span></div>
+  <div class="stat"><b>₹549</b><span>one-time: battery charger (not part of the robot)</span></div>
+</div>
+
+<table>
+<tr><th>#</th><th>Component</th><th>Qty</th><th class="r">Rate</th><th class="r">Amount</th><th>Buy link</th><th>Stock</th></tr>
+<tr class="grp"><td colspan="7">Brain and camera</td></tr>
+<tr><td class='n'>1</td><td><b>Arduino Uno R3 (CH340 compatible)</b><div class='why'>Main board: reads every sensor, runs the search, drives motors and servos</div><div class="alt">Alternative: <a href="https://robu.in/product/arduino-uno-r3/">Robu: Arduino Uno R3 with cable</a> — ₹424</div></td><td class='c'>1</td><td class='r'>₹249</td><td class='r'><b>₹249</b></td><td><a href="https://robu.in/product/arduino-uno-r3-ch340g-atmega328p-devlopment-board/">Robu.in</a></td><td class='s'>You have it</td></tr>
+<tr><td class='n'>2</td><td><b>ESP32-CAM board with OV2640 2 MP camera</b><div class='why'>Live video, Wi-Fi hotspot and the dashboard; gets all data from the Uno</div><div class="alt">Alternative: <a href="https://www.amazon.in/dp/B0BXGWCL91">Amazon: ESP32-CAM with camera (4.1 stars)</a> — ₹999</div></td><td class='c'>1</td><td class='r'>₹846</td><td class='r'><b>₹846</b></td><td><a href="https://www.amazon.in/dp/B0HHWXTY3L">Amazon.in</a></td><td class='s'>You have it</td></tr>
+<tr><td class='n'>3</td><td><b>ESP32-CAM-MB USB programmer board</b><div class='why'>Uploads code to the ESP32-CAM (skip if your camera listing includes it)</div><div class="alt">Alternative: <a href="https://www.amazon.in/dp/B0GGDDXNQR">Amazon: ESP32-CAM-MB</a> — ₹214</div></td><td class='c'>1</td><td class='r'>₹119</td><td class='r'><b>₹119</b></td><td><a href="https://robu.in/product/esp32-cam-mb-micro-usb-shield-module-for-esp32-cam-development-board/">Robu.in</a></td><td class='s'>In stock</td></tr>
+<tr class="grp"><td colspan="7">Sensors</td></tr>
+<tr><td class='n'>4</td><td><b>MLX90614 IR temperature sensor (GY-906)</b><div class='why'>Body-heat detection: the &#x27;thermal camera&#x27; on the pan-tilt head</div><div class="alt">Alternative: <a href="https://robu.in/product/smartelex-mlx90614-esf-ir-non-contact-temp-sensor-module/">Robu: SmartElex MLX90614 ESF module (in stock)</a> — ₹977</div></td><td class='c'>1</td><td class='r'>₹759</td><td class='r'><b>₹759</b></td><td><a href="https://www.amazon.in/dp/B0GV4FYYVD">Amazon.in</a></td><td class='s'>In stock</td></tr>
+<tr><td class='n'>5</td><td><b>HC-SR04 ultrasonic distance sensor</b><div class='why'>Obstacle avoidance and stopping 35 cm from a person</div></td><td class='c'>1</td><td class='r'>₹79</td><td class='r'><b>₹79</b></td><td><a href="https://robu.in/product/hc-sr04-ultrasonic-range-finder/">Robu.in</a></td><td class='s'>In stock</td></tr>
+<tr><td class='n'>6</td><td><b>HC-SR501 PIR motion sensor</b><div class='why'>Detects whether the survivor is moving</div></td><td class='c'>1</td><td class='r'>₹69</td><td class='r'><b>₹69</b></td><td><a href="https://robu.in/product/pir-motion-sensor-detector-module-hc-sr501/">Robu.in</a></td><td class='s'>In stock</td></tr>
+<tr><td class='n'>7</td><td><b>DHT11 temperature and humidity module</b><div class='why'>Air temperature and humidity next to the IR readings</div><div class="alt">Alternative: <a href="https://robu.in/product/smartelex-dht11-temp-humidity-sensor-module/">Robu: SmartElex DHT11 module</a> — ₹170</div></td><td class='c'>1</td><td class='r'>₹59</td><td class='r'><b>₹59</b></td><td><a href="https://robu.in/product/dht11-digital-relative-humidity-temperature-sensor-module/">Robu.in</a></td><td class='s'>In stock</td></tr>
+<tr><td class='n'>8</td><td><b>MQ-2 smoke / gas sensor module (Winsen)</b><div class='why'>Smoke and LPG warning for rescuers</div><div class="alt">Alternative: <a href="https://www.amazon.in/dp/B09XTK79D4">Amazon: Prakti MQ-2 module</a> — ₹140</div></td><td class='c'>1</td><td class='r'>₹129</td><td class='r'><b>₹129</b></td><td><a href="https://robu.in/product/winsen-mq-2-smoke-sensor/">Robu.in</a></td><td class='s'>In stock</td></tr>
+<tr class="grp"><td colspan="7">Drive and thermal head</td></tr>
+<tr><td class='n'>9</td><td><b>4WD robot car chassis kit (2 plates, 4 BO motors, 4 wheels, screws)</b><div class='why'>Robot body and wheels</div><div class="alt">Alternative: <a href="https://robu.in/product/cligo-4wd-abs-smart-robot-car-chassis/">Robu: Cligo 4WD ABS chassis, frame only (add 4 BO motors ₹82 + 4 wheels ₹29)</a> — ₹749</div></td><td class='c'>1</td><td class='r'>₹609</td><td class='r'><b>₹609</b></td><td><a href="https://www.amazon.in/dp/B077GNR6WQ">Amazon.in</a></td><td class='s'>In stock</td></tr>
+<tr><td class='n'>10</td><td><b>L298N dual motor driver module</b><div class='why'>Drives the left and right motor pairs</div></td><td class='c'>1</td><td class='r'>₹129</td><td class='r'><b>₹129</b></td><td><a href="https://robu.in/product/l298n-2a-based-motor-driver-module-good-quality/">Robu.in</a></td><td class='s'>In stock</td></tr>
+<tr><td class='n'>11</td><td><b>TowerPro SG90 micro servo</b><div class='why'>Pan and tilt of the thermal sensor</div><div class="alt">Alternative: <a href="https://robu.in/product/towerpro-sg90-9gm-1-2kg-180-degree-rotation-servo-motor-good-quality/">Robu: SG90 &#x27;good quality&#x27; version</a> — ₹185</div></td><td class='c'>2</td><td class='r'>₹89</td><td class='r'><b>₹178</b></td><td><a href="https://robu.in/product/towerpro-sg90-9g-mini-servo-9-gram/">Robu.in</a></td><td class='s'>In stock</td></tr>
+<tr><td class='n'>12</td><td><b>2-axis pan-tilt bracket for SG90</b><div class='why'>Holds the thermal sensor on the two servos</div></td><td class='c'>1</td><td class='r'>₹89</td><td class='r'><b>₹89</b></td><td><a href="https://robu.in/product/2-axis-pan-tilt-camera-mount-camerasensors-servo-sg90s-mg90s/">Robu.in</a></td><td class='s'>In stock</td></tr>
+<tr class="grp"><td colspan="7">Power</td></tr>
+<tr><td class='n'>13</td><td><b>7.4 V 2500 mAh 2S Li-ion pack, protected, with DC jack</b><div class='why'>Powers everything; built-in protection board</div><div class="alt">Alternative: <a href="https://robu.in/product/bak-nmc-18650-2600mah-3c-lithium-ion-3-6v-battery/">Robu: 2 × BAK 18650 cells (₹229 each) + 2-cell holder (₹59), no protection board</a> — ₹517</div></td><td class='c'>1</td><td class='r'>₹579</td><td class='r'><b>₹579</b></td><td><a href="https://robu.in/product/18650-li-ion-2500mah-7-4v-2s1p-protected-battery-pack-3c-2/">Robu.in</a></td><td class='s'>In stock</td></tr>
+<tr><td class='n'>14</td><td><b>5.5 mm DC jack, male, with wire</b><div class='why'>Connects the battery pack to the robot</div></td><td class='c'>1</td><td class='r'>₹29</td><td class='r'><b>₹29</b></td><td><a href="https://robu.in/product/5mm-dc-jack-male-connector-with-wire/">Robu.in</a></td><td class='s'>In stock</td></tr>
+<tr><td class='n'>15</td><td><b>LM2596 buck converter (step-down)</b><div class='why'>Clean 5 V for the ESP32, camera, servos and sensors</div><div class="alt">Alternative: <a href="https://robu.in/product/lm2596s-dc-dc-buck-converter-power-supply/">Robu: LM2596S module (out of stock today)</a> — ₹49</div></td><td class='c'>1</td><td class='r'>₹98</td><td class='r'><b>₹98</b></td><td><a href="https://www.amazon.in/dp/B0BHNTGF23">Amazon.in</a></td><td class='s'>In stock</td></tr>
+<tr><td class='n'>16</td><td><b>Mini rocker switch, 2-pin (pack of 2)</b><div class='why'>Main power ON/OFF</div><div class="alt">Alternative: <a href="https://robu.in/product/kcd1-12v-24v-on-off2-pin-rocker-switch/">Robu: KCD1 rocker switch (in stock)</a> — ₹105</div></td><td class='c'>1</td><td class='r'>₹30</td><td class='r'><b>₹30</b></td><td><a href="https://www.amazon.in/dp/B0H6F78F97">Amazon.in</a></td><td class='s'>In stock</td></tr>
+<tr class="grp"><td colspan="7">Alerts and small parts</td></tr>
+<tr><td class='n'>17</td><td><b>5 V active buzzer</b><div class='why'>Alert sound and call-out beep</div></td><td class='c'>1</td><td class='r'>₹18</td><td class='r'><b>₹18</b></td><td><a href="https://robu.in/product/5v-active-electromagnetic-buzzer-pack-of-5/">Robu.in</a></td><td class='s'>In stock</td></tr>
+<tr><td class='n'>18</td><td><b>BC547 NPN transistor (Q1, Q2)</b><div class='why'>Switch the buzzer and the beacon LED from Uno pins</div></td><td class='c'>2</td><td class='r'>₹3</td><td class='r'><b>₹6</b></td><td><a href="https://robu.in/product/bc547-npn-transistor-pack-of-20/">Robu.in</a></td><td class='s'>In stock</td></tr>
+<tr><td class='n'>19</td><td><b>Bright 5 mm Piranha LED</b><div class='why'>Beacon light that marks the survivor</div></td><td class='c'>1</td><td class='r'>₹29</td><td class='r'><b>₹29</b></td><td><a href="https://robu.in/product/5mm-piranha-4pin-led-warm-white/">Robu.in</a></td><td class='s'>In stock</td></tr>
+<tr><td class='n'>20</td><td><b>Resistors ¼ W: 1 kΩ ×3, 2 kΩ, 10 kΩ ×3, 100 Ω (R1–R8)</b><div class='why'>Serial-link and battery dividers, transistor bases, LED current, DHT pull-up</div><div class="alt">Alternative: <a href="https://robu.in/product/pro-range-new-1500pcs-75-kinds-specifications-x-20pcs-1-4w-metal-film-resistor-pack-error-1-common-component-package/">Robu: 1500-piece resistor kit, 75 values (for a lab)</a> — ₹489</div></td><td class='c'>1</td><td class='r'>₹10</td><td class='r'><b>₹10</b></td><td>Local shop</td><td class='s'>≈ ₹1 each</td></tr>
+<tr><td class='n'>21</td><td><b>Capacitors, diode, fuse: 470 µF + 220 µF 10 V, 4 × 100 nF, 1N4148, 3 A fuse + inline holder</b><div class='why'>C1–C6, D1, F1 from the schematic: power filtering and protection</div></td><td class='c'>1</td><td class='r'>₹40</td><td class='r'><b>₹40</b></td><td>Local shop</td><td class='s'>≈ ₹40</td></tr>
+<tr class="grp"><td colspan="7">Wiring and mounting</td></tr>
+<tr><td class='n'>22</td><td><b>Jumper wires, male–female, 40 pcs, 30 cm</b><div class='why'>Module connections</div></td><td class='c'>1</td><td class='r'>₹69</td><td class='r'><b>₹69</b></td><td><a href="https://robu.in/product/male-to-female-jumper-wires-40-pin-30cm/">Robu.in</a></td><td class='s'>In stock</td></tr>
+<tr><td class='n'>23</td><td><b>Jumper wires, female–female, 40 pcs, 20 cm</b><div class='why'>Module-to-ESP32 connections</div></td><td class='c'>1</td><td class='r'>₹49</td><td class='r'><b>₹49</b></td><td><a href="https://robu.in/product/20cm-dupont-wire-color-jumper-cable-2-54mm-1p-1p-female-female-40pcs/">Robu.in</a></td><td class='s'>In stock</td></tr>
+<tr><td class='n'>24</td><td><b>Zero PCB (general-purpose board)</b><div class='why'>Base for the ESP32, dividers and transistor</div></td><td class='c'>1</td><td class='r'>₹91</td><td class='r'><b>₹91</b></td><td><a href="https://www.amazon.in/dp/B0C3B8CGG8">Amazon.in</a></td><td class='s'>In stock</td></tr>
+<tr><td class='n'>25</td><td><b>Female berg strip 1×40 (pack of 5)</b><div class='why'>Plug-in sockets so the ESP32 is removable</div><div class="alt">Alternative: Local shop: one 1×40 strip — ₹15</div></td><td class='c'>1</td><td class='r'>₹98</td><td class='r'><b>₹98</b></td><td><a href="https://robu.in/product/1-40-pin-2-54m-straight-long-female-berg-strip-connector-pack-of-5/">Robu.in</a></td><td class='s'>In stock</td></tr>
+<tr><td class='n'>26</td><td><b>M3 × 10 mm bolt and nut set (25 pcs)</b><div class='why'>Mounting the modules on the chassis</div></td><td class='c'>1</td><td class='r'>₹78</td><td class='r'><b>₹78</b></td><td><a href="https://robu.in/product/easymech-m3-x-10mm-chhd-bolt-nut-and-washer-set-25-pcs/">Robu.in</a></td><td class='s'>In stock</td></tr>
+<tr><td class='n'>27</td><td><b>Black heat-shrink tube kit (127 pcs)</b><div class='why'>Insulating joints; a 10 mm piece is the IR viewing tube</div></td><td class='c'>1</td><td class='r'>₹146</td><td class='r'><b>₹146</b></td><td><a href="https://robu.in/product/127pcs-black-heat-shrinkable-tube-kit-plastic-bag/">Robu.in</a></td><td class='s'>In stock</td></tr>
+<tr class="total"><td></td><td>Total — full robot (27 items)</td><td></td><td></td><td class="r">₹4,684</td><td colspan="2"></td></tr>
+</table>
+
+<h2>One-time items (not counted in the robot's cost)</h2>
+<table>
+<tr><th>Item</th><th class="r">Rate</th><th>Where</th></tr>
+<tr><td><b>2S Li-ion charger, 8.4 V 2 A, DC plug</b><div class='why'>Charges the battery pack safely (needed once)</div></td><td class='r'>₹549</td><td><a href="https://robu.in/product/pro-range-battery-charger-2s-li-ion-8-4v-2a-with-dc-5-5mm-2-5mm-male-plug/">Robu.in</a></td></tr><tr><td><b>USB data cable (micro-USB for most ESP32 boards)</b><div class='why'>Uploading code; any phone data cable works</div></td><td class='r'>—</td><td>Already owned</td></tr><tr><td><b>Soldering iron, solder, multimeter, glue gun, screwdriver</b><div class='why'>Assembly tools, usually available in a college lab</div></td><td class='r'>—</td><td>Lab</td></tr>
+</table>
+
+<div class="grid">
+<div class="box"><b>Getting the cost under ₹3,000</b>
+<ul>
+  <li>Buy small parts (resistors, berg strip, switch, LED, buzzer, jumpers, zero PCB) at a local electronics market — usually cheaper than online.</li>
+  <li>Use a black drinking straw or rolled black paper for the IR tube instead of the heat-shrink kit (−₹146).</li>
+  <li>A 2WD chassis instead of 4WD usually saves ₹200–300; a single pan servo (no tilt) saves ₹89.</li>
+  <li>Order everything from one store where you can: one shipping charge instead of several.</li>
+</ul></div>
+<div class="box warn"><b>Before you order</b>
+<ul>
+  <li>Online stock changes daily. If an item is out of stock, use the alternative link or any listing with the same part name.</li>
+  <li>Main board is the Arduino Uno; the ESP32-CAM is the camera and Wi-Fi board. Wiring: docs/ResQBot_Schematics.pdf.</li>
+  <li>Some ESP32-CAM listings already include the MB programmer board; then skip item 3.</li>
+  <li>Check the chassis listing includes 4 motors and 4 wheels.</li>
+  <li>Li-ion safety: charge only with a 2S (8.4 V) charger, never unattended.</li>
+</ul></div>
+</div>
+</body></html>

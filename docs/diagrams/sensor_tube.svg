@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1400" viewBox="0 0 1600 1400">
+<defs><marker id="h" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1d2433"/></marker></defs>
+<rect width="1600" height="1400" fill="#ffffff"/>
+<text x="40" y="56" font-size="30" text-anchor="start" fill="#1d2433" font-weight="800" font-family="Segoe UI, Arial, sans-serif">Black view-limiting tube for the MLX90614 thermal sensor</text>
+<text x="40" y="84" font-size="15" text-anchor="start" fill="#5b6475" font-weight="400" font-family="Segoe UI, Arial, sans-serif">Side view (cross-section). The sensor looks to the right. The smallest opening and its distance from the chip decide the view angle.</text>
+<rect x="40" y="120" width="1520" height="460" rx="14" fill="#f8fafc" stroke="#d5dce5"/>
+<text x="64" y="158" font-size="22" text-anchor="start" fill="#1d2433" font-weight="800" font-family="Segoe UI, Arial, sans-serif">Option 1 · Cone, narrowing toward the front</text>
+<text x="64" y="182" font-size="14.5" text-anchor="start" fill="#5b6475" font-weight="400" font-family="Segoe UI, Arial, sans-serif">Back 9.6 mm, front opening 8 mm, 22 mm long. Narrower view, about 18°.</text>
+<polygon points="110,350 1250,174.6 1250,525.4" fill="#ff6b1a" opacity="0.14"/>
+<line x1="110" y1="350" x2="1250" y2="174.6" stroke="#ff6b1a" stroke-width="2" stroke-dasharray="8 6"/>
+<line x1="110" y1="350" x2="1250" y2="525.4" stroke="#ff6b1a" stroke-width="2" stroke-dasharray="8 6"/>
+<rect x="70" y="200" width="30" height="300" fill="#2f8f5b" stroke="#1d2433" stroke-width="2"/>
+<text x="85" y="528" font-size="13" text-anchor="middle" fill="#5b6475" font-weight="400" font-family="Segoe UI, Arial, sans-serif">GY-906 board</text>
+<rect x="100" y="259" width="90" height="182" fill="#c9d1de" stroke="#1d2433" stroke-width="2"/>
+<rect x="185" y="308" width="5" height="84" fill="#4dabf7" stroke="#1d2433" stroke-width="1.5"/>
+<rect x="104" y="341" width="12" height="18" fill="#111"/>
+<line x1="110" y1="350" x2="190" y2="337.7" stroke="#ff6b1a" stroke-width="2"/>
+<line x1="110" y1="350" x2="190" y2="362.3" stroke="#ff6b1a" stroke-width="2"/>
+<polygon points="100,224.0 190,224.0 630,240.0 630,270.0 190,254.0 100,254.0" fill="#15181f" stroke="#1d2433" stroke-width="1.5"/>
+<polygon points="100,476.0 190,476.0 630,460.0 630,430.0 190,446.0 100,446.0" fill="#15181f" stroke="#1d2433" stroke-width="1.5"/>
+<text x="124" y="378" font-size="12" text-anchor="start" fill="#5b6475" font-weight="400" font-family="Segoe UI, Arial, sans-serif">chip</text>
+<text x="146" y="284" font-size="12" text-anchor="middle" fill="#5b6475" font-weight="400" font-family="Segoe UI, Arial, sans-serif">metal can</text>
+<text x="146" y="300" font-size="12" text-anchor="middle" fill="#5b6475" font-weight="400" font-family="Segoe UI, Arial, sans-serif">Ø 9.1 mm</text>
+<text x="194" y="295" font-size="13" text-anchor="start" fill="#1c7ed6" font-weight="400" font-family="Segoe UI, Arial, sans-serif">window</text>
+<text x="520" y="226.0" font-size="14" text-anchor="middle" fill="#1d2433" font-weight="700" font-family="Segoe UI, Arial, sans-serif">matte black tube</text>
+<line x1="190" y1="500" x2="630" y2="500" stroke="#1d2433" stroke-width="1.8" marker-start="url(#h)" marker-end="url(#h)"/>
+<text x="410.0" y="520" font-size="14" text-anchor="middle" fill="#1d2433" font-weight="400" font-family="Segoe UI, Arial, sans-serif">22 mm from window to front</text>
+<line x1="190" y1="494" x2="190" y2="506" stroke="#1d2433"/><line x1="630" y1="494" x2="630" y2="506" stroke="#1d2433"/>
+<line x1="666" y1="270.0" x2="666" y2="430.0" stroke="#1d2433" stroke-width="1.8" marker-start="url(#h)" marker-end="url(#h)"/>
+<text x="676" y="355" font-size="15" text-anchor="start" fill="#d9480f" font-weight="700" font-family="Segoe UI, Arial, sans-serif">opening 8 mm</text>
+<text x="676" y="374" font-size="13" text-anchor="start" fill="#5b6475" font-weight="400" font-family="Segoe UI, Arial, sans-serif">sets the view angle</text>
+<text x="184" y="214.0" font-size="13" text-anchor="start" fill="#5b6475" font-weight="400" font-family="Segoe UI, Arial, sans-serif">sensor end Ø 9.6 mm inside</text>
+<text x="930" y="356" font-size="24" text-anchor="middle" fill="#d9480f" font-weight="800" font-family="Segoe UI, Arial, sans-serif">≈ 18°</text>
+<text x="930" y="380" font-size="13" text-anchor="middle" fill="#5b6475" font-weight="400" font-family="Segoe UI, Arial, sans-serif">full view angle</text>
+<text x="1236" y="355" font-size="14" text-anchor="end" fill="#d9480f" font-weight="600" font-family="Segoe UI, Arial, sans-serif">what the sensor sees</text>
+<rect x="40" y="600" width="1520" height="460" rx="14" fill="#f8fafc" stroke="#d5dce5"/>
+<text x="64" y="638" font-size="22" text-anchor="start" fill="#1d2433" font-weight="800" font-family="Segoe UI, Arial, sans-serif">Option 2 · Straight tube (recommended)</text>
+<text x="64" y="662" font-size="14.5" text-anchor="start" fill="#5b6475" font-weight="400" font-family="Segoe UI, Arial, sans-serif">Inside diameter 10 mm all the way, 22 mm long. About 22–25° view.</text>
+<polygon points="110,830 1124.0,635.0 1124.0,1025.0" fill="#ff6b1a" opacity="0.14"/>
+<line x1="110" y1="830" x2="1124.0" y2="635.0" stroke="#ff6b1a" stroke-width="2" stroke-dasharray="8 6"/>
+<line x1="110" y1="830" x2="1124.0" y2="1025.0" stroke="#ff6b1a" stroke-width="2" stroke-dasharray="8 6"/>
+<rect x="70" y="680" width="30" height="300" fill="#2f8f5b" stroke="#1d2433" stroke-width="2"/>
+<text x="85" y="1008" font-size="13" text-anchor="middle" fill="#5b6475" font-weight="400" font-family="Segoe UI, Arial, sans-serif">GY-906 board</text>
+<rect x="100" y="739" width="90" height="182" fill="#c9d1de" stroke="#1d2433" stroke-width="2"/>
+<rect x="185" y="788" width="5" height="84" fill="#4dabf7" stroke="#1d2433" stroke-width="1.5"/>
+<rect x="104" y="821" width="12" height="18" fill="#111"/>
+<line x1="110" y1="830" x2="190" y2="814.6" stroke="#ff6b1a" stroke-width="2"/>
+<line x1="110" y1="830" x2="190" y2="845.4" stroke="#ff6b1a" stroke-width="2"/>
+<polygon points="100,700.0 190,700.0 630,700.0 630,730.0 190,730.0 100,730.0" fill="#15181f" stroke="#1d2433" stroke-width="1.5"/>
+<polygon points="100,960.0 190,960.0 630,960.0 630,930.0 190,930.0 100,930.0" fill="#15181f" stroke="#1d2433" stroke-width="1.5"/>
+<text x="124" y="858" font-size="12" text-anchor="start" fill="#5b6475" font-weight="400" font-family="Segoe UI, Arial, sans-serif">chip</text>
+<text x="146" y="764" font-size="12" text-anchor="middle" fill="#5b6475" font-weight="400" font-family="Segoe UI, Arial, sans-serif">metal can</text>
+<text x="146" y="780" font-size="12" text-anchor="middle" fill="#5b6475" font-weight="400" font-family="Segoe UI, Arial, sans-serif">Ø 9.1 mm</text>
+<text x="194" y="775" font-size="13" text-anchor="start" fill="#1c7ed6" font-weight="400" font-family="Segoe UI, Arial, sans-serif">window</text>
+<text x="520" y="686.0" font-size="14" text-anchor="middle" fill="#1d2433" font-weight="700" font-family="Segoe UI, Arial, sans-serif">matte black tube</text>
+<line x1="190" y1="980" x2="630" y2="980" stroke="#1d2433" stroke-width="1.8" marker-start="url(#h)" marker-end="url(#h)"/>
+<text x="410.0" y="1000" font-size="14" text-anchor="middle" fill="#1d2433" font-weight="400" font-family="Segoe UI, Arial, sans-serif">22 mm from window to front</text>
+<line x1="190" y1="974" x2="190" y2="986" stroke="#1d2433"/><line x1="630" y1="974" x2="630" y2="986" stroke="#1d2433"/>
+<line x1="666" y1="730.0" x2="666" y2="930.0" stroke="#1d2433" stroke-width="1.8" marker-start="url(#h)" marker-end="url(#h)"/>
+<text x="676" y="835" font-size="15" text-anchor="start" fill="#d9480f" font-weight="700" font-family="Segoe UI, Arial, sans-serif">opening 10 mm</text>
+<text x="676" y="854" font-size="13" text-anchor="start" fill="#5b6475" font-weight="400" font-family="Segoe UI, Arial, sans-serif">sets the view angle</text>
+<text x="184" y="690.0" font-size="13" text-anchor="start" fill="#5b6475" font-weight="400" font-family="Segoe UI, Arial, sans-serif">sensor end Ø 10.0 mm inside</text>
+<text x="930" y="836" font-size="24" text-anchor="middle" fill="#d9480f" font-weight="800" font-family="Segoe UI, Arial, sans-serif">≈ 22–25°</text>
+<text x="930" y="860" font-size="13" text-anchor="middle" fill="#5b6475" font-weight="400" font-family="Segoe UI, Arial, sans-serif">full view angle</text>
+<text x="1110.0" y="835" font-size="14" text-anchor="end" fill="#d9480f" font-weight="600" font-family="Segoe UI, Arial, sans-serif">what the sensor sees</text>
+<rect x="40" y="1090" width="1520" height="280" rx="14" fill="#f8fafc" stroke="#d5dce5"/>
+<text x="64" y="1122" font-size="20" text-anchor="start" fill="#1d2433" font-weight="800" font-family="Segoe UI, Arial, sans-serif">Paper tube template (full size scale: 8 px = 1 mm)</text>
+<rect x="120" y="1156" width="560" height="176" fill="#2b2f3a" stroke="#1d2433" stroke-width="2"/>
+<line x1="371" y1="1156" x2="371" y2="1332" stroke="#9aa3b2" stroke-width="1.5" stroke-dasharray="6 5"/>
+<line x1="622" y1="1156" x2="622" y2="1332" stroke="#9aa3b2" stroke-width="1.5" stroke-dasharray="6 5"/>
+<text x="400.0" y="1250.0" font-size="15" text-anchor="middle" fill="#e8edf4" font-weight="600" font-family="Segoe UI, Arial, sans-serif">black card, 70 mm × 22 mm  (colour matte black on both sides)</text>
+<line x1="120" y1="1354" x2="680" y2="1354" stroke="#1d2433" stroke-width="1.8" marker-start="url(#h)" marker-end="url(#h)"/>
+<text x="400.0" y="1374" font-size="14" text-anchor="middle" fill="#1d2433" font-weight="400" font-family="Segoe UI, Arial, sans-serif">70 mm: about 2 wraps around a 10 mm pen</text>
+<line x1="104" y1="1156" x2="104" y2="1332" stroke="#1d2433" stroke-width="1.8" marker-start="url(#h)" marker-end="url(#h)"/>
+<text x="96" y="1249.0" font-size="14" text-anchor="end" fill="#1d2433" font-weight="400" font-family="Segoe UI, Arial, sans-serif">22 mm</text>
+<circle cx="840" cy="1246" r="56" fill="#2b2f3a" stroke="#1d2433" stroke-width="2"/>
+<circle cx="840" cy="1246" r="32" fill="#ffffff" stroke="#1d2433" stroke-width="2"/>
+<text x="840" y="1326" font-size="14" text-anchor="middle" fill="#1d2433" font-weight="400" font-family="Segoe UI, Arial, sans-serif">front ring: Ø 14 mm card, 8 mm hole</text>
+<text x="840" y="1346" font-size="13" text-anchor="middle" fill="#5b6475" font-weight="400" font-family="Segoe UI, Arial, sans-serif">(only for the cone option)</text>
+<text x="1030" y="1170" font-size="16" text-anchor="start" fill="#1d2433" font-weight="400" font-family="Segoe UI, Arial, sans-serif">1  Colour the card matte black, both sides</text>
+<text x="1030" y="1200" font-size="16" text-anchor="start" fill="#1d2433" font-weight="400" font-family="Segoe UI, Arial, sans-serif">2  Roll it tightly round a 10 mm pen, glue the end</text>
+<text x="1030" y="1230" font-size="16" text-anchor="start" fill="#1d2433" font-weight="400" font-family="Segoe UI, Arial, sans-serif">3  Slide off; it should fit the can with light friction</text>
+<text x="1030" y="1260" font-size="16" text-anchor="start" fill="#1d2433" font-weight="400" font-family="Segoe UI, Arial, sans-serif">4  Cone option: glue the 8 mm-hole ring on the front</text>
+<text x="1030" y="1290" font-size="16" text-anchor="start" fill="#1d2433" font-weight="400" font-family="Segoe UI, Arial, sans-serif">5  Slip over the can, glue at the BOARD end only</text>
+<text x="1030" y="1320" font-size="16" text-anchor="start" fill="#c1121f" font-weight="700" font-family="Segoe UI, Arial, sans-serif">Never touch or cover the sensor window</text>
+</svg>

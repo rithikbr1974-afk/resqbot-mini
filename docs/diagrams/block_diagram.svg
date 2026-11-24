@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="930" viewBox="0 0 1400 930" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5b6475"/>
+    </marker>
+    <marker id="ap" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#d6336c"/>
+    </marker>
+    <marker id="al" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#0b7285"/>
+    </marker>
+    <style>
+      .box{fill:#ffffff;stroke:#c9d1de;stroke-width:2}
+      .t{font-size:19px;font-weight:700;fill:#1d2433}
+      .s{font-size:14px;fill:#5b6475}
+      .h{font-size:15px;font-weight:700;fill:#8a94a6;letter-spacing:2px}
+      .w{stroke:#5b6475;stroke-width:2.5;fill:none}
+      .p{stroke:#d6336c;stroke-width:2.5;fill:none;stroke-dasharray:7 5}
+      .l{stroke:#0b7285;stroke-width:3;fill:none}
+      .lbl{font-size:13px;fill:#5b6475;font-weight:600}
+    </style>
+  </defs>
+  <rect width="1400" height="930" fill="#ffffff"/>
+  <text x="40" y="52" font-size="28" font-weight="800" fill="#1d2433">ResQBot Mini — system block diagram</text>
+  <text x="40" y="110" class="h">SENSE</text>
+  <text x="1110" y="110" class="h">ACT AND SHOW</text>
+
+  <!-- Arduino Uno -->
+  <rect x="520" y="230" width="360" height="310" rx="22" fill="#1d2433"/>
+  <text x="700" y="282" text-anchor="middle" font-size="28" font-weight="800" fill="#ffffff">Arduino Uno</text>
+  <text x="700" y="311" text-anchor="middle" font-size="15" fill="#c9d1de">main board · ATmega328P · 5 V logic</text>
+  <g font-size="15" fill="#ffd8c2">
+    <text x="556" y="356">• reads every sensor</text>
+    <text x="556" y="382">• thermal sweep + survivor detection</text>
+    <text x="556" y="408">• search state machine</text>
+    <text x="556" y="434">• obstacle avoidance, dead-man stop</text>
+    <text x="556" y="460">• drives motors, servos, buzzer, beacon</text>
+    <text x="556" y="486">• sends status + events to the camera board</text>
+  </g>
+
+  <!-- sensors -->
+  <g>
+    <rect class="box" x="40" y="130" width="330" height="76" rx="14"/><circle cx="74" cy="168" r="16" fill="#ff6b1a"/>
+    <text x="102" y="160" class="t">MLX90614 IR thermometer</text><text x="102" y="184" class="s">I²C A4/A5 · on pan-tilt · body heat</text>
+    <rect class="box" x="40" y="226" width="330" height="76" rx="14"/><circle cx="74" cy="264" r="16" fill="#f59f00"/>
+    <text x="102" y="256" class="t">DHT11</text><text x="102" y="280" class="s">D2 · air temperature + humidity</text>
+    <rect class="box" x="40" y="322" width="330" height="76" rx="14"/><circle cx="74" cy="360" r="16" fill="#2a78d6"/>
+    <text x="102" y="352" class="t">HC-SR04 ultrasonic</text><text x="102" y="376" class="s">A2/A3 · obstacles, approach stop</text>
+    <rect class="box" x="40" y="418" width="330" height="76" rx="14"/><circle cx="74" cy="456" r="16" fill="#1baf7a"/>
+    <text x="102" y="448" class="t">HC-SR501 PIR</text><text x="102" y="472" class="s">D4 · is the person moving?</text>
+    <rect class="box" x="40" y="514" width="330" height="76" rx="14"/><circle cx="74" cy="552" r="16" fill="#e5383b"/>
+    <text x="102" y="544" class="t">MQ-2 gas / smoke</text><text x="102" y="568" class="s">A0 · hazard warning</text>
+    <rect class="box" x="40" y="610" width="330" height="76" rx="14"/><circle cx="74" cy="648" r="16" fill="#8a94a6"/>
+    <text x="102" y="640" class="t">Battery monitor</text><text x="102" y="664" class="s">A1 · 10k/10k divider</text>
+  </g>
+  <path class="w" d="M370,168 C450,168 450,280 518,290" marker-end="url(#a)"/>
+  <path class="w" d="M370,264 C440,264 450,320 518,330" marker-end="url(#a)"/>
+  <path class="w" d="M370,360 L518,360" marker-end="url(#a)"/>
+  <path class="w" d="M370,456 C440,456 450,410 518,400" marker-end="url(#a)"/>
+  <path class="w" d="M370,552 C450,552 450,450 518,440" marker-end="url(#a)"/>
+  <path class="w" d="M370,648 C470,648 470,490 518,480" marker-end="url(#a)"/>
+
+  <!-- outputs -->
+  <g>
+    <rect class="box" x="1030" y="130" width="330" height="96" rx="14"/>
+    <text x="1060" y="168" class="t">L298N motor driver</text><text x="1060" y="192" class="s">D5–D10 → 4 × BO gear motors (4WD)</text><text x="1060" y="212" class="s">PWM speed, skid steering</text>
+    <rect class="box" x="1030" y="246" width="330" height="76" rx="14"/>
+    <text x="1060" y="280" class="t">2 × SG90 servos</text><text x="1060" y="304" class="s">D11 pan · D12 tilt of the thermal sensor</text>
+    <rect class="box" x="1030" y="342" width="330" height="76" rx="14"/>
+    <text x="1060" y="376" class="t">Active buzzer</text><text x="1060" y="400" class="s">D3 via BC547 · alert pattern</text>
+    <rect class="box" x="1030" y="438" width="330" height="76" rx="14"/>
+    <text x="1060" y="472" class="t">LED beacon</text><text x="1060" y="496" class="s">D13 via BC547 · marks the survivor</text>
+  </g>
+  <path class="w" d="M882,290 C960,290 960,178 1028,178" marker-end="url(#a)"/>
+  <path class="w" d="M882,330 C960,330 960,284 1028,284" marker-end="url(#a)"/>
+  <path class="w" d="M882,380 C960,380 960,380 1028,380" marker-end="url(#a)"/>
+  <path class="w" d="M882,420 C960,420 960,476 1028,476" marker-end="url(#a)"/>
+
+  <!-- ESP32-CAM + phone -->
+  <rect x="1030" y="566" width="330" height="110" rx="14" fill="#e6fcf5" stroke="#0b7285" stroke-width="2.5"/>
+  <text x="1060" y="602" class="t">ESP32-CAM</text>
+  <text x="1060" y="626" class="s">live video · Wi-Fi hotspot ResQBot-01</text>
+  <text x="1060" y="646" class="s">web server · dashboard · API</text>
+  <path class="l" d="M882,500 C960,500 960,612 1028,620" marker-start="url(#al)" marker-end="url(#al)"/>
+  <text x="1030" y="538" class="lbl" style="fill:#0b7285">serial 115200 baud</text>
+  <text x="1030" y="556" class="lbl" style="fill:#0b7285">D1→1k/2k→IO13 · IO14→D0</text>
+  <rect x="1030" y="730" width="330" height="96" rx="14" fill="#fff3eb" stroke="#ff6b1a" stroke-width="2"/>
+  <text x="1060" y="766" class="t">Phone browser</text>
+  <text x="1060" y="790" class="s">192.168.4.1 · radar, sensors, alerts, drive</text>
+  <text x="1060" y="810" class="s">live video · E-STOP · no app, no internet</text>
+  <path class="w" d="M1195,678 L1195,728" marker-start="url(#a)" marker-end="url(#a)" style="stroke:#ff6b1a"/>
+  <text x="1205" y="708" class="lbl" style="fill:#ff6b1a">Wi-Fi</text>
+
+  <!-- power -->
+  <rect x="40" y="760" width="300" height="90" rx="14" fill="#fff0f5" stroke="#d6336c" stroke-width="2"/>
+  <text x="64" y="795" class="t">2S Li-ion pack 7.4 V</text><text x="64" y="819" class="s">fuse 3 A → rocker switch</text>
+  <rect x="420" y="760" width="300" height="90" rx="14" fill="#fff0f5" stroke="#d6336c" stroke-width="2"/>
+  <text x="444" y="795" class="t">LM2596 buck → 5.0 V</text><text x="444" y="819" class="s">Uno 5V pin, ESP32-CAM, sensors, servos</text>
+  <path class="p" d="M340,805 L418,805" marker-end="url(#ap)"/>
+  <path class="p" d="M570,758 L570,640 L650,640 L650,542" marker-end="url(#ap)"/>
+  <text x="590" y="632" class="lbl" style="fill:#d6336c">+5V</text>
+  <path class="p" d="M190,852 L190,890 L1385,890 L1385,178 L1362,178" marker-end="url(#ap)"/>
+  <text x="560" y="882" class="lbl" style="fill:#d6336c">7.4 V straight to the L298N motor supply</text>
+</svg>

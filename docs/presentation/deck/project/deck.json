@@ -1,0 +1,18 @@
+{
+  "v": 4,
+  "createdOnFiles": {"v": 1, "at": "2026-10-21T10:00:00Z"},
+  "lists": "css",
+  "title": "ResQBot Mini — Stage Presentation",
+  "order": ["cover", "golden", "problem", "gap", "solution", "mission", "architecture", "cost", "sweep", "tube", "score", "unconscious", "dashboard", "demo", "safety", "impact", "future", "close"],
+  "sections": {
+    "s1": {"description": "Speaker 1: the problem — why disaster search is slow, dangerous and expensive.", "start": "cover"},
+    "s2": {"description": "Speaker 2: the robot — what ResQBot Mini is, how a mission works, and what it costs.", "start": "solution"},
+    "s3": {"description": "Speaker 3: the intelligence — the 30-pixel thermal sweep, the confidence score and the dashboard.", "start": "sweep"},
+    "s4": {"description": "Speaker 4: live demo, safety, impact, future and the close.", "start": "demo"}
+  },
+  "faces": {
+    "oswald": {"family": "Oswald", "href": "https://fonts.googleapis.com/css2?family=Oswald:wght@400..700&display=swap"},
+    "public-sans": {"family": "Public Sans", "href": "https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap"}
+  },
+  "designSystems": []
+}
